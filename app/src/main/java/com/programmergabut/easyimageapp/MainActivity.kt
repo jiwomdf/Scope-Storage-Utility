@@ -9,10 +9,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        EasyImage.Builder(this)
+        /* EasyImage.Builder(this)
             .from()
             .to()
             .extension()
-            .save()
+            .save() */
     }
 }
