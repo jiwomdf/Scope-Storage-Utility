@@ -7,9 +7,11 @@ enum class Extension {
     WEBP,
 }
 
-/* enum class Extension(s: String) {
-    PNG(".png"),
-    JPEG(".jpeg");
-
-    val value: String = s
-} */
+fun setExtension(e: Extension): String {
+    return when (e) {
+        Extension.PNG -> ".png"
+        Extension.JPEG -> ".jpeg"
+        Extension.JPG -> ".jpg"
+        Extension.WEBP -> ".webp"
+    }
+}

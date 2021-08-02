@@ -25,7 +25,7 @@ class ConvertDrawable {
         }
     }
 
-    fun drawableToBitmap(drawable: Drawable): Bitmap?{
+    fun drawableToBitmap(drawable: Drawable): Bitmap{
         if(drawable is BitmapDrawable)
             return drawable.bitmap
 
