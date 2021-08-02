@@ -41,6 +41,17 @@ class LoadImage(
         return BitmapFactory.decodeFile(file.path)
     }
 
+    fun delete(): Boolean {
+        val extension = setExtension(fileExtension)
+        val directory = File("${context.getExternalFilesDir(null)?.absolutePath}/$directory")
+        if (!directory.exists())
+            return false
+
+        val file = File(directory, "$fileName$extension")
+
+        return file.delete()
+    }
+
     fun save(bitmap: Bitmap, quality: Int = 100) {
         validateImageQuality(quality)
         validateStoragePermission()
