@@ -1,10 +1,10 @@
-package id.kjsindonesia.ia.easyimage2
+package com.programmergabut.easyimage
 
-sealed class Extension {
-    object PNG : Extension()
-    object JPEG : Extension()
-    object JPG : Extension()
-    object WEBP : Extension()
+enum class Extension {
+    PNG,
+    JPEG,
+    JPG,
+    WEBP,
 }
 
 /* enum class Extension(s: String) {

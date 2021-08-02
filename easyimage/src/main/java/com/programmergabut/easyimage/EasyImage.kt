@@ -1,18 +1,22 @@
 package com.programmergabut.easyimage
 
 import android.content.Context
-import id.kjsindonesia.ia.easyimage2.Extension
+import com.programmergabut.easyimage.convert.ConvertBitmap
+import com.programmergabut.easyimage.convert.ConvertDrawable
+import com.programmergabut.easyimage.manage.LoadFile
 
 class EasyImage {
 
-    companion object {
-        val convert = Convert()
+    class Converter {
+        companion object {
+            val bitmap = ConvertBitmap()
+            val drawable = ConvertDrawable()
+        }
     }
 
-    fun manage(fromDir: String, toDir: String, extension: Extension) {
-
+    class Manage(private val context: Context) {
+        fun loadFile() = LoadFile(context)
     }
-
 
 
 }
