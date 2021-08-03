@@ -3,14 +3,14 @@ package com.programmergabut.easyimageapp
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import com.programmergabut.easyimage.EasyImage
 import com.programmergabut.easyimage.Event
+import com.programmergabut.easyimage.Extension
+import com.programmergabut.easyimage.manage.IManageImage
 import com.programmergabut.easyimageapp.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
@@ -24,7 +24,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        dispatchTakePictureIntent()
+        //dispatchTakePictureIntent()
+        EasyImage.Manage(this)
+            .setFileAttribute("asd", "ad", Extension.JPEG)
+            .save("asdas", 100, object: IManageImage.SaveBase64CallBack {
+                override fun onSuccess() {
+                    Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
+                }
+                override fun onFailed(err: String) {
+                    Toast.makeText(this@MainActivity, err, Toast.LENGTH_SHORT).show()
+                }
+            })
+
+        /* EasyImage.Manage(this)
+            .setFileAttribute("as","asd",Extension.JPEG)
+            .delete(object: IManageImage.DeleteCallBack {
+                override fun onSuccess() {
+                    Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
+                }
+                override fun onFailed(err: String) {
+                    Toast.makeText(this@MainActivity, err, Toast.LENGTH_SHORT).show()
+                }
+            }) */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

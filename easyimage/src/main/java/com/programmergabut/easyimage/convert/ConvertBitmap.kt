@@ -38,10 +38,10 @@ class ConvertBitmap {
     val base64ToBitmap: LiveData<Event<Bitmap>> = _base64ToBitmap
     fun base64ToBitmap(base64: String, offset: Int = 0)
     = CoroutineScope(Dispatchers.Default).launch {
-        _bitmapToBase64.postValue(Event.Loading)
+        _base64ToBitmap.postValue(Event.Loading)
 
         if(base64.isEmpty())
-            _bitmapToBase64.postValue(Event.Error("Base64 string cannot be empty"))
+            _base64ToBitmap.postValue(Event.Error("Base64 string cannot be empty"))
 
         try {
             val byteArray = Base64.decode(base64, Base64.DEFAULT)
