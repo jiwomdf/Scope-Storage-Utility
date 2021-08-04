@@ -3,17 +3,21 @@ package com.programmergabut.easyimageapp
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
-import com.programmergabut.easyimage.EasyImage
-import com.programmergabut.easyimage.Event
+import androidx.core.app.ActivityCompat
+import com.programmergabut.easyimage.EasyImage.Companion.convert
+import com.programmergabut.easyimage.EasyImage.Companion.manage
 import com.programmergabut.easyimage.Extension
+import com.programmergabut.easyimage.convert.IConvertBitmap
 import com.programmergabut.easyimage.manage.IManageImage
 import com.programmergabut.easyimageapp.databinding.ActivityMainBinding
 
-class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
+class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), View.OnClickListener {
 
     companion object {
         const val TAKE_PHOTO_REQUEST_CODE = 1001
@@ -24,9 +28,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //dispatchTakePictureIntent()
-        EasyImage.Manage(this)
-            .setFileAttribute("asd", "ad", Extension.JPEG)
+        manage(this)
+            .imageAttribute("asd", "ad", Extension.JPEG)
             .save("asdas", 100, object: IManageImage.SaveBase64CallBack {
                 override fun onSuccess() {
                     Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
@@ -36,16 +39,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 }
             })
 
-        /* EasyImage.Manage(this)
-            .setFileAttribute("as","asd",Extension.JPEG)
-            .delete(object: IManageImage.DeleteCallBack {
-                override fun onSuccess() {
-                    Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
-                }
-                override fun onFailed(err: String) {
-                    Toast.makeText(this@MainActivity, err, Toast.LENGTH_SHORT).show()
-                }
-            }) */
+        convert.base64ToDrawable("", 0, object: IConvertBitmap.DrawableCallBack {
+            override fun onResult(drawable: Drawable) {
+
+            }
+
+            override fun onFailed(err: String) {
+
+            }
+        })
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.btn_dispatch_camera -> {
+                dispatchTakePictureIntent()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -64,22 +74,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private fun proceedData(data: Intent?) {
         val captureImage = data?.extras!!["data"] as Bitmap
-        EasyImage.Convert.bitmap.bitmapToBase64(captureImage)
-        EasyImage.Convert.bitmap.bitmapToBase64.observe(this, {
-          when(it){
-              is Event.Success -> {
-                  binding.pgLoading.visibility = View.GONE
-                  Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
-              }
-              is Event.Loading -> {
-                  binding.pgLoading.visibility = View.VISIBLE
-              }
-              is Event.Error -> {
-                  binding.pgLoading.visibility = View.GONE
-                  Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-              }
-          }
-        })
+        convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG,
+            object : IConvertBitmap.Base64CallBack {
+                override fun onResult(base64: String) {
+
+                }
+
+                override fun onFailed(err: String) {
+
+                }
+            }
+        )
     }
 
     override fun onRequestPermissionsResult(
@@ -110,7 +115,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private fun dispatchTakePictureIntent() {
         if (!isCameraPermissionGranted() || !isReadWriteFilePermissionGranted()) {
-            requestPermissions(arrPermissionTakePhoto, TAKE_PHOTO_REQUEST_PERMISSION_CODE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrPermissionTakePhoto, TAKE_PHOTO_REQUEST_PERMISSION_CODE)
+            } else {
+                ActivityCompat.requestPermissions(
+                    this@MainActivity,
+                    arrPermissionTakePhoto,
+                    TAKE_PHOTO_REQUEST_PERMISSION_CODE)
+            }
         } else {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                 takePictureIntent.resolveActivity(this.packageManager)?.also {

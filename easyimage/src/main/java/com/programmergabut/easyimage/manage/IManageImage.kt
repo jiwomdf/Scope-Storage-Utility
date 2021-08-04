@@ -1,29 +1,18 @@
 package com.programmergabut.easyimage.manage
 
 import android.graphics.Bitmap
+import com.programmergabut.easyimage.base.BaseCallBack2
 
 interface IManageImage {
     interface LoadCallBack {
         fun onResult(bitmap: Bitmap?)
     }
 
-    interface DeleteCallBack {
-        fun onSuccess()
-        fun onFailed(err: String)
-    }
+    interface DeleteCallBack: BaseCallBack2
 
-    interface SaveBitMapCallBack {
-        fun onSuccess()
-        fun onFailed(err: String)
-    }
+    interface SaveBitMapCallBack: BaseCallBack2
 
-    interface SaveBase64CallBack {
-        fun onSuccess()
-        fun onFailed(err: String)
-    }
+    interface SaveBase64CallBack: BaseCallBack2
 
-    interface SaveDrawableCallBack {
-        fun onSuccess()
-        fun onFailed(err: String)
-    }
+    interface SaveDrawableCallBack: BaseCallBack2
 }

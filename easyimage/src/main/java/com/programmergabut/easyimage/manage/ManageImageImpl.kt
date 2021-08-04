@@ -18,9 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.IOException
 import java.lang.IllegalArgumentException
 class ManageImageImpl(
     private val context: Context,
@@ -249,7 +247,7 @@ class ManageImageImpl(
     private fun writePermissionGranted(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 context.applicationContext,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PermissionChecker.PERMISSION_GRANTED
         ) {
             return true

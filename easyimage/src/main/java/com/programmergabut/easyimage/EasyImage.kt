@@ -1,32 +1,16 @@
 package com.programmergabut.easyimage
 
 import android.content.Context
-import com.programmergabut.easyimage.convert.ConvertBitmap
-import com.programmergabut.easyimage.convert.ConvertDrawable
-import com.programmergabut.easyimage.domain.ManageImage
-import com.programmergabut.easyimage.manage.ManageImageImpl
+import com.programmergabut.easyimage.convert.Convert
+import com.programmergabut.easyimage.convert.ConvertImpl
+import com.programmergabut.easyimage.domain.Manage
+import com.programmergabut.easyimage.manage.ManageImpl
 
 class EasyImage {
 
-    class Convert {
-        companion object {
-            val bitmap = ConvertBitmap()
-            val drawable = ConvertDrawable()
-        }
+    companion object {
+        val convert = ConvertImpl() as Convert
+        fun manage(context: Context) = ManageImpl(context) as Manage
     }
-
-    class Manage(private val context: Context){
-        fun setFileAttribute(
-            fileName: String,
-            directory: String,
-            fileExtension: Extension
-        ) = ManageImageImpl(
-            context,
-            fileName,
-            directory,
-            fileExtension
-        ) as ManageImage
-    }
-
 
 }
