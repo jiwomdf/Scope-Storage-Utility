@@ -11,6 +11,7 @@ interface ManageImage{
 
     /**
      * load image synchronously
+     *  @return null if the file is successfully loaded, and null if the file failed to load
      */
     fun load(): Bitmap?
 
