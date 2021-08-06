@@ -21,11 +21,15 @@ class ConvertImpl: Convert {
         quality: Int,
         format: Bitmap.CompressFormat,
     ): String? {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(format, quality, outputStream)
-        val byteArray: ByteArray = outputStream.toByteArray()
+        return try {
+            val outputStream = ByteArrayOutputStream()
+            bitmap.compress(format, quality, outputStream)
+            val byteArray: ByteArray = outputStream.toByteArray()
 
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+            Base64.encodeToString(byteArray, Base64.DEFAULT)
+        } catch (ex: Exception){
+            null
+        }
     }
 
     override fun bitmapToBase64(
@@ -49,11 +53,11 @@ class ConvertImpl: Convert {
     }
 
     override fun base64ToBitmap(base64: String, offset: Int): Bitmap? {
-        if(base64.isEmpty()){
-            throw InvalidParameterException("Base64 string cannot be empty")
-        }
-
         try {
+            if(base64.isEmpty()){
+                throw InvalidParameterException("Base64 string cannot be empty")
+            }
+
             val byteArray = Base64.decode(base64, Base64.DEFAULT)
             return BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
         } catch (ex: Exception) {
@@ -67,13 +71,13 @@ class ConvertImpl: Convert {
         callBack: IConvertBitmap.BitmapCallBack
     ){
         CoroutineScope(Dispatchers.Default).launch {
-            if(base64.isEmpty()){
-                withContext(Dispatchers.Main){
-                    callBack.onFailed("Base64 string cannot be empty")
-                }
-            }
-
             try {
+                if(base64.isEmpty()){
+                    withContext(Dispatchers.Main){
+                        callBack.onFailed("Base64 string cannot be empty")
+                    }
+                }
+
                 val byteArray = Base64.decode(base64, Base64.DEFAULT)
                 val result = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
@@ -87,11 +91,11 @@ class ConvertImpl: Convert {
         base64: String,
         offset: Int
     ): Drawable {
-        if(base64.isEmpty()){
-            throw InvalidParameterException("Base64 string cannot be empty")
-        }
-
         try {
+            if(base64.isEmpty()){
+                throw InvalidParameterException("Base64 string cannot be empty")
+            }
+
             val byteArray = Base64.decode(base64, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
             return BitmapDrawable(Resources.getSystem(), bitmap)
@@ -106,14 +110,14 @@ class ConvertImpl: Convert {
         callBack: IConvertBitmap.DrawableCallBack
     ) {
         CoroutineScope(Dispatchers.Default).launch {
-            if(base64.isEmpty()){
-                withContext(Dispatchers.Main) {
-                    callBack.onFailed("Base64 string cannot be empty")
-                }
-                return@launch
-            }
-
             try {
+                if(base64.isEmpty()){
+                    withContext(Dispatchers.Main) {
+                        callBack.onFailed("Base64 string cannot be empty")
+                    }
+                    return@launch
+                }
+
                 val byteArray = Base64.decode(base64, Base64.DEFAULT)
                 val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
                 val result = BitmapDrawable(Resources.getSystem(), bitmap)
@@ -126,11 +130,11 @@ class ConvertImpl: Convert {
     }
 
     override fun drawableToBitmap(drawable: Drawable): Bitmap? {
-        if(drawable is BitmapDrawable){
-            return drawable.bitmap
-        }
-
         try {
+            if(drawable is BitmapDrawable){
+                return drawable.bitmap
+            }
+
             val width = if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else 1
             val height = if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else 1
 
@@ -150,14 +154,15 @@ class ConvertImpl: Convert {
         callBack: IConvertBitmap.BitmapCallBack
     ) {
         CoroutineScope(Dispatchers.Default).launch {
-            if(drawable is BitmapDrawable){
-                withContext(Dispatchers.Main){
-                    callBack.onResult(drawable.bitmap)
-                }
-                return@launch
-            }
-
             try {
+                if(drawable is BitmapDrawable){
+                    withContext(Dispatchers.Main){
+                        callBack.onResult(drawable.bitmap)
+                    }
+                    return@launch
+                }
+
+
                 val width = if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else 1
                 val height = if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else 1
 

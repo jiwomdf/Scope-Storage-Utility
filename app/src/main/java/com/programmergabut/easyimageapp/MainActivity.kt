@@ -28,15 +28,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
         super.onCreate(savedInstanceState)
 
         binding.btnDispatchCamera.setOnClickListener(this)
-        /* convert.base64ToDrawable("", 0, object: IConvertBitmap.DrawableCallBack {
-            override fun onResult(drawable: Drawable) {
-
-            }
-
-            override fun onFailed(err: String) {
-
-            }
-        }) */
     }
 
     override fun onClick(v: View?) {
@@ -64,23 +55,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
     private fun proceedData(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
 
-        /* convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG,
-            object : IConvertBitmap.Base64CallBack {
-                override fun onResult(base64: String) {
-                    Toast.makeText(this@MainActivity, base64, Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onFailed(err: String) {
-                    Toast.makeText(this@MainActivity, err, Toast.LENGTH_SHORT).show()
-                }
-            }
-        ) */
-
         val test = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
         manage(this)
             .imageAttribute("testong", null, Extension.JPEG)
-            .save(test!!, 100)
-
+            .save("",3)
     }
 
     override fun onRequestPermissionsResult(

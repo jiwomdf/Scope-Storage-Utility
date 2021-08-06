@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Base64
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.programmergabut.easyimage.Extension
@@ -23,6 +22,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.IllegalArgumentException
+
 class ManageImageImpl(
     private val context: Context,
     private val fileName: String,
@@ -32,23 +32,27 @@ class ManageImageImpl(
 
     private val TAG = "ManageImage"
 
-    private val absolutePath = context.getExternalFilesDir(null)?.absolutePath
+    private val ABSOLUTE_PATH = context.getExternalFilesDir(null)?.absolutePath
 
-    private val fixDir = if(directory.isNullOrEmpty()) "" else directory
+    private val FIX_DIRECTORY = if(directory.isNullOrEmpty()) "" else directory.trim()
 
     override fun load(): Bitmap? {
-        validateFileName(fileName)
-        validateReadPermission()
-        val extension = setExtension(fileExtension)
+        try {
+            validateFileName(fileName)
+            validateReadPermission()
+            val extension = setExtension(fileExtension)
 
-        val directory = File("${absolutePath}/$fixDir")
-        if (!directory.exists()){
-            logE(TAG, "directory is not exists")
+            val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            if (!directory.exists()){
+                logE(TAG, "directory is not exists")
+                return null
+            }
+
+            val file = File(directory, "$fileName$extension")
+            return BitmapFactory.decodeFile(file.path)
+        } catch (ex: Exception){
             return null
         }
-
-        val file = File(directory, "$fileName$extension")
-        return BitmapFactory.decodeFile(file.path)
     }
 
     override fun load(callBack: IManageImage.LoadCallBack){
@@ -58,7 +62,7 @@ class ManageImageImpl(
                 validateReadPermission()
                 val extension = setExtension(fileExtension)
 
-                val directory = File("${absolutePath}/$fixDir")
+                val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
                 if (!directory.exists()){
                     logE(TAG, "directory is not exists")
                     withContext(Dispatchers.Main){ callBack.onResult(null) }
@@ -82,7 +86,7 @@ class ManageImageImpl(
     override fun delete(): Boolean {
         try {
             val extension = setExtension(fileExtension)
-            val directory = File("${absolutePath}/$directory")
+            val directory = File("${ABSOLUTE_PATH}/$directory")
             if (!directory.exists()){
                 logE(TAG, "directory is not exists")
                 return false
@@ -99,7 +103,7 @@ class ManageImageImpl(
     override fun delete(callBack: IManageImage.DeleteCallBack){
         CoroutineScope(Dispatchers.Default).launch {
             val extension = setExtension(fileExtension)
-            val directory = File("${absolutePath}/$directory")
+            val directory = File("${ABSOLUTE_PATH}/$directory")
             if (!directory.exists()){
                 logE(TAG, "directory is not exists")
                 withContext(Dispatchers.Main) {
@@ -252,7 +256,7 @@ class ManageImageImpl(
     }
 
     private fun getOrCreateDirectoryIfEmpty(): File {
-        val directory = File("${absolutePath}/$fixDir")
+        val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
         if (!directory.exists())
             directory.mkdirs()
         return directory

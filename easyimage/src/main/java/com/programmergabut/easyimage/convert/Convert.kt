@@ -2,6 +2,7 @@ package com.programmergabut.easyimage.convert
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import java.io.IOException
 
 interface Convert {
 

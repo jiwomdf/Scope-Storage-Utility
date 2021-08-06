@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.programmergabut.easyimage.manage.IManageImage
+import java.io.IOException
+import kotlin.jvm.Throws
 
 interface ManageImage{
 
