@@ -23,19 +23,22 @@ import java.lang.IllegalArgumentException
 class ManageImageImpl(
     private val context: Context,
     private val fileName: String,
-    private val directory: String,
+    private val directory: String?,
     private val fileExtension: Extension
 ): ManageImage {
+
+    private val absolutePath = context.getExternalFilesDir(null)?.absolutePath
+
+    private val fixDir = if(directory.isNullOrEmpty()) "" else directory
 
     override fun load(callBack: IManageImage.LoadCallBack){
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 validateFileName(fileName)
-                validateDirectoryName(directory)
                 validateReadPermission()
                 val extension = setExtension(fileExtension)
 
-                val directory = File("${context.getExternalFilesDir(null)?.absolutePath}/$directory")
+                val directory = File("${absolutePath}/$fixDir")
                 if (!directory.exists()){
                     withContext(Dispatchers.Main){ callBack.onResult(null) }
                     return@launch
@@ -57,7 +60,7 @@ class ManageImageImpl(
     override fun delete(callBack: IManageImage.DeleteCallBack){
         CoroutineScope(Dispatchers.Default).launch {
             val extension = setExtension(fileExtension)
-            val directory = File("${context.getExternalFilesDir(null)?.absolutePath}/$directory")
+            val directory = File("${absolutePath}/$directory")
             if (!directory.exists()){
                 withContext(Dispatchers.Main) {
                     callBack.onFailed("File is not exists")
@@ -90,7 +93,7 @@ class ManageImageImpl(
                 validateImageQuality(quality)
                 validateStoragePermission()
                 val extension = setExtension(fileExtension)
-                val directory = getDirectory()
+                val directory = getOrCreateDirectoryIfEmpty()
 
                 val file = File(directory, "$fileName$extension")
                 compressBitmap(file, bitmap, quality)
@@ -114,7 +117,7 @@ class ManageImageImpl(
                 validateStoragePermission()
                 val bitmap = decodeByteArray(base64)
                 val extension = setExtension(fileExtension)
-                val directory = getDirectory()
+                val directory = getOrCreateDirectoryIfEmpty()
 
                 val file = File(directory, "$fileName$extension")
                 compressBitmap(file, bitmap, quality)
@@ -136,7 +139,7 @@ class ManageImageImpl(
                 validateStoragePermission()
                 val bitmap = drawableToBitmap(drawable)
                 val extension = setExtension(fileExtension)
-                val directory = getDirectory()
+                val directory = getOrCreateDirectoryIfEmpty()
 
                 val file = File(directory, "$fileName$extension")
                 compressBitmap(file, bitmap, quality)
@@ -151,8 +154,8 @@ class ManageImageImpl(
         }
     }
 
-    private fun getDirectory(): File {
-        val directory = File("${context.getExternalFilesDir(null)?.absolutePath}/$directory")
+    private fun getOrCreateDirectoryIfEmpty(): File {
+        val directory = File("${absolutePath}/$fixDir")
         if (!directory.exists())
             directory.mkdirs()
         return directory
@@ -223,14 +226,6 @@ class ManageImageImpl(
             throw IllegalArgumentException("File name cannot be empty")
 
         return fixFileName
-    }
-
-    private fun validateDirectoryName(dirName: String): String {
-        val fixDirName = dirName.trim()
-        if (fixDirName.isEmpty())
-            throw IllegalArgumentException("Directory name cannot be empty")
-
-        return fixDirName
     }
 
     private fun validateStoragePermission() {

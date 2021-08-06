@@ -8,7 +8,7 @@ import com.programmergabut.easyimage.domain.ManageImage
 class ManageImpl(private val context: Context): Manage {
     override fun imageAttribute(
         fileName: String,
-        directory: String,
+        directory: String?,
         fileExtension: Extension
     ) = ManageImageImpl(
         context,
