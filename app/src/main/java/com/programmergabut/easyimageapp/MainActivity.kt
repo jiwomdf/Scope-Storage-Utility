@@ -3,7 +3,6 @@ package com.programmergabut.easyimageapp
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -28,18 +27,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        manage(this)
-            .imageAttribute("asd", "ad", Extension.JPEG)
-            .save("asdas", 100, object: IManageImage.SaveBase64CallBack {
-                override fun onSuccess() {
-                    Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
-                }
-                override fun onFailed(err: String) {
-                    Toast.makeText(this@MainActivity, err, Toast.LENGTH_SHORT).show()
-                }
-            })
-
-        convert.base64ToDrawable("", 0, object: IConvertBitmap.DrawableCallBack {
+        binding.btnDispatchCamera.setOnClickListener(this)
+        /* convert.base64ToDrawable("", 0, object: IConvertBitmap.DrawableCallBack {
             override fun onResult(drawable: Drawable) {
 
             }
@@ -47,7 +36,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
             override fun onFailed(err: String) {
 
             }
-        })
+        }) */
     }
 
     override fun onClick(v: View?) {
@@ -72,19 +61,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
         }
     }
 
-    private fun proceedData(data: Intent?) {
+    private fun proceedData(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
-        convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG,
+
+        /* convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG,
             object : IConvertBitmap.Base64CallBack {
                 override fun onResult(base64: String) {
-
+                    Toast.makeText(this@MainActivity, base64, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onFailed(err: String) {
-
+                    Toast.makeText(this@MainActivity, err, Toast.LENGTH_SHORT).show()
                 }
             }
-        )
+        ) */
+
+        val test = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
+        manage(this)
+            .imageAttribute("testong", null, Extension.JPEG)
+            .save(test!!, 100)
+
     }
 
     override fun onRequestPermissionsResult(

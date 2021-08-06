@@ -7,12 +7,15 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.Base64
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.programmergabut.easyimage.Extension
 import com.programmergabut.easyimage.domain.ManageImage
 import com.programmergabut.easyimage.setExtension
+import com.programmergabut.easyimage.util.Logger.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,9 +30,26 @@ class ManageImageImpl(
     private val fileExtension: Extension
 ): ManageImage {
 
+    private val TAG = "ManageImage"
+
     private val absolutePath = context.getExternalFilesDir(null)?.absolutePath
 
     private val fixDir = if(directory.isNullOrEmpty()) "" else directory
+
+    override fun load(): Bitmap? {
+        validateFileName(fileName)
+        validateReadPermission()
+        val extension = setExtension(fileExtension)
+
+        val directory = File("${absolutePath}/$fixDir")
+        if (!directory.exists()){
+            logE(TAG, "directory is not exists")
+            return null
+        }
+
+        val file = File(directory, "$fileName$extension")
+        return BitmapFactory.decodeFile(file.path)
+    }
 
     override fun load(callBack: IManageImage.LoadCallBack){
         CoroutineScope(Dispatchers.Default).launch {
@@ -40,6 +60,7 @@ class ManageImageImpl(
 
                 val directory = File("${absolutePath}/$fixDir")
                 if (!directory.exists()){
+                    logE(TAG, "directory is not exists")
                     withContext(Dispatchers.Main){ callBack.onResult(null) }
                     return@launch
                 }
@@ -50,10 +71,28 @@ class ManageImageImpl(
                     callBack.onResult(result)
                 }
             } catch (ex: Exception){
+                logE(TAG, ex.message.toString())
                 withContext(Dispatchers.Main){
                     callBack.onResult(null)
                 }
             }
+        }
+    }
+
+    override fun delete(): Boolean {
+        try {
+            val extension = setExtension(fileExtension)
+            val directory = File("${absolutePath}/$directory")
+            if (!directory.exists()){
+                logE(TAG, "directory is not exists")
+                return false
+            }
+
+            val file = File(directory, "$fileName$extension")
+            return file.delete()
+        } catch (ex: Exception){
+            logE(TAG, ex.message.toString())
+            return true
         }
     }
 
@@ -62,8 +101,9 @@ class ManageImageImpl(
             val extension = setExtension(fileExtension)
             val directory = File("${absolutePath}/$directory")
             if (!directory.exists()){
+                logE(TAG, "directory is not exists")
                 withContext(Dispatchers.Main) {
-                    callBack.onFailed("File is not exists")
+                    callBack.onFailed("directory is not exists")
                 }
                 return@launch
             }
@@ -76,14 +116,32 @@ class ManageImageImpl(
                     }
                 } else {
                     withContext(Dispatchers.Main) {
+                        logE(TAG, "file is not exists")
                         callBack.onFailed("file not deleted")
                     }
                 }
             } catch (ex: Exception){
+                logE(TAG, ex.message.toString())
                 withContext(Dispatchers.Main) {
                     callBack.onFailed(ex.message.toString())
                 }
             }
+        }
+    }
+
+    override fun save(bitmap: Bitmap, quality: Int): Boolean {
+        return try {
+            validateImageQuality(quality)
+            validateStoragePermission()
+            val extension = setExtension(fileExtension)
+            val directory = getOrCreateDirectoryIfEmpty()
+
+            val file = File(directory, "$fileName$extension")
+            compressBitmap(file, bitmap, quality)
+            true
+        } catch (ex: Exception){
+            logE(TAG, ex.message.toString())
+            false
         }
     }
 
@@ -101,12 +159,31 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
+                logE(TAG, ex.message.toString())
                 withContext(Dispatchers.Main){
                     callBack.onFailed(ex.message.toString())
                 }
             }
         }
 
+    }
+
+    override fun save(base64: String, quality: Int): Boolean {
+        return try {
+            validateImageQuality(quality)
+            validateBase64String(base64)
+            validateStoragePermission()
+            val bitmap = decodeByteArray(base64)
+            val extension = setExtension(fileExtension)
+            val directory = getOrCreateDirectoryIfEmpty()
+
+            val file = File(directory, "$fileName$extension")
+            compressBitmap(file, bitmap, quality)
+            true
+        } catch (ex: Exception){
+            logE(TAG, ex.message.toString())
+            false
+        }
     }
 
     override fun save(base64: String, quality: Int, callBack: IManageImage.SaveBase64CallBack){
@@ -125,6 +202,7 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
+                logE(TAG, ex.message.toString())
                 withContext(Dispatchers.Main){
                     callBack.onFailed(ex.message.toString())
                 }
@@ -132,7 +210,25 @@ class ManageImageImpl(
         }
     }
 
-    override fun save(drawable: Drawable, quality: Int, callBack: IManageImage.SaveDrawableCallBack){
+    override fun save(drawable: Drawable, quality: Int): Boolean {
+        return try {
+            validateImageQuality(quality)
+            validateStoragePermission()
+            val bitmap = drawableToBitmap(drawable)
+            val extension = setExtension(fileExtension)
+            val directory = getOrCreateDirectoryIfEmpty()
+
+            val file = File(directory, "$fileName$extension")
+            compressBitmap(file, bitmap, quality)
+            true
+        } catch (ex: Exception){
+            logE(TAG, ex.message.toString())
+            false
+        }
+    }
+
+    override fun save(drawable: Drawable, quality: Int,
+                      callBack: IManageImage.SaveDrawableCallBack){
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 validateImageQuality(quality)
@@ -147,6 +243,7 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
+                logE(TAG, ex.message.toString())
                 withContext(Dispatchers.Main){
                     callBack.onFailed(ex.message.toString())
                 }
@@ -172,7 +269,11 @@ class ManageImageImpl(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outStream)
             }
             Extension.WEBP -> {
-                bitmap.compress(Bitmap.CompressFormat.WEBP, quality, outStream)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, quality, outStream)
+                } else {
+                    bitmap.compress(Bitmap.CompressFormat.WEBP, quality, outStream)
+                }
             }
             Extension.JPG -> {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outStream)
@@ -215,7 +316,7 @@ class ManageImageImpl(
     }
 
     private fun validateImageQuality(quality: Int) {
-        if (quality < 1 || quality <= 100) {
+        if (quality < 1 || quality > 100) {
             throw IllegalArgumentException("Quality must be between 1 to 100")
         }
     }
