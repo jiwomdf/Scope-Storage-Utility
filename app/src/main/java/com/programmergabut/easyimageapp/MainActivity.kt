@@ -1,6 +1,5 @@
 package com.programmergabut.easyimageapp
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +11,8 @@ import androidx.core.app.ActivityCompat
 import com.programmergabut.easyimage.EasyImage.Companion.convert
 import com.programmergabut.easyimage.EasyImage.Companion.manage
 import com.programmergabut.easyimage.Extension
+import com.programmergabut.easyimage.convert.IConvertBitmap
+import com.programmergabut.easyimage.manage.IManageImage
 import com.programmergabut.easyimageapp.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
@@ -47,10 +48,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     private fun tryEasyImage(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
 
-        val test = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
+        val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
         manage(applicationContext)
-            .imageAttribute("testong", null, Extension.PNG)
-            .save(test!!,100)
+            .imageAttribute("test", null, Extension.PNG)
+            .save(base64!!,100, object : IManageImage.SaveBase64CallBack {
+                override fun onSuccess() {
+
+                }
+                override fun onFailed(err: String) {
+
+                }
+            })
     }
 
     override fun onRequestPermissionsResult(

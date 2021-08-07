@@ -58,7 +58,7 @@ interface ManageImage{
     fun save(base64: String, quality: Int): Boolean
 
     /**
-     * save base64 formatted image asynchronously
+         * save base64 formatted image asynchronously
      * @param base64 is the image in base64 string format.
      * @param quality is the quality of the image, must be between 0 and 100.
      * @param callBack is the callback function that will called after process finish.
