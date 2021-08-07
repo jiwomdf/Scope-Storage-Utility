@@ -1,22 +1,20 @@
 package com.programmergabut.easyimageapp
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.programmergabut.easyimage.EasyImage.Companion.convert
 import com.programmergabut.easyimage.EasyImage.Companion.manage
 import com.programmergabut.easyimage.Extension
-import com.programmergabut.easyimage.convert.IConvertBitmap
-import com.programmergabut.easyimage.manage.IManageImage
 import com.programmergabut.easyimageapp.databinding.ActivityMainBinding
 
-class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), View.OnClickListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     companion object {
         const val TAKE_PHOTO_REQUEST_CODE = 1001
@@ -27,14 +25,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.btnDispatchCamera.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btn_dispatch_camera -> {
-                dispatchTakePictureIntent()
-            }
+        binding.btnDispatchCamera.setOnClickListener {
+            dispatchTakePictureIntent()
         }
     }
 
@@ -44,7 +36,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
         when(requestCode){
             TAKE_PHOTO_REQUEST_CODE -> {
                 try {
-                    proceedData(data)
+                    tryEasyImage(data)
                 } catch (ex: Exception){
                     Toast.makeText(this, ex.message.toString(), Toast.LENGTH_SHORT).show()
                 }
@@ -52,13 +44,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
         }
     }
 
-    private fun proceedData(data: Intent?)  {
+    private fun tryEasyImage(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
 
         val test = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
-        manage(this)
-            .imageAttribute("testong", null, Extension.JPEG)
-            .save("",3)
+        manage(applicationContext)
+            .imageAttribute("testong", null, Extension.PNG)
+            .save(test!!,100)
     }
 
     override fun onRequestPermissionsResult(

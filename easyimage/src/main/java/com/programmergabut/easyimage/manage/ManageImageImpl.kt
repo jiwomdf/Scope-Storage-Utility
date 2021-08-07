@@ -8,6 +8,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Environment
 import android.util.Base64
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
@@ -32,7 +33,11 @@ class ManageImageImpl(
 
     private val TAG = "ManageImage"
 
-    private val ABSOLUTE_PATH = context.getExternalFilesDir(null)?.absolutePath
+    private val ABSOLUTE_PATH = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+        "/storage/emulated/0/"
+    } else {
+        context.getExternalFilesDir(null)?.absolutePath
+    }
 
     private val FIX_DIRECTORY = if(directory.isNullOrEmpty()) "" else directory.trim()
 
@@ -86,7 +91,7 @@ class ManageImageImpl(
     override fun delete(): Boolean {
         try {
             val extension = setExtension(fileExtension)
-            val directory = File("${ABSOLUTE_PATH}/$directory")
+            val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
             if (!directory.exists()){
                 logE(TAG, "directory is not exists")
                 return false
@@ -103,7 +108,7 @@ class ManageImageImpl(
     override fun delete(callBack: IManageImage.DeleteCallBack){
         CoroutineScope(Dispatchers.Default).launch {
             val extension = setExtension(fileExtension)
-            val directory = File("${ABSOLUTE_PATH}/$directory")
+            val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
             if (!directory.exists()){
                 logE(TAG, "directory is not exists")
                 withContext(Dispatchers.Main) {
