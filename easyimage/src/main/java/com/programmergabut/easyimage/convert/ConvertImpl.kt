@@ -28,6 +28,7 @@ class ConvertImpl: Convert {
 
             Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (ex: Exception){
+            ex.printStackTrace()
             null
         }
     }
@@ -47,21 +48,22 @@ class ConvertImpl: Convert {
                 val result = Base64.encodeToString(byteArray, Base64.DEFAULT)
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                withContext(Dispatchers.Main){ callBack.onFailed(ex.message.toString()) }
+                ex.printStackTrace()
+                withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
     }
 
     override fun base64ToBitmap(base64: String, offset: Int): Bitmap? {
-        try {
-            if(base64.isEmpty()){
+        return try {
+            if(base64.isEmpty())
                 throw InvalidParameterException("Base64 string cannot be empty")
-            }
 
             val byteArray = Base64.decode(base64, Base64.DEFAULT)
-            return BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
+            BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
         } catch (ex: Exception) {
-            throw Exception(ex.message.toString())
+            ex.printStackTrace()
+            null
         }
     }
 
@@ -72,17 +74,15 @@ class ConvertImpl: Convert {
     ){
         CoroutineScope(Dispatchers.Default).launch {
             try {
-                if(base64.isEmpty()){
-                    withContext(Dispatchers.Main){
-                        callBack.onFailed("Base64 string cannot be empty")
-                    }
-                }
+                if(base64.isEmpty())
+                    throw Exception("Base64 string cannot be empty")
 
                 val byteArray = Base64.decode(base64, Base64.DEFAULT)
                 val result = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                withContext(Dispatchers.Main){ callBack.onFailed(ex.message.toString()) }
+                ex.printStackTrace()
+                withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
     }
@@ -90,17 +90,17 @@ class ConvertImpl: Convert {
     override fun base64ToDrawable(
         base64: String,
         offset: Int
-    ): Drawable {
-        try {
-            if(base64.isEmpty()){
+    ): Drawable? {
+        return try {
+            if(base64.isEmpty())
                 throw InvalidParameterException("Base64 string cannot be empty")
-            }
 
             val byteArray = Base64.decode(base64, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
-            return BitmapDrawable(Resources.getSystem(), bitmap)
+            BitmapDrawable(Resources.getSystem(), bitmap)
         } catch (ex: Exception) {
-            throw Exception(ex.message.toString())
+            ex.printStackTrace()
+            null
         }
     }
 
@@ -111,12 +111,8 @@ class ConvertImpl: Convert {
     ) {
         CoroutineScope(Dispatchers.Default).launch {
             try {
-                if(base64.isEmpty()){
-                    withContext(Dispatchers.Main) {
-                        callBack.onFailed("Base64 string cannot be empty")
-                    }
-                    return@launch
-                }
+                if(base64.isEmpty())
+                    throw Exception("Base64 string cannot be empty")
 
                 val byteArray = Base64.decode(base64, Base64.DEFAULT)
                 val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
@@ -124,7 +120,8 @@ class ConvertImpl: Convert {
 
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                callBack.onFailed(ex.message.toString())
+                ex.printStackTrace()
+                callBack.onFailed(ex)
             }
         }
     }
@@ -145,7 +142,8 @@ class ConvertImpl: Convert {
 
             return bitmap
         } catch (ex: Exception) {
-            throw Exception(ex.message.toString())
+            ex.printStackTrace()
+            return null
         }
     }
 
@@ -173,7 +171,8 @@ class ConvertImpl: Convert {
 
                 withContext(Dispatchers.Main){ callBack.onResult(bitmap) }
             } catch (ex: Exception) {
-                withContext(Dispatchers.Main){ callBack.onFailed(ex.message.toString()) }
+                ex.printStackTrace()
+                withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
     }
@@ -199,7 +198,8 @@ class ConvertImpl: Convert {
 
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (ex: Exception) {
-            throw Exception(ex.message.toString())
+            ex.printStackTrace()
+            return null
         }
     }
 
@@ -228,7 +228,7 @@ class ConvertImpl: Convert {
 
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                withContext(Dispatchers.Main){ callBack.onFailed(ex.message.toString()) }
+                withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
     }

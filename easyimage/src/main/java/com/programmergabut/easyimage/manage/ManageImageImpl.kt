@@ -15,7 +15,6 @@ import androidx.core.content.PermissionChecker
 import com.programmergabut.easyimage.Extension
 import com.programmergabut.easyimage.domain.ManageImage
 import com.programmergabut.easyimage.setExtension
-import com.programmergabut.easyimage.util.Logger.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,36 +26,27 @@ import java.lang.IllegalArgumentException
 class ManageImageImpl(
     private val context: Context,
     private val fileName: String,
-    private val directory: String?,
+    directory: String?,
     private val fileExtension: Extension
 ): ManageImage {
 
-    private val TAG = "ManageImage"
-
-    private val ABSOLUTE_PATH = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
-        "/storage/emulated/0/"
-    } else {
-        context.getExternalFilesDir(null)?.absolutePath
-    }
+    private val ABSOLUTE_PATH = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath
 
     private val FIX_DIRECTORY = if(directory.isNullOrEmpty()) "" else directory.trim()
 
     override fun load(): Bitmap? {
-        try {
+        return try {
             validateFileName(fileName)
             validateReadPermission()
             val extension = setExtension(fileExtension)
-
             val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
-            if (!directory.exists()){
-                logE(TAG, "directory is not exists")
-                return null
-            }
+            validateDirectory(directory)
 
             val file = File(directory, "$fileName$extension")
-            return BitmapFactory.decodeFile(file.path)
+            BitmapFactory.decodeFile(file.path)
         } catch (ex: Exception){
-            return null
+            ex.printStackTrace()
+            null
         }
     }
 
@@ -66,13 +56,8 @@ class ManageImageImpl(
                 validateFileName(fileName)
                 validateReadPermission()
                 val extension = setExtension(fileExtension)
-
                 val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
-                if (!directory.exists()){
-                    logE(TAG, "directory is not exists")
-                    withContext(Dispatchers.Main){ callBack.onResult(null) }
-                    return@launch
-                }
+                validateDirectory(directory)
 
                 val file = File(directory, "$fileName$extension")
                 val result = BitmapFactory.decodeFile(file.path)
@@ -80,7 +65,7 @@ class ManageImageImpl(
                     callBack.onResult(result)
                 }
             } catch (ex: Exception){
-                logE(TAG, ex.message.toString())
+                ex.printStackTrace()
                 withContext(Dispatchers.Main){
                     callBack.onResult(null)
                 }
@@ -89,19 +74,16 @@ class ManageImageImpl(
     }
 
     override fun delete(): Boolean {
-        try {
+        return try {
             val extension = setExtension(fileExtension)
             val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
-            if (!directory.exists()){
-                logE(TAG, "directory is not exists")
-                return false
-            }
+            validateDirectory(directory)
 
             val file = File(directory, "$fileName$extension")
-            return file.delete()
+            file.delete()
         } catch (ex: Exception){
-            logE(TAG, ex.message.toString())
-            return true
+            ex.printStackTrace()
+            true
         }
     }
 
@@ -109,30 +91,19 @@ class ManageImageImpl(
         CoroutineScope(Dispatchers.Default).launch {
             val extension = setExtension(fileExtension)
             val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
-            if (!directory.exists()){
-                logE(TAG, "directory is not exists")
-                withContext(Dispatchers.Main) {
-                    callBack.onFailed("directory is not exists")
-                }
-                return@launch
-            }
+            validateDirectory(directory)
 
             try {
                 val file = File(directory, "$fileName$extension")
                 if(file.delete()){
-                    withContext(Dispatchers.Main) {
-                        callBack.onSuccess()
-                    }
+                    withContext(Dispatchers.Main) { callBack.onSuccess() }
                 } else {
-                    withContext(Dispatchers.Main) {
-                        logE(TAG, "file is not exists")
-                        callBack.onFailed("file not deleted")
-                    }
+                    throw Exception("file not deleted")
                 }
             } catch (ex: Exception){
-                logE(TAG, ex.message.toString())
+                ex.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    callBack.onFailed(ex.message.toString())
+                    callBack.onFailed(ex)
                 }
             }
         }
@@ -143,13 +114,14 @@ class ManageImageImpl(
             validateImageQuality(quality)
             validateStoragePermission()
             val extension = setExtension(fileExtension)
-            val directory = getOrCreateDirectoryIfEmpty()
+            val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
             compressBitmap(file, bitmap, quality)
             true
         } catch (ex: Exception){
-            logE(TAG, ex.message.toString())
+            ex.printStackTrace()
             false
         }
     }
@@ -160,7 +132,8 @@ class ManageImageImpl(
                 validateImageQuality(quality)
                 validateStoragePermission()
                 val extension = setExtension(fileExtension)
-                val directory = getOrCreateDirectoryIfEmpty()
+                val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
                 compressBitmap(file, bitmap, quality)
@@ -168,9 +141,9 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
-                logE(TAG, ex.message.toString())
+                ex.printStackTrace()
                 withContext(Dispatchers.Main){
-                    callBack.onFailed(ex.message.toString())
+                    callBack.onFailed(ex)
                 }
             }
         }
@@ -184,13 +157,14 @@ class ManageImageImpl(
             validateStoragePermission()
             val bitmap = decodeByteArray(base64)
             val extension = setExtension(fileExtension)
-            val directory = getOrCreateDirectoryIfEmpty()
+            val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
             compressBitmap(file, bitmap, quality)
             true
         } catch (ex: Exception){
-            logE(TAG, ex.message.toString())
+            ex.printStackTrace()
             false
         }
     }
@@ -203,7 +177,8 @@ class ManageImageImpl(
                 validateStoragePermission()
                 val bitmap = decodeByteArray(base64)
                 val extension = setExtension(fileExtension)
-                val directory = getOrCreateDirectoryIfEmpty()
+                val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
                 compressBitmap(file, bitmap, quality)
@@ -211,9 +186,9 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
-                logE(TAG, ex.message.toString())
+                ex.printStackTrace()
                 withContext(Dispatchers.Main){
-                    callBack.onFailed(ex.message.toString())
+                    callBack.onFailed(ex)
                 }
             }
         }
@@ -225,13 +200,14 @@ class ManageImageImpl(
             validateStoragePermission()
             val bitmap = drawableToBitmap(drawable)
             val extension = setExtension(fileExtension)
-            val directory = getOrCreateDirectoryIfEmpty()
+            val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
             compressBitmap(file, bitmap, quality)
             true
         } catch (ex: Exception){
-            logE(TAG, ex.message.toString())
+            ex.printStackTrace()
             false
         }
     }
@@ -244,7 +220,8 @@ class ManageImageImpl(
                 validateStoragePermission()
                 val bitmap = drawableToBitmap(drawable)
                 val extension = setExtension(fileExtension)
-                val directory = getOrCreateDirectoryIfEmpty()
+                val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
                 compressBitmap(file, bitmap, quality)
@@ -252,19 +229,12 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
-                logE(TAG, ex.message.toString())
+                ex.printStackTrace()
                 withContext(Dispatchers.Main){
-                    callBack.onFailed(ex.message.toString())
+                    callBack.onFailed(ex)
                 }
             }
         }
-    }
-
-    private fun getOrCreateDirectoryIfEmpty(): File {
-        val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
-        if (!directory.exists())
-            directory.mkdirs()
-        return directory
     }
 
     private fun compressBitmap(file: File, bitmap: Bitmap, quality: Int) {
@@ -296,7 +266,7 @@ class ManageImageImpl(
     private fun decodeByteArray(base64: String): Bitmap {
         val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-            ?: throw NullPointerException("Decoding Base64 String results in Null Bitmap")
+            ?: throw NullPointerException("Failed decode base64 string to bitmap")
     }
 
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
@@ -315,6 +285,18 @@ class ManageImageImpl(
             return bitmap
         } catch (ex: Exception) {
             throw Exception(ex.message.toString())
+        }
+    }
+
+    private fun getOrCreateDirectoryIfEmpty(directory: File): File {
+        if (!directory.exists())
+            directory.mkdirs()
+        return directory
+    }
+
+    private fun validateDirectory(directory: File){
+        if (!directory.exists()){
+            throw Exception("directory is not exists")
         }
     }
 
@@ -340,13 +322,13 @@ class ManageImageImpl(
 
     private fun validateStoragePermission() {
         if (!writePermissionGranted()) {
-            throw SecurityException("Write External Storage Permission Not Granted")
+            throw SecurityException("Write external storage permission is not granted")
         }
     }
 
     private fun validateReadPermission() {
         if (!readPermissionGranted())
-            throw SecurityException("Write external storage permission is not been granted")
+            throw SecurityException("Read external storage permission is not granted")
     }
 
     private fun writePermissionGranted(): Boolean {

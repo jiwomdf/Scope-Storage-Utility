@@ -5,13 +5,13 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.programmergabut.easyimage.EasyImage.Companion.convert
 import com.programmergabut.easyimage.EasyImage.Companion.manage
 import com.programmergabut.easyimage.Extension
-import com.programmergabut.easyimage.convert.IConvertBitmap
 import com.programmergabut.easyimage.manage.IManageImage
 import com.programmergabut.easyimageapp.databinding.ActivityMainBinding
 
@@ -51,12 +51,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
         manage(applicationContext)
             .imageAttribute("test", null, Extension.PNG)
-            .save(base64!!,100, object : IManageImage.SaveBase64CallBack {
-                override fun onSuccess() {
+            .save(base64!!,100)
 
-                }
-                override fun onFailed(err: String) {
-
+        manage(applicationContext)
+            .imageAttribute("test", null, Extension.PNG)
+            .load(object : IManageImage.LoadCallBack {
+                override fun onResult(bitmap: Bitmap?) {
+                    val data = bitmap
                 }
             })
     }

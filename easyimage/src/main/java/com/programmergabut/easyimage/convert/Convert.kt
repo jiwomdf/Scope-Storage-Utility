@@ -50,9 +50,9 @@ interface Convert {
      * convert base64 to Drawable
      * @param base64 is the image in base64 string format.
      * @param offset is a number of values to skip before the first color in the array of colors.
-     * @return drawable
+     * @return drawable if success, or null if fail
      */
-    fun base64ToDrawable(base64: String, offset: Int) : Drawable
+    fun base64ToDrawable(base64: String, offset: Int) : Drawable?
 
     /**
      * convert base64 to Drawable asynchronously
