@@ -1,3 +1,6 @@
+[![](https://jitpack.io/v/jiwomdf/EasyImageLibrary.svg)](https://jitpack.io/#jiwomdf/EasyImageLibrary)
+
+
 # EasyImageLibrary
 EasyImageLibrary is a library to help you converting and managing your image. <br>
 the benefit of this library are
@@ -20,7 +23,24 @@ the benefit of this library are
   d. save base64 formatted image <br>
   e. save drawable formatted image <br>
   f. save drawable formatted image <br>
-  
+
+## How to download the lib
+1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+```
+Add the dependency
+```
+	dependencies {
+	        implementation 'com.github.jiwomdf:EasyImageLibrary:1.0.0'
+	}
+```
 ## Prerequirement
 Please include this permission in your application <br>
 ```
