@@ -38,6 +38,7 @@ the benefit of this library are
 Add the dependency
 ```
 	dependencies {
+		...
 	        implementation 'com.github.jiwomdf:EasyImageLibrary:1.0.0'
 	}
 ```
@@ -61,11 +62,11 @@ There are basically one static variable **convert** for converting features and 
   convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG, /* asynchronously */
       object : IConvertImage.Base64CallBack {
           override fun onResult(base64: String) {
-
+		//your code
           }
 
           override fun onFailed(ex: Exception) {
-
+		//your code
           }
   })
 ```
@@ -87,10 +88,10 @@ your_phone_name\Android\data\application_package_name\files\Pictures\
       .imageAttribute("test", "myfolder", Extension.PNG)
       .save(base64, 100, object : IManageImage.SaveBase64CallBack {
           override fun onSuccess() {
-
+		//your code
           }
           override fun onFailed(ex: Exception) {
-
+		//your code
           }
       })
 ```
