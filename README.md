@@ -77,11 +77,13 @@ your_phone_name\Android\data\application_package_name\files\Pictures\
 ```
 ```
 
-  manage(this) /* synchronously */
+  /* synchronously */
+  manage(this)
       .imageAttribute("test", "myfolder", Extension.PNG)
       .save(base64!!,100)
       
-  manage(this) /* asynchronously */
+  /* asynchronously */
+  manage(this)
       .imageAttribute("test", "myfolder", Extension.PNG)
       .save(base64, 100, object : IManageImage.SaveBase64CallBack {
           override fun onSuccess() {
