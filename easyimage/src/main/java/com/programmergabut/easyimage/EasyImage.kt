@@ -9,6 +9,7 @@ import com.programmergabut.easyimage.manage.ManageImpl
 class EasyImage {
 
     companion object {
+        const val TAG = "EasyImage"
         val convert = ConvertImpl() as Convert
         fun manage(context: Context) = ManageImpl(context) as Manage
     }

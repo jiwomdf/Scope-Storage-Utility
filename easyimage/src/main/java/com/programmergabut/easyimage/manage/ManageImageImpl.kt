@@ -10,8 +10,10 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Environment
 import android.util.Base64
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import com.programmergabut.easyimage.EasyImage.Companion.TAG
 import com.programmergabut.easyimage.Extension
 import com.programmergabut.easyimage.domain.ManageImage
 import com.programmergabut.easyimage.setExtension
@@ -45,7 +47,7 @@ class ManageImageImpl(
             val file = File(directory, "$fileName$extension")
             BitmapFactory.decodeFile(file.path)
         } catch (ex: Exception){
-            ex.printStackTrace()
+            Log.e(TAG, "load: ${ex.message}")
             null
         }
     }
@@ -65,7 +67,7 @@ class ManageImageImpl(
                     callBack.onResult(result)
                 }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "load: ${ex.message}")
                 withContext(Dispatchers.Main){
                     callBack.onResult(null)
                 }
@@ -82,7 +84,7 @@ class ManageImageImpl(
             val file = File(directory, "$fileName$extension")
             file.delete()
         } catch (ex: Exception){
-            ex.printStackTrace()
+            Log.e(TAG, "delete: ${ex.message}")
             true
         }
     }
@@ -101,7 +103,7 @@ class ManageImageImpl(
                     throw Exception("file not deleted")
                 }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "delete: ${ex.message}")
                 withContext(Dispatchers.Main) {
                     callBack.onFailed(ex)
                 }
@@ -121,7 +123,7 @@ class ManageImageImpl(
             compressBitmap(file, bitmap, quality)
             true
         } catch (ex: Exception){
-            ex.printStackTrace()
+            Log.e(TAG, "save: ${ex.message}")
             false
         }
     }
@@ -141,7 +143,7 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "save: ${ex.message}")
                 withContext(Dispatchers.Main){
                     callBack.onFailed(ex)
                 }
@@ -164,7 +166,7 @@ class ManageImageImpl(
             compressBitmap(file, bitmap, quality)
             true
         } catch (ex: Exception){
-            ex.printStackTrace()
+            Log.e(TAG, "save: ${ex.message}")
             false
         }
     }
@@ -186,7 +188,7 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "save: ${ex.message}")
                 withContext(Dispatchers.Main){
                     callBack.onFailed(ex)
                 }
@@ -207,7 +209,7 @@ class ManageImageImpl(
             compressBitmap(file, bitmap, quality)
             true
         } catch (ex: Exception){
-            ex.printStackTrace()
+            Log.e(TAG, "save: ${ex.message}")
             false
         }
     }
@@ -229,7 +231,7 @@ class ManageImageImpl(
                     callBack.onSuccess()
                 }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "save: ${ex.message}")
                 withContext(Dispatchers.Main){
                     callBack.onFailed(ex)
                 }

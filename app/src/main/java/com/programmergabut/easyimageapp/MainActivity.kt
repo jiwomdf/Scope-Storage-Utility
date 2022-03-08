@@ -47,17 +47,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     private fun tryEasyImage(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
 
-        val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG)
+        val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG) ?: return
+
         manage(this)
             .imageAttribute("test", null, Extension.PNG)
-            .save(base64!!, 100, object : IManageImage.SaveBase64CallBack {
+            .save(base64, 100, object : IManageImage.SaveBase64CallBack {
                 override fun onSuccess() {
-
+                    Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
                 }
                 override fun onFailed(ex: Exception) {
-
+                    Toast.makeText(this@MainActivity, ex.message, Toast.LENGTH_SHORT).show()
                 }
             })
+
+        manage(this)
+            .imageAttribute("test2", null, Extension.PNG)
+            .save(base64, 100)
     }
 
     override fun onRequestPermissionsResult(
