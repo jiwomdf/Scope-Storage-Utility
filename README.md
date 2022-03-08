@@ -98,3 +98,4 @@ your_phone_name\Android\data\application_package_name\files\Pictures\
 ### On Going Development
 1. Save, delete, load image in shared storage <br>
 2. Create the MANAGE_EXTERNAL_STORAGE feature
+3. add unit test, instrumented test, and CICD
