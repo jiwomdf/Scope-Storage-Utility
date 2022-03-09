@@ -2,6 +2,7 @@ package com.programmergabut.easyimage.domain
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import com.programmergabut.easyimage.manage.IManageImage
 
 interface ManageImage{
@@ -55,7 +56,7 @@ interface ManageImage{
     fun save(base64: String, quality: Int): Boolean
 
     /**
-         * save base64 formatted image asynchronously
+     * save base64 formatted image asynchronously
      * @param base64 is the image in base64 string format.
      * @param quality is the quality of the image, must be between 0 and 100.
      * @param callBack is the callback function that will called after process finish.
@@ -63,8 +64,8 @@ interface ManageImage{
     fun save(base64: String, quality: Int, callBack: IManageImage.SaveBase64CallBack)
 
     /**
-     * save drawable formatted image
-     * @param drawable is the image in drawable format.
+     * save base64 formatted image
+     * @param base64 is the image in base64 string format.
      * @param quality is the quality of the image, must be between 0 and 100.
      * @return true if the file is saved, and false if the file is failed to save
      */
@@ -77,6 +78,33 @@ interface ManageImage{
      * @param callBack is the callback function that will called after process finish.
      */
     fun save(drawable: Drawable, quality: Int, callBack: IManageImage.SaveDrawableCallBack)
+
+    /**
+     * save drawable formatted image synchronously
+     * @param bitmap is the image in bitmap format.
+     * @param quality is the quality of the image, must be between 0 and 100.
+     */
+    fun savePublic(bitmap: Bitmap, quality: Int): Boolean
+
+    /**
+     * save drawable formatted image synchronously
+     * @param base64 is the image in base64 format.
+     * @param quality is the quality of the image, must be between 0 and 100.
+     */
+    fun savePublic(base64: String, quality: Int): Boolean
+
+    /**
+     * save drawable formatted image synchronously
+     * @param drawable is the image in drawable format.
+     * @param quality is the quality of the image, must be between 0 and 100.
+     */
+    fun savePublic(drawable: Drawable, quality: Int): Boolean
+
+
+    /**
+     * get Image URI for sharing
+     */
+    fun getImageURI(): Uri?
 
 }
 

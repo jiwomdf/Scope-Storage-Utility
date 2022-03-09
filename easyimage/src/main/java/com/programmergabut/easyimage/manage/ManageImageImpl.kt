@@ -1,17 +1,21 @@
 package com.programmergabut.easyimage.manage
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import com.programmergabut.easyimage.EasyImage.Companion.TAG
 import com.programmergabut.easyimage.Extension
@@ -23,25 +27,25 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.IllegalArgumentException
+import java.io.OutputStream
 
 class ManageImageImpl(
     private val context: Context,
     private val fileName: String,
     directory: String?,
-    private val fileExtension: Extension
+    private val fileExtension: Extension,
+    env: String = Environment.DIRECTORY_PICTURES
 ): ManageImage {
 
-    private val ABSOLUTE_PATH = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath
-
-    private val FIX_DIRECTORY = if(directory.isNullOrEmpty()) "" else directory.trim()
+    private val absolutePath = context.getExternalFilesDir(env)?.absolutePath
+    private val finalDirectory = if(directory.isNullOrEmpty()) "" else directory.trim()
 
     override fun load(): Bitmap? {
         return try {
             validateFileName(fileName)
             validateReadPermission()
             val extension = setExtension(fileExtension)
-            val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val directory = File("${absolutePath}/$finalDirectory")
             validateDirectory(directory)
 
             val file = File(directory, "$fileName$extension")
@@ -58,7 +62,7 @@ class ManageImageImpl(
                 validateFileName(fileName)
                 validateReadPermission()
                 val extension = setExtension(fileExtension)
-                val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val directory = File("${absolutePath}/$finalDirectory")
                 validateDirectory(directory)
 
                 val file = File(directory, "$fileName$extension")
@@ -78,7 +82,7 @@ class ManageImageImpl(
     override fun delete(): Boolean {
         return try {
             val extension = setExtension(fileExtension)
-            val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val directory = File("${absolutePath}/$finalDirectory")
             validateDirectory(directory)
 
             val file = File(directory, "$fileName$extension")
@@ -92,7 +96,7 @@ class ManageImageImpl(
     override fun delete(callBack: IManageImage.DeleteCallBack){
         CoroutineScope(Dispatchers.Default).launch {
             val extension = setExtension(fileExtension)
-            val directory = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val directory = File("${absolutePath}/$finalDirectory")
             validateDirectory(directory)
 
             try {
@@ -116,11 +120,12 @@ class ManageImageImpl(
             validateImageQuality(quality)
             validateStoragePermission()
             val extension = setExtension(fileExtension)
-            val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val expectedDir = File("${absolutePath}/$finalDirectory")
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
-            compressBitmap(file, bitmap, quality)
+            val outputStream = FileOutputStream(file)
+            compressBitmap(outputStream, bitmap, quality)
             true
         } catch (ex: Exception){
             Log.e(TAG, "save: ${ex.message}")
@@ -134,11 +139,14 @@ class ManageImageImpl(
                 validateImageQuality(quality)
                 validateStoragePermission()
                 val extension = setExtension(fileExtension)
-                val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val expectedDir = File("${absolutePath}/$finalDirectory")
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
-                compressBitmap(file, bitmap, quality)
+                kotlin.runCatching {
+                    val outputStream = FileOutputStream(file)
+                    compressBitmap(outputStream, bitmap, quality)
+                }
                 withContext(Dispatchers.Main){
                     callBack.onSuccess()
                 }
@@ -159,11 +167,12 @@ class ManageImageImpl(
             validateStoragePermission()
             val bitmap = decodeByteArray(base64)
             val extension = setExtension(fileExtension)
-            val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val expectedDir = File("${absolutePath}/$finalDirectory")
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
-            compressBitmap(file, bitmap, quality)
+            val outputStream = FileOutputStream(file)
+            compressBitmap(outputStream, bitmap, quality)
             true
         } catch (ex: Exception){
             Log.e(TAG, "save: ${ex.message}")
@@ -179,11 +188,14 @@ class ManageImageImpl(
                 validateStoragePermission()
                 val bitmap = decodeByteArray(base64)
                 val extension = setExtension(fileExtension)
-                val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val expectedDir = File("${absolutePath}/$finalDirectory")
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
-                compressBitmap(file, bitmap, quality)
+                kotlin.runCatching {
+                    val outputStream = FileOutputStream(file)
+                    compressBitmap(outputStream, bitmap, quality)
+                }
                 withContext(Dispatchers.Main){
                     callBack.onSuccess()
                 }
@@ -202,11 +214,12 @@ class ManageImageImpl(
             validateStoragePermission()
             val bitmap = drawableToBitmap(drawable)
             val extension = setExtension(fileExtension)
-            val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+            val expectedDir = File("${absolutePath}/$finalDirectory")
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
-            compressBitmap(file, bitmap, quality)
+            val outputStream = FileOutputStream(file)
+            compressBitmap(outputStream, bitmap, quality)
             true
         } catch (ex: Exception){
             Log.e(TAG, "save: ${ex.message}")
@@ -222,11 +235,14 @@ class ManageImageImpl(
                 validateStoragePermission()
                 val bitmap = drawableToBitmap(drawable)
                 val extension = setExtension(fileExtension)
-                val expectedDir = File("${ABSOLUTE_PATH}/$FIX_DIRECTORY")
+                val expectedDir = File("${absolutePath}/$finalDirectory")
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
-                compressBitmap(file, bitmap, quality)
+                kotlin.runCatching {
+                    val outputStream = FileOutputStream(file)
+                    compressBitmap(outputStream, bitmap, quality)
+                }
                 withContext(Dispatchers.Main){
                     callBack.onSuccess()
                 }
@@ -239,9 +255,108 @@ class ManageImageImpl(
         }
     }
 
-    private fun compressBitmap(file: File, bitmap: Bitmap, quality: Int) {
-        val outStream = FileOutputStream(file)
+    override fun getImageURI(): Uri? {
+        return try {
+            validateFileName(fileName)
+            validateReadPermission()
+            val extension = setExtension(fileExtension)
+            val directory = File("${absolutePath}/$finalDirectory")
+            validateDirectory(directory)
+            val file = File(directory, "$fileName$extension")
+            FileProvider.getUriForFile(context, context.packageName + ".provider", file)
+        } catch (ex: Exception){
+            Log.e(TAG, "save: ${ex.message}")
+            null
+        }
+    }
 
+    override fun savePublic(bitmap: Bitmap, quality: Int): Boolean {
+        validateImageQuality(quality)
+        validateStoragePermission()
+        val env = Environment.DIRECTORY_DCIM
+        val directory = "${env}/$finalDirectory"
+        val expectedDir = File(directory)
+        getOrCreateDirectoryIfEmpty(expectedDir)
+        return savePublicImage(bitmap, directory, quality)
+    }
+
+    override fun savePublic(base64: String, quality: Int): Boolean {
+        validateImageQuality(quality)
+        validateBase64String(base64)
+        validateStoragePermission()
+        val bitmap = decodeByteArray(base64)
+        val env = Environment.DIRECTORY_DCIM
+        val directory = "${env}/$finalDirectory"
+        val expectedDir = File(directory)
+        getOrCreateDirectoryIfEmpty(expectedDir)
+        return savePublicImage(bitmap, directory, quality)
+    }
+
+    override fun savePublic(drawable: Drawable, quality: Int): Boolean {
+        validateImageQuality(quality)
+        validateStoragePermission()
+        val env = Environment.DIRECTORY_DCIM
+        val directory = "${env}/$finalDirectory"
+        val expectedDir = File(directory)
+        getOrCreateDirectoryIfEmpty(expectedDir)
+        val bitmap = drawableToBitmap(drawable)
+        return savePublicImage(bitmap, directory, quality)
+    }
+
+    private fun savePublicImage(bitmap: Bitmap, directory: String, quality: Int): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return try {
+                val mediaContentUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                val type = mapMimeType(fileExtension)
+                val values = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                    put(MediaStore.MediaColumns.MIME_TYPE, type)
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, directory)
+                }
+                val uri = context.contentResolver.insert(mediaContentUri, values) ?: throw Exception("there is an error on contentResolver.insert")
+                val outputStream = context.contentResolver.openOutputStream(uri) ?: throw Exception("there is an error on contentResolver.insert")
+                compressBitmap(outputStream, bitmap, quality)
+                true
+            } catch (ex: Exception){
+                Log.e(TAG, "save: ${ex.message}")
+                false
+            }
+        } else {
+            return try {
+                val imagePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
+                val file = File(imagePath, fileName)
+                val outputStream = FileOutputStream(file)
+                compressBitmap(outputStream, bitmap, quality)
+                true
+            } catch (ex: Exception){
+                Log.e(TAG, "save: ${ex.message}")
+                false
+            }
+        }
+    }
+
+    private fun mapMimeType(fileExtension: Extension): String {
+        return when (fileExtension) {
+            Extension.PNG -> {
+                "image/png"
+            }
+            Extension.JPEG -> {
+                "image/jpeg"
+            }
+            Extension.WEBP -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    "image/webp"
+                } else {
+                    "image/webp"
+                }
+            }
+            Extension.JPG -> {
+                "image/jpeg"
+            }
+        }
+    }
+
+    private fun compressBitmap(outStream: OutputStream, bitmap: Bitmap, quality: Int) {
         when (fileExtension) {
             Extension.PNG -> {
                 bitmap.compress(Bitmap.CompressFormat.PNG, quality, outStream)

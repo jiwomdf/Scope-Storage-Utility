@@ -63,6 +63,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         manage(this)
             .imageAttribute("test2", null, Extension.PNG)
             .save(base64, 100)
+
+        manage(this)
+            .imageAttribute("test3",null, Extension.PNG)
+            .savePublic(captureImage, 100)
+
+        val uri = manage(this)
+            .imageAttribute("test3",null, Extension.PNG)
+            .getImageURI()
+
+        Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show()
     }
 
     override fun onRequestPermissionsResult(
