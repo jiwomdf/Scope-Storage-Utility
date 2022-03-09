@@ -57,9 +57,11 @@ There are basically one static variable **convert** for converting features and 
 ```
   val captureImage = bitmapImg /* Image in bitmap format */
   
-  val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG) /* synchronously */
+  /* synchronously */
+  val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG) 
   
-  convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG, /* asynchronously */
+  /* asynchronously */
+  convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG, 
       object : IConvertImage.Base64CallBack {
           override fun onResult(base64: String) {
 		//your code
