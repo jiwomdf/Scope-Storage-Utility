@@ -12,9 +12,9 @@ import androidx.core.app.ActivityCompat
 import com.programmergabut.imageharpa.Extension
 import com.programmergabut.imageharpa.ImageHarpa.Companion.convert
 import com.programmergabut.imageharpa.ImageHarpa.Companion.manage
-import com.programmergabut.imageharpaapp.databinding.ActivityMainBinding
 import com.programmergabut.imageharpa.convert.Base64Callback
 import com.programmergabut.imageharpa.manage.ImageCallback
+import com.programmergabut.imageharpaapp.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
@@ -65,7 +65,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .imageAttribute("test", "testing/testing/", Extension.PNG)
             .save(base64, 100, object : ImageCallback {
                 override fun onSuccess() {
-                    Toast.makeText(this@MainActivity, "Success Load", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Success Save", Toast.LENGTH_SHORT).show()
                 }
                 override fun onFailed(ex: Exception) {
                     Toast.makeText(this@MainActivity, ex.message, Toast.LENGTH_SHORT).show()
@@ -86,6 +86,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         manage(this)
             .imageAttribute("test3","testing/testing/", Extension.PNG)
             .savePublic(base64, 100)
+
+        manage(this)
+            .imageAttribute("test4","testing/testing/", Extension.PNG)
+            .savePublic(base64, 100, object: ImageCallback{
+                override fun onSuccess() {
+                    Toast.makeText(this@MainActivity, "Success save public", Toast.LENGTH_SHORT).show()
+                }
+                override fun onFailed(ex: Exception) {
+                    Toast.makeText(this@MainActivity, ex.message, Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     override fun onRequestPermissionsResult(

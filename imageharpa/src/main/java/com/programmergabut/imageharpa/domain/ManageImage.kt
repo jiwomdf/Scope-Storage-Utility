@@ -89,10 +89,26 @@ interface ManageImage{
 
     /**
      * save drawable formatted image synchronously
+     * @param bitmap is the image in bitmap format.
+     * @param quality is the quality of the image, must be between 0 and 100.
+     * @param imageCallBack is the callback function that will called after process finish.
+     */
+    fun savePublic(bitmap: Bitmap, quality: Int, imageCallBack: ImageCallback)
+
+    /**
+     * save drawable formatted image synchronously
      * @param base64 is the image in base64 format.
      * @param quality is the quality of the image, must be between 0 and 100.
      */
     fun savePublic(base64: String, quality: Int): Boolean
+
+    /**
+     * save drawable formatted image synchronously
+     * @param base64 is the image in base64 format.
+     * @param quality is the quality of the image, must be between 0 and 100.
+     * @param imageCallBack is the callback function that will called after process finish.
+     */
+    fun savePublic(base64: String, quality: Int, imageCallBack: ImageCallback)
 
     /**
      * save drawable formatted image synchronously
@@ -101,6 +117,13 @@ interface ManageImage{
      */
     fun savePublic(drawable: Drawable, quality: Int): Boolean
 
+    /**
+     * save drawable formatted image synchronously
+     * @param drawable is the image in drawable format.
+     * @param quality is the quality of the image, must be between 0 and 100.
+     * @param imageCallBack is the callback function that will called after process finish.
+     */
+    fun savePublic(drawable: Drawable, quality: Int, imageCallBack: ImageCallback)
 
     /**
      * get Image URI for sharing
