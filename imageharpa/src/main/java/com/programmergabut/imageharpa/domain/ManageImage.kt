@@ -126,6 +126,18 @@ interface ManageImage{
     fun savePublic(drawable: Drawable, quality: Int, imageCallBack: ImageCallback)
 
     /**
+     * delete image
+     * @return true if the file is saved, and false if the file is failed to save
+     */
+    fun deletePublic(): Boolean
+
+    /**
+     * delete image asynchronously
+     * @param callBack is the callback function that will called after process finish.
+     */
+    fun deletePublic(callBack: ImageCallback)
+
+    /**
      * get Image URI for sharing
      */
     fun getURI(): Uri?

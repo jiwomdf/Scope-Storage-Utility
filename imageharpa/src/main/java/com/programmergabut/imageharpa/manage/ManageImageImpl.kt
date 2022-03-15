@@ -278,13 +278,18 @@ class ManageImageImpl(
     }
 
     override fun savePublic(bitmap: Bitmap, quality: Int): Boolean {
-        validateImageQuality(quality)
-        validateStoragePermission()
-        val env = Environment.DIRECTORY_DCIM
-        val directory = "${env}${File.separator}$finalDirectory"
-        val expectedDir = File(directory)
-        getOrCreateDirectoryIfEmpty(expectedDir)
-        return savePublicImage(bitmap, directory, quality)
+        return try {
+            validateImageQuality(quality)
+            validateStoragePermission()
+            val env = Environment.DIRECTORY_DCIM
+            val directory = "${env}${File.separator}$finalDirectory"
+            val expectedDir = File(directory)
+            getOrCreateDirectoryIfEmpty(expectedDir)
+            savePublicImage(bitmap, directory, quality)
+        } catch (ex: Exception){
+            Log.e(TAG, "save: ${ex.message}")
+            false
+        }
     }
 
     override fun savePublic(bitmap: Bitmap, quality: Int, imageCallBack: ImageCallback) {
@@ -314,15 +319,20 @@ class ManageImageImpl(
     }
 
     override fun savePublic(base64: String, quality: Int): Boolean {
-        validateImageQuality(quality)
-        validateBase64String(base64)
-        validateStoragePermission()
-        val bitmap = decodeByteArray(base64)
-        val env = Environment.DIRECTORY_DCIM
-        val directory = "${env}${File.separator}$finalDirectory${File.separator}"
-        val expectedDir = File(directory)
-        getOrCreateDirectoryIfEmpty(expectedDir)
-        return savePublicImage(bitmap, directory, quality)
+        return try {
+            validateImageQuality(quality)
+            validateBase64String(base64)
+            validateStoragePermission()
+            val bitmap = decodeByteArray(base64)
+            val env = Environment.DIRECTORY_DCIM
+            val directory = "${env}${File.separator}$finalDirectory${File.separator}"
+            val expectedDir = File(directory)
+            getOrCreateDirectoryIfEmpty(expectedDir)
+            savePublicImage(bitmap, directory, quality)
+        } catch (ex: Exception){
+            Log.e(TAG, "save: ${ex.message}")
+            false
+        }
     }
 
     override fun savePublic(base64: String, quality: Int, imageCallBack: ImageCallback) {
@@ -354,14 +364,19 @@ class ManageImageImpl(
     }
 
     override fun savePublic(drawable: Drawable, quality: Int): Boolean {
-        validateImageQuality(quality)
-        validateStoragePermission()
-        val env = Environment.DIRECTORY_DCIM
-        val directory = "${env}${File.separator}$finalDirectory${File.separator}"
-        val expectedDir = File(directory)
-        getOrCreateDirectoryIfEmpty(expectedDir)
-        val bitmap = drawableToBitmap(drawable)
-        return savePublicImage(bitmap, directory, quality)
+        return try {
+            validateImageQuality(quality)
+            validateStoragePermission()
+            val env = Environment.DIRECTORY_DCIM
+            val directory = "${env}${File.separator}$finalDirectory${File.separator}"
+            val expectedDir = File(directory)
+            getOrCreateDirectoryIfEmpty(expectedDir)
+            val bitmap = drawableToBitmap(drawable)
+            savePublicImage(bitmap, directory, quality)
+        } catch (ex: Exception){
+            Log.e(TAG, "save: ${ex.message}")
+            false
+        }
     }
 
     override fun savePublic(drawable: Drawable, quality: Int, imageCallBack: ImageCallback) {
@@ -388,6 +403,46 @@ class ManageImageImpl(
                     imageCallBack.onFailed(ex)
                 }
             }
+        }
+    }
+
+    override fun deletePublic(): Boolean {
+        return try {
+            val extension = setExtension(fileExtension)
+            val aDirArray = ContextCompat.getExternalFilesDirs(context, null)
+            val env = Environment.DIRECTORY_DCIM
+            val directory = "${env}${File.separator}$finalDirectory"
+
+            val file = File(aDirArray[0].absolutePath + File.separator + directory + "$fileName$extension")
+            val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+
+            val result = context.contentResolver.delete(uri, null, null)
+            result > 0
+        } catch (ex: Exception){
+            Log.e(TAG, "save: ${ex.message}")
+            false
+        }
+    }
+
+    override fun deletePublic(callBack: ImageCallback) {
+        try {
+            val extension = setExtension(fileExtension)
+            val aDirArray = ContextCompat.getExternalFilesDirs(context, null)
+            val env = Environment.DIRECTORY_DCIM
+            val directory = "${env}${File.separator}$finalDirectory"
+
+            val file = File(aDirArray[0].absolutePath + File.separator + directory + "$fileName$extension")
+            val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+
+            val result = context.contentResolver.delete(uri, null, null)
+            if(result > 0){
+                callBack.onSuccess()
+            } else {
+                callBack.onFailed(Exception())
+            }
+        } catch (ex: Exception){
+            Log.e(TAG, "save: ${ex.message}")
+            callBack.onFailed(ex)
         }
     }
 
