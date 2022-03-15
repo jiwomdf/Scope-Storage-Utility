@@ -7,7 +7,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.programmergabut.easyimageapp"
+        applicationId "com.programmergabut.imageharpaapp"
         minSdkVersion 19
         targetSdkVersion 31
         versionCode 1
@@ -27,8 +27,7 @@ android {
 
 dependencies {
 
-    implementation project(':easyimage')
-
+    implementation project(':imageharpa')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
