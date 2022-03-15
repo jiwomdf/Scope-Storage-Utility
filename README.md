@@ -1,7 +1,7 @@
 [![](https://jitpack.io/v/jiwomdf/EasyImageLibrary.svg)](https://jitpack.io/#jiwomdf/EasyImageLibrary)
 
 
-# ImageHarpaLibrary
+# Image Harpa Library
 ImageHarpaLibrary is a library to help you converting and managing your image. <br>
 the benefit of this library are
 1. easy to use <br>
