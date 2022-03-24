@@ -1,6 +1,7 @@
 package com.programmergabut.imageharpa.domain
 
-import com.programmergabut.imageharpa.Extension
+import com.programmergabut.imageharpa.util.Extension
+
 
 interface Manage {
 

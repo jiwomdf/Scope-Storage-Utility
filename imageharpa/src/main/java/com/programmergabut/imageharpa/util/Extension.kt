@@ -1,4 +1,4 @@
-package com.programmergabut.imageharpa
+package com.programmergabut.imageharpa.util
 
 import android.os.Build
 
