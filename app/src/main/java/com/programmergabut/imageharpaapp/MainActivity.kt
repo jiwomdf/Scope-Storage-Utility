@@ -53,7 +53,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         val captureImage = data?.extras!!["data"] as Bitmap
         val base64 = convertSection(captureImage)
         internalStorageSection(base64)
-        //sharedStorageSection(base64)
+        sharedStorageSection(base64)
     }
 
     private fun convertSection(captureImage: Bitmap): String {
