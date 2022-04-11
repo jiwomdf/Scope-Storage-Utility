@@ -15,10 +15,23 @@ interface ManageImage{
     fun load(): Bitmap?
 
     /**
+     * load image synchronously
+     *  @return null if the file is successfully loaded, and null if the file failed to load
+     */
+    fun loadPublic(): Bitmap?
+
+    /**
      * load image asynchronously
      * @param callBack is the callback function that will called after process finish.
      */
     fun load(callBack: LoadImageCallback)
+
+    /**
+     * load image asynchronously
+     * @param callBack is the callback function that will called after process finish.
+     */
+    fun loadPublic(callBack: LoadImageCallback)
+
 
     /**
      * delete image
@@ -128,6 +141,6 @@ interface ManageImage{
     /**
      * get Image URI for sharing
      */
-    fun getURI(): Uri?
+    fun loadPublicUri(): Uri?
 }
 
