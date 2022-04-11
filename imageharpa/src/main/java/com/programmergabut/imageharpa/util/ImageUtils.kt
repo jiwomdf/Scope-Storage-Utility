@@ -123,12 +123,6 @@ fun drawableToBitmap(drawable: Drawable): Bitmap {
     }
 }
 
-fun deleteFileIfExist(file: File) {
-    if(file.exists()){
-        file.delete()
-    }
-}
-
 fun loadPublicPhotoUri(context: Context, fileName: String, collection: Uri, projection: Array<String>, where: String): Uri? {
     validateFileName(fileName)
     validateReadPermission(context)

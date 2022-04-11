@@ -86,20 +86,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .save(base64, 100)
 
         /***
-         * Example of saving base64 to internal storage with callback
-         */
-        manage(this)
-            .imageAttribute("test", "testing/testing/", Extension.PNG)
-            .save(base64, 100, object : ImageCallback {
-                override fun onSuccess() {
-                    Log.d(TAG, "Success Save test to testing/testing/")
-                }
-                override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed Save test to testing/testing/")
-                }
-            })
-
-        /***
          * Example of load internal storage with callback
          */
         manage(this)
@@ -124,20 +110,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         manage(this)
             .imageAttribute("test2","testing/testing/", Extension.PNG)
             .savePublic(base64, 100)
-
-        /***
-         * Example of save public storage with callback
-         */
-        manage(this)
-            .imageAttribute("test2","testing/testing/", Extension.PNG)
-            .savePublic(base64, 100, object: ImageCallback {
-                override fun onSuccess() {
-                    Log.d(TAG, "Success Save test2 to DCIM/testing/testing/")
-                }
-                override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed Save test to DCIM/testing/testing/")
-                }
-            })
 
         /***
          * Example of load public storage with callback

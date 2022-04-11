@@ -57,7 +57,7 @@ class ManageImageImpl(
     }
 
     override fun load(callBack: LoadImageCallback){
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateFileName(fileName)
                 validateReadPermission(context)
@@ -94,7 +94,7 @@ class ManageImageImpl(
     }
 
     override fun delete(callBack: ImageCallback){
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val extension = setExtension(fileExtension)
             val directory = File("${absolutePath}${File.separator}$finalDirectory")
             validateDirectory(directory)
@@ -124,7 +124,6 @@ class ManageImageImpl(
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
-            deleteFileIfExist(file)
             val outputStream = FileOutputStream(file)
             compressBitmap(outputStream, bitmap, quality, fileExtension)
             true
@@ -135,7 +134,7 @@ class ManageImageImpl(
     }
 
     override fun save(bitmap: Bitmap, quality: Int, imageCallBack: ImageCallback){
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateImageQuality(quality)
                 validateStoragePermission(context)
@@ -144,7 +143,6 @@ class ManageImageImpl(
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
-                deleteFileIfExist(file)
                 runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -173,7 +171,6 @@ class ManageImageImpl(
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
-            deleteFileIfExist(file)
             val outputStream = FileOutputStream(file)
             compressBitmap(outputStream, bitmap, quality, fileExtension)
             true
@@ -184,7 +181,7 @@ class ManageImageImpl(
     }
 
     override fun save(base64: String, quality: Int, imageCallBack: ImageCallback){
-        CoroutineScope(Dispatchers.Default).launch{
+        CoroutineScope(Dispatchers.IO).launch{
             try {
                 validateImageQuality(quality)
                 validateBase64String(base64)
@@ -195,7 +192,6 @@ class ManageImageImpl(
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
-                deleteFileIfExist(file)
                 runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -222,7 +218,6 @@ class ManageImageImpl(
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
-            deleteFileIfExist(file)
             val outputStream = FileOutputStream(file)
             compressBitmap(outputStream, bitmap, quality, fileExtension)
             true
@@ -235,7 +230,7 @@ class ManageImageImpl(
     override fun save(drawable: Drawable, quality: Int,
                       imageCallBack: ImageCallback
     ){
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateImageQuality(quality)
                 validateStoragePermission(context)
@@ -245,7 +240,6 @@ class ManageImageImpl(
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
-                deleteFileIfExist(file)
                 runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -275,7 +269,7 @@ class ManageImageImpl(
     }
 
     override fun loadPublic(callBack: LoadImageCallback) {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateFileName(fileName)
                 validateReadPermission(context)
@@ -320,7 +314,7 @@ class ManageImageImpl(
     }
 
     override fun savePublic(bitmap: Bitmap, quality: Int, imageCallBack: ImageCallback) {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateImageQuality(quality)
                 validateStoragePermission(context)
@@ -361,7 +355,7 @@ class ManageImageImpl(
     }
 
     override fun savePublic(base64: String, quality: Int, imageCallBack: ImageCallback) {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateImageQuality(quality)
                 validateBase64String(base64)
@@ -403,7 +397,7 @@ class ManageImageImpl(
     }
 
     override fun savePublic(drawable: Drawable, quality: Int, imageCallBack: ImageCallback) {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateImageQuality(quality)
                 validateStoragePermission(context)
