@@ -63,7 +63,7 @@ There are basically one static variable **convert** for converting features and 
   
   /* asynchronously */
   convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG, 
-      object : IConvertImage.Base64CallBack {
+      object : Base64Callback {
           override fun onResult(base64: String) {
 		//your code
           }
@@ -90,7 +90,7 @@ your_phone_name\Android\data\application_package_name\files\Pictures\
   /* asynchronously */
   manage(this)
       .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
-      .save(base64, 100, object : IManageImage.SaveBase64CallBack {
+      .save(base64, 100, object : ImageCallback {
           override fun onSuccess() {
 		//your code
           }
@@ -112,7 +112,7 @@ The location of the image will be save is in DCIM
   /* asynchronously */
   manage(this)
       .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
-      .savePublic(base64, 100, object : IManageImage.SaveBase64CallBack {
+      .savePublic(base64, 100, object : ImageCallback {
           override fun onSuccess() {
 		//your code
           }
