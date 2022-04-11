@@ -1,7 +1,6 @@
 package com.programmergabut.imageharpa.util
 
 import android.app.RecoverableSecurityException
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
@@ -16,12 +15,8 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import com.programmergabut.imageharpa.ImageHarpa
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -55,7 +50,8 @@ fun loadBitmapFromUri(context: Context, photoUri: Uri): Bitmap {
         MediaStore.Images.Media.getBitmap(context.contentResolver, photoUri)
     } else {
         val source = ImageDecoder.createSource(context.contentResolver, photoUri)
-        ImageDecoder.decodeBitmap(source)
+        val bitmap = ImageDecoder.decodeBitmap(source)
+        return bitmap.copy(Bitmap.Config.ARGB_8888, true)
     }
 }
 

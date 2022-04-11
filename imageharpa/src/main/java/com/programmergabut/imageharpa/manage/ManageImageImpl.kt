@@ -1,22 +1,13 @@
 package com.programmergabut.imageharpa.manage
 
-import android.content.ContentUris
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import com.programmergabut.imageharpa.ImageHarpa.Companion.TAG
 import com.programmergabut.imageharpa.domain.ManageImage
 import com.programmergabut.imageharpa.util.*
@@ -154,7 +145,7 @@ class ManageImageImpl(
 
                 val file = File(directory, "$fileName$extension")
                 deleteFileIfExist(file)
-                kotlin.runCatching {
+                runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
                 }
@@ -205,7 +196,7 @@ class ManageImageImpl(
 
                 val file = File(directory, "$fileName$extension")
                 deleteFileIfExist(file)
-                kotlin.runCatching {
+                runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
                 }
@@ -255,7 +246,7 @@ class ManageImageImpl(
 
                 val file = File(directory, "$fileName$extension")
                 deleteFileIfExist(file)
-                kotlin.runCatching {
+                runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
                 }
@@ -289,8 +280,9 @@ class ManageImageImpl(
                 validateFileName(fileName)
                 validateReadPermission(context)
                 val photoUri = loadPublicPhotoUri(context, fileName, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                val bitmap = loadBitmapFromUri(context, photoUri)
                 withContext(Dispatchers.Main){
-                    callBack.onResult(loadBitmapFromUri(context, photoUri))
+                    callBack.onResult(bitmap)
                 }
             } catch (ex: Exception){
                 Log.e(TAG, "loadPublic: ${ex.message}", )

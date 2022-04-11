@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.programmergabut.imageharpa.ImageHarpa.Companion.convert
 import com.programmergabut.imageharpa.ImageHarpa.Companion.manage
 import com.programmergabut.imageharpa.convert.Base64Callback
@@ -105,8 +106,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .imageAttribute("test","testing/testing/", Extension.PNG)
             .load(object : LoadImageCallback {
                 override fun onResult(bitmap: Bitmap?) {
-                    Log.d(TAG, "Success Load image")
-                    binding.ivImage1.setImageBitmap(bitmap)
+                    Log.d(TAG, "Success Load image test")
+                    Glide.with(applicationContext)
+                        .load(bitmap)
+                        .into(binding.ivImage1)
                 }
                 override fun onFailed(ex: Exception) {
                     Log.d(TAG, "Failed Load image")
@@ -143,8 +146,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .imageAttribute("test2","testing/testing/", Extension.PNG)
             .loadPublic(object : LoadImageCallback {
                 override fun onResult(bitmap: Bitmap?) {
-                    Log.d(TAG, "Success Load public image")
-                    binding.ivImage2.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_android_24dp))
+                    Log.d(TAG, "Success Load image test2")
+                    Glide.with(applicationContext)
+                        .load(bitmap)
+                        .into(binding.ivImage2)
                 }
                 override fun onFailed(ex: Exception) {
                     Log.d(TAG, "Failed Load image")
