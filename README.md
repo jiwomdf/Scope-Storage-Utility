@@ -39,7 +39,7 @@ Add the dependency
 ```
 	dependencies {
 		...
-	        implementation 'com.github.jiwomdf:EasyImageLibrary:1.0.0'
+	        implementation 'com.github.jiwomdf:EasyImageLibrary:1.0.1'
 	}
 ```
 ## Prerequirement
