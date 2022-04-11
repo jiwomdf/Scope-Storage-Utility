@@ -1,8 +1,8 @@
 [![](https://jitpack.io/v/jiwomdf/EasyImageLibrary.svg)](https://jitpack.io/#jiwomdf/EasyImageLibrary)
 
 
-# Image Harpa Library
-ImageHarpaLibrary is a library to help you converting and managing your image. <br>
+# Image Harpa
+Image arpa is a library to help you converting and managing your image. <br>
 the benefit of this library are
 1. easy to use <br>
 2. provide shared and private storage image management <br>
