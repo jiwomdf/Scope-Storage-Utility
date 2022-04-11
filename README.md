@@ -5,8 +5,9 @@
 ImageHarpaLibrary is a library to help you converting and managing your image. <br>
 the benefit of this library are
 1. easy to use <br>
-2. provide synchronous & asynchronous solution <br>
-3. safe from throwing an error. <br>
+2. provide shared and private storage image management <br>
+3. provide synchronous & asynchronous solution <br>
+4. safe from throwing an error <br>
 
 ## Features
 1. Convert image <br>
@@ -26,7 +27,7 @@ the benefit of this library are
 
 ## How to download the lib
 1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
-```
+```kotlin
 	allprojects {
 		repositories {
 			...
@@ -36,7 +37,7 @@ the benefit of this library are
 
 ```
 Add the dependency
-```
+```kotlin
 	dependencies {
 		...
 	        implementation 'com.github.jiwomdf:EasyImageLibrary:1.0.1'
@@ -44,7 +45,7 @@ Add the dependency
 ```
 ## Prerequirement
 Please include this permission in your application <br>
-```
+```xml
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> 
 ```
@@ -54,8 +55,8 @@ Please include this permission in your application <br>
 There are basically one static variable **convert** for converting features and one static function **manage(context)** for managing features. <br>
 
 ### Convert Image 
-```
-  val captureImage = bitmapImg /* Image in bitmap format */
+```kotlin
+  val captureImage = bitmapImg // Image in bitmap format
   
   /* synchronously */
   val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG) 
@@ -74,21 +75,44 @@ There are basically one static variable **convert** for converting features and 
 ```
 
 ### Manage image 
+#### Private storage
 The image will be saved, deleted, and loaded from the internal application storage location, in
 ```
 your_phone_name\Android\data\application_package_name\files\Pictures\
 ```
-```
+```kotlin
 
   /* synchronously */
   manage(this)
-      .imageAttribute("test", "myfolder", Extension.PNG)
-      .save(base64!!,100)
+      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
+      .save(base64,100)
       
   /* asynchronously */
   manage(this)
-      .imageAttribute("test", "myfolder", Extension.PNG)
+      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
       .save(base64, 100, object : IManageImage.SaveBase64CallBack {
+          override fun onSuccess() {
+		//your code
+          }
+          override fun onFailed(ex: Exception) {
+		//your code
+          }
+      })
+```
+#### Shared storage
+we can also save & load the image to public storage, so the image will be visible in galery </b>
+The location of the image will be save is in DCIM
+```kotlin
+
+  /* synchronously */
+  manage(this)
+      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
+      .savePublic(base64,100)
+      
+  /* asynchronously */
+  manage(this)
+      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
+      .savePublic(base64, 100, object : IManageImage.SaveBase64CallBack {
           override fun onSuccess() {
 		//your code
           }
@@ -99,7 +123,7 @@ your_phone_name\Android\data\application_package_name\files\Pictures\
 ```
 
 ### On Going Development
-1. Save, delete, load image in shared storage <br>
+1. delete image in shared storage <br>
 2. Create the MANAGE_EXTERNAL_STORAGE feature
 3. add unit test, instrumented test, and CICD
 
