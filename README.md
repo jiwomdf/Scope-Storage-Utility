@@ -40,7 +40,7 @@ Add the dependency
 ```kotlin
 	dependencies {
 		...
-	        implementation 'com.github.jiwomdf:EasyImageLibrary:1.0.1'
+	        implementation 'com.github.jiwomdf:ImageHarpa:1.0.1'
 	}
 ```
 ## Prerequirement
