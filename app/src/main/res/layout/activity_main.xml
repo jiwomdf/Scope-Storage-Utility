@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -17,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
+            android:textColor="@color/black"
             android:text="Android Image Util By Katili Jiwo AW" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
