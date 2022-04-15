@@ -43,7 +43,7 @@ Add the dependency
 ```kotlin
 	dependencies {
 		...
-	        implementation 'com.github.jiwomdf:AndroidImageUtil:1.0.2'
+	        implementation 'com.github.jiwomdf:Android-Image-Util:1.0.2'
 	}
 ```
 ## Prerequirement
