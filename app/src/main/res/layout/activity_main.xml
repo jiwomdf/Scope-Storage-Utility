@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="1. Testing save, load, delete private file and public file,\n\t\tfor more info see MainActivity clas"
+                android:text="1. Testing save, load, delete private file and public file,\n\t\tfor more info see MainActivity class"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="2. Testing delete public image by file directory and file name,\n\t\tfor this testing the file extension is jpg it's hardcoded"
+                android:text="2. Testing delete public image by file directory and file name,\n\t\tfor this testing the file extension is hardcoded jpg"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
