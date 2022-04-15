@@ -34,42 +34,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val imageDir = binding.etImageDir.text.toString()
+        val imageFile = binding.etImageFile.text.toString()
+
         binding.btnDispatchCamera.setOnClickListener {
             dispatchTakePictureIntent()
         }
         binding.btnDeleteImage.setOnClickListener {
-            /***
-             * Example of deleting public image
-             */
-            val imageDir = binding.etImageDir.text.toString()
-            val imageFile = binding.etImageFile.text.toString()
-            manage(this)
-                .imageAttribute(imageFile, imageDir, Extension.JPG)
-                .deletePublic(intentSenderRequest, object: ImageCallback {
-                    override fun onSuccess() {
-                        Log.d(TAG, "Success delete image $imageDir/$imageFile")
-                    }
-                    override fun onFailed(ex: Exception) {
-                        Log.d(TAG, ex.message.toString())
-                    }
-                })
+            deletePublicImage(imageFile, imageDir)
         }
         intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
             if (it.resultCode == RESULT_OK) {
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                    manage(this)
-                        .imageAttribute("test_public", "folder/subfolder/", Extension.PNG)
-                        .deletePublic(intentSenderRequest, object : ImageCallback {
-                            override fun onSuccess() {
-                                Log.d(TAG, "Success Delete image test_public")
-                            }
-                            override fun onFailed(ex: Exception) {
-                                Log.d(TAG, "Failed delete image test_public")
-                            }
-                        })
+                    /** this line of code will arrive here if the user allow to delete file that's not this app create */
+                    deletePublicImage(imageFile, imageDir)
                 }
             } else {
-                Toast.makeText(this@MainActivity, "Photo couldn't be deleted", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Failed delete image test_public")
             }
         }
     }
@@ -160,7 +142,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     Glide.with(applicationContext)
                         .load(bitmap)
                         .into(binding.ivImage2)
-                    deletePublicImage()
+                    deletePublicImage("test_public", "folder/subfolder/")
                 }
                 override fun onFailed(ex: Exception) {
                     Log.d(TAG, "Failed load image")
@@ -194,18 +176,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             })
     }
 
-    private fun deletePublicImage() {
+    private fun deletePublicImage(imageFile: String, imageDir: String) {
         /***
          * Example of deleting public image
          */
         manage(this)
-            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
+            .imageAttribute(imageFile, imageDir, Extension.JPG)
             .deletePublic(intentSenderRequest, object: ImageCallback {
                 override fun onSuccess() {
-                    Log.d(TAG, "Success delete image test_public")
+                    Log.d(TAG, "Success delete image $imageDir/$imageFile")
                 }
                 override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed delete image test_public")
+                    Log.d(TAG, ex.message.toString())
                 }
             })
     }
