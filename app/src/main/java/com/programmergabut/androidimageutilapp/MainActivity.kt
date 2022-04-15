@@ -37,6 +37,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         binding.btnDispatchCamera.setOnClickListener {
             dispatchTakePictureIntent()
         }
+        binding.btnDeleteImage.setOnClickListener {
+            /***
+             * Example of deleting public image
+             */
+            val imageDir = binding.etImageDir.text.toString()
+            val imageFile = binding.etImageFile.text.toString()
+            manage(this)
+                .imageAttribute(imageFile, imageDir, Extension.JPG)
+                .deletePublic(intentSenderRequest, object: ImageCallback {
+                    override fun onSuccess() {
+                        Log.d(TAG, "Success delete image $imageDir/$imageFile")
+                    }
+                    override fun onFailed(ex: Exception) {
+                        Log.d(TAG, ex.message.toString())
+                    }
+                })
+        }
         intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
             if (it.resultCode == RESULT_OK) {
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
