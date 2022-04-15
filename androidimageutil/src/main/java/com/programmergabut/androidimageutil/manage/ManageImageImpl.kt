@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import com.programmergabut.androidimageutil.AndroidImageUtil.Companion.TAG
 import com.programmergabut.androidimageutil.domain.ManageImage
 import com.programmergabut.androidimageutil.util.*
@@ -260,7 +262,7 @@ class ManageImageImpl(
         return try {
             validateFileName(fileName)
             validateReadPermission(context)
-            val photoUri = loadPublicPhotoUri(context, fileName, collection, projection, where) ?: throw Exception("cant get photo Uri")
+            val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
             loadBitmapFromUri(context, photoUri)
         } catch (ex: Exception){
             Log.e(TAG, "loadPublic: ${ex.message}", )
@@ -273,7 +275,7 @@ class ManageImageImpl(
             try {
                 validateFileName(fileName)
                 validateReadPermission(context)
-                val photoUri = loadPublicPhotoUri(context, fileName, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
                 val bitmap = loadBitmapFromUri(context, photoUri)
                 withContext(Dispatchers.Main){
                     callBack.onResult(bitmap)
@@ -291,10 +293,43 @@ class ManageImageImpl(
         return try {
             validateFileName(fileName)
             validateReadPermission(context)
-            loadPublicPhotoUri(context, fileName, collection, projection, where) ?: throw Exception("cant get photo Uri")
+            loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
         } catch (ex: Exception){
             Log.e(TAG, "loadPublicUri: ${ex.message}", )
             null
+        }
+    }
+
+    override fun deletePublic(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
+        return try {
+            validateFileName(fileName)
+            validateReadPermission(context)
+            val uri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+            deletePublicImage(context, uri, intentSenderRequest)
+            true
+        } catch (ex: Exception){
+            Log.e(TAG, "deletePublic: ${ex.message}", )
+            false
+        }
+    }
+
+    override fun deletePublic(
+        intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>,
+        callBack: ImageCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                validateFileName(fileName)
+                validateReadPermission(context)
+                val uri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                deletePublicImage(context, uri, intentSenderRequest)
+                withContext(Dispatchers.Main) { callBack.onSuccess() }
+            } catch (ex: Exception){
+                Log.e(TAG, "deletePublic: ${ex.message}")
+                withContext(Dispatchers.Main) {
+                    callBack.onFailed(ex)
+                }
+            }
         }
     }
 
@@ -421,7 +456,6 @@ class ManageImageImpl(
             }
         }
     }
-
 
 }
 

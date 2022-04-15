@@ -123,9 +123,7 @@ fun drawableToBitmap(drawable: Drawable): Bitmap {
     }
 }
 
-fun loadPublicPhotoUri(context: Context, fileName: String, collection: Uri, projection: Array<String>, where: String): Uri? {
-    validateFileName(fileName)
-    validateReadPermission(context)
+fun loadPublicPhotoUri(context: Context, collection: Uri, projection: Array<String>, where: String): Uri? {
     val photos = mutableListOf<Uri>()
     context.contentResolver.query(
         collection,
@@ -166,7 +164,7 @@ fun savePublicImage(context: Context, bitmap: Bitmap, directory: String, quality
     }
 }
 
-fun deletePhotoFromExternalStorage(context: Context, photoUri: Uri , intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>) {
+fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>) {
     try {
         context.contentResolver.delete(photoUri, null, null)
     } catch (e: SecurityException) {

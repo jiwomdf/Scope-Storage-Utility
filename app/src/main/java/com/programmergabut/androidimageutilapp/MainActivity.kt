@@ -8,11 +8,15 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.programmergabut.androidimageutil.AndroidImageUtil.Companion.convert
 import com.programmergabut.androidimageutil.AndroidImageUtil.Companion.manage
 import com.programmergabut.androidimageutil.convert.Base64Callback
+import com.programmergabut.androidimageutil.manage.ImageCallback
 import com.programmergabut.androidimageutil.manage.LoadImageCallback
 import com.programmergabut.androidimageutil.util.Extension
 import com.programmergabut.androidimageutilapp.databinding.ActivityMainBinding
@@ -24,6 +28,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     }
 
     private val TAG = "TestMainActivity"
+    private lateinit var intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>
 
     override fun getViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -31,6 +36,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         super.onCreate(savedInstanceState)
         binding.btnDispatchCamera.setOnClickListener {
             dispatchTakePictureIntent()
+        }
+        intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                    manage(this)
+                        .imageAttribute("test2", "testing/testing/", Extension.PNG)
+                        .deletePublic(intentSenderRequest, object : ImageCallback {
+                            override fun onSuccess() {
+                                Log.d(TAG, "Success Delete image test2")
+                            }
+                            override fun onFailed(ex: Exception) {
+                                Log.d(TAG, "Failed delete image test2")
+                            }
+                        })
+                }
+            } else {
+                Toast.makeText(this@MainActivity, "Photo couldn't be deleted", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -89,13 +112,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .imageAttribute("test","testing/testing/", Extension.PNG)
             .load(object : LoadImageCallback {
                 override fun onResult(bitmap: Bitmap?) {
-                    Log.d(TAG, "Success Load image test")
+                    Log.d(TAG, "Success load image test")
                     Glide.with(applicationContext)
                         .load(bitmap)
                         .into(binding.ivImage1)
+                    deleteImage()
                 }
                 override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed Load image")
+                    Log.d(TAG, "Failed load image")
                 }
             })
     }
@@ -115,13 +139,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .imageAttribute("test2","testing/testing/", Extension.PNG)
             .loadPublic(object : LoadImageCallback {
                 override fun onResult(bitmap: Bitmap?) {
-                    Log.d(TAG, "Success Load image test2")
+                    Log.d(TAG, "Success load image test2")
                     Glide.with(applicationContext)
                         .load(bitmap)
                         .into(binding.ivImage2)
+                    deletePublicImage()
                 }
                 override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed Load image")
+                    Log.d(TAG, "Failed load image")
                 }
             })
 
@@ -129,11 +154,43 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example getting the image URI
          */
         manage(this)
-            .imageAttribute("test4","testing/testing/", Extension.PNG)
+            .imageAttribute("test2","testing/testing/", Extension.PNG)
             .loadPublicUri()
             .also {
                 Log.d(TAG, "uri: $it")
             }
+    }
+
+    private fun deleteImage() {
+        /***
+         * Example of delete internal storage with callback
+         */
+        manage(this)
+            .imageAttribute("test","testing/testing/", Extension.PNG)
+            .delete(object : ImageCallback {
+                override fun onSuccess() {
+                    Log.d(TAG, "Success delete image test")
+                }
+                override fun onFailed(ex: Exception) {
+                    Log.d(TAG, "Failed delete image")
+                }
+            })
+    }
+
+    private fun deletePublicImage() {
+        /***
+         * Example of deleting public image
+         */
+        manage(this)
+            .imageAttribute("test2","testing/testing/", Extension.PNG)
+            .deletePublic(intentSenderRequest, object: ImageCallback {
+                override fun onSuccess() {
+                    Log.d(TAG, "Success delete image test2")
+                }
+                override fun onFailed(ex: Exception) {
+                    Log.d(TAG, "Failed delete image test2")
+                }
+            })
     }
 
     override fun onRequestPermissionsResult(

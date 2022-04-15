@@ -3,6 +3,8 @@ package com.programmergabut.androidimageutil.domain
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import com.programmergabut.androidimageutil.manage.ImageCallback
 import com.programmergabut.androidimageutil.manage.LoadImageCallback
 
@@ -142,5 +144,18 @@ interface ManageImage{
      * get Image URI for sharing
      */
     fun loadPublicUri(): Uri?
+
+    /**
+     * delete public image
+     * @return true if the file is saved, and false if the file is failed to save
+     */
+    fun deletePublic(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean
+
+    /**
+     * delete public image
+     * @return true if the file is saved, and false if the file is failed to save
+     */
+    fun deletePublic(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>, callBack: ImageCallback)
+
 }
 
