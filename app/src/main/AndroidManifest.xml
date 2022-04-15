@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.programmergabut.imageharpaapp">
+    package="com.programmergabut.androidimageutilapp">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EasyImageApp"
         android:requestLegacyExternalStorage="true">
-        <activity android:name="com.programmergabut.imageharpaapp.MainActivity"
+        <activity android:name="com.programmergabut.androidimageutilapp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
