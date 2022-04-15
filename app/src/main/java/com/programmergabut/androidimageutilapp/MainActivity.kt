@@ -51,7 +51,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     deletePublicImage(imageFile, imageDir)
                 }
             } else {
-                Log.d(TAG, "Failed delete image test_public")
+                Log.d(TAG, "Failed delete public image")
             }
         }
     }
@@ -61,7 +61,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         when(requestCode){
             TAKE_PHOTO_REQUEST_CODE -> {
                 try {
-                    tryEasyImage(data)
+                    tryAndroidImageUtil(data)
                 } catch (ex: Exception){
                     Toast.makeText(this, ex.message.toString(), Toast.LENGTH_SHORT).show()
                 }
@@ -69,7 +69,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         }
     }
 
-    private fun tryEasyImage(data: Intent?)  {
+    private fun tryAndroidImageUtil(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
         val base64 = convertSection(captureImage)
         internalStorageSection(base64)
