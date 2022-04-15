@@ -125,10 +125,13 @@ The location of the image will be save in DCIM
       })
 ```
 
-### For more features & information, you can check / clone the this repository
+### Information 
+1. For syncronize funtion, it will always returned <b>true</b> if the process is success and <b>false</b> if it failed
+2. For tracing the error you can try by searching the logcat of <b>"AndroidImageUtil"</b>
+3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
 
 ### On Going Development
-1. add unit test, instrumented test, and CICD
+1. Add unit test, instrumented test, and CICD
 2. Write more detail documentation about this lib
 3. Add Compress, Black White, Rotate, and other image processing Utilities
 
