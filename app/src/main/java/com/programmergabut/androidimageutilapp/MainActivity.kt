@@ -41,13 +41,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             if (it.resultCode == RESULT_OK) {
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
                     manage(this)
-                        .imageAttribute("test2", "testing/testing/", Extension.PNG)
+                        .imageAttribute("test_public", "folder/subfolder/", Extension.PNG)
                         .deletePublic(intentSenderRequest, object : ImageCallback {
                             override fun onSuccess() {
-                                Log.d(TAG, "Success Delete image test2")
+                                Log.d(TAG, "Success Delete image test_public")
                             }
                             override fun onFailed(ex: Exception) {
-                                Log.d(TAG, "Failed delete image test2")
+                                Log.d(TAG, "Failed delete image test_public")
                             }
                         })
                 }
@@ -102,14 +102,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of saving base64 to internal storage
          */
         manage(this)
-            .imageAttribute("test", "testing/testing/", Extension.PNG)
+            .imageAttribute("test", "folder/subfolder/", Extension.PNG)
             .save(base64, 100)
 
         /***
          * Example of load internal storage with callback
          */
         manage(this)
-            .imageAttribute("test","testing/testing/", Extension.PNG)
+            .imageAttribute("test","folder/subfolder/", Extension.PNG)
             .load(object : LoadImageCallback {
                 override fun onResult(bitmap: Bitmap?) {
                     Log.d(TAG, "Success load image test")
@@ -129,17 +129,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of save public storage
          */
         manage(this)
-            .imageAttribute("test2","testing/testing/", Extension.PNG)
+            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
             .savePublic(base64, 100)
 
         /***
          * Example of load public storage with callback
          */
         manage(this)
-            .imageAttribute("test2","testing/testing/", Extension.PNG)
+            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
             .loadPublic(object : LoadImageCallback {
                 override fun onResult(bitmap: Bitmap?) {
-                    Log.d(TAG, "Success load image test2")
+                    Log.d(TAG, "Success load image test_public")
                     Glide.with(applicationContext)
                         .load(bitmap)
                         .into(binding.ivImage2)
@@ -154,7 +154,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example getting the image URI
          */
         manage(this)
-            .imageAttribute("test2","testing/testing/", Extension.PNG)
+            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
             .loadPublicUri()
             .also {
                 Log.d(TAG, "uri: $it")
@@ -166,7 +166,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of delete internal storage with callback
          */
         manage(this)
-            .imageAttribute("test","testing/testing/", Extension.PNG)
+            .imageAttribute("test","folder/subfolder/", Extension.PNG)
             .delete(object : ImageCallback {
                 override fun onSuccess() {
                     Log.d(TAG, "Success delete image test")
@@ -182,13 +182,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of deleting public image
          */
         manage(this)
-            .imageAttribute("test2","testing/testing/", Extension.PNG)
+            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
             .deletePublic(intentSenderRequest, object: ImageCallback {
                 override fun onSuccess() {
-                    Log.d(TAG, "Success delete image test2")
+                    Log.d(TAG, "Success delete image test_public")
                 }
                 override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed delete image test2")
+                    Log.d(TAG, "Failed delete image test_public")
                 }
             })
     }
