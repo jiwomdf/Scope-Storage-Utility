@@ -1,13 +1,15 @@
-[![](https://jitpack.io/v/jiwomdf/EasyImageLibrary.svg)](https://jitpack.io/#jiwomdf/EasyImageLibrary)
+[![](https://jitpack.io/v/jiwomdf/Android-Image-Util.svg)](https://jitpack.io/#jiwomdf/Android-Image-Util)
 
 
-# Image Harpa
-Image Harpa is a library to help you converting and managing your image. <br>
+# Android Image Util
+Android Image Util is a library to help you converting and managing your image. <br>
 the benefit of this library are
 1. easy to use <br>
 2. provide shared and private storage image management <br>
 3. provide synchronous & asynchronous solution <br>
-4. safe from throwing an error <br>
+4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> <br>
+
+![](https://github.com/jiwomdf/ImageHarpa/blob/master/androidimageutil/gif/AndroidImageUtilApp.gif)
 
 ## Features
 1. Convert image <br>
@@ -25,6 +27,7 @@ the benefit of this library are
   e. save drawable formatted image <br>
   f. save drawable formatted image <br>
 
+
 ## How to download the lib
 1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
 ```kotlin
@@ -40,7 +43,7 @@ Add the dependency
 ```kotlin
 	dependencies {
 		...
-	        implementation 'com.github.jiwomdf:ImageHarpa:1.0.1'
+	        implementation 'com.github.jiwomdf:Android-Image-Util:1.0.2'
 	}
 ```
 ## Prerequirement
@@ -51,8 +54,8 @@ Please include this permission in your application <br>
 ```
 
 ## Usage
-
-There are basically one static variable **convert** for converting features and one static function **manage(context)** for managing features. <br>
+In this example I will just show the basic of how to use the library, the all feature can be found when you try it! <br>
+So there are basically one static variable **convert** for converting features and one static function **manage(context)** for managing features. <br>
 
 ### Convert Image 
 ```kotlin
@@ -75,7 +78,7 @@ There are basically one static variable **convert** for converting features and 
 ```
 
 ### Manage image 
-#### Private storage
+#### 1. Private storage
 The image will be saved, deleted, and loaded from the internal application storage location, in
 ```
 your_phone_name\Android\data\application_package_name\files\Pictures\
@@ -99,9 +102,9 @@ your_phone_name\Android\data\application_package_name\files\Pictures\
           }
       })
 ```
-#### Shared storage
+#### 2. Public storage
 we can also save & load the image to public storage, so the image will be visible in galery </b>
-The location of the image will be save is in DCIM
+The location of the image will be save in DCIM
 ```kotlin
 
   /* synchronously */
@@ -122,10 +125,15 @@ The location of the image will be save is in DCIM
       })
 ```
 
+### Information 
+1. For syncronize funtion, it will always returned <b>true</b> if the process is success and <b>false</b> if it failed
+2. For tracing the error you can try by searching the logcat of <b>"AndroidImageUtil"</b>
+3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
+
 ### On Going Development
-1. delete image in shared storage <br>
-2. Create the MANAGE_EXTERNAL_STORAGE feature
-3. add unit test, instrumented test, and CICD
+1. Add unit test, instrumented test, and CICD
+2. Write more detail documentation about this lib
+3. Add Compress, Black White, Rotate, and other image processing Utilities
 
 <br><br>
 Feel free to see and contribute
