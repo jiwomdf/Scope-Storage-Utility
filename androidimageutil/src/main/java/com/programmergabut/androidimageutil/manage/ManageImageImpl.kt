@@ -40,7 +40,7 @@ class ManageImageImpl(
     private val collection = sdk29AndUp { MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) }
         ?: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     private val projection = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,)
-    private val where = MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'%$fileName${setExtension(fileExtension)}%'"
+    private val where = MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
 
     override fun load(): Bitmap? {
         return try {

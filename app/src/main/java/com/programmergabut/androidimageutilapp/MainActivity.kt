@@ -35,18 +35,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val imageDir = binding.etImageDir.text.toString()
-        val imageFile = binding.etImageFile.text.toString()
-
         binding.btnDispatchCamera.setOnClickListener {
             dispatchTakePictureIntent()
         }
         binding.btnDeleteImage.setOnClickListener {
+            val imageDir = binding.etImageDir.text.toString()
+            val imageFile = binding.etImageFile.text.toString()
             deletePublicImage(imageFile, imageDir)
         }
         intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
             if (it.resultCode == RESULT_OK) {
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                    val imageDir = binding.etImageDir.text.toString()
+                    val imageFile = binding.etImageFile.text.toString()
                     /** this line of code will arrive here if the user allow to delete file that's not this app create */
                     deletePublicImage(imageFile, imageDir)
                 }
