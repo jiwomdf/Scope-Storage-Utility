@@ -1,3 +1,6 @@
+## Convert
+Here are the list funtion of convert and how to use it
+
 #### Convert Bitmap to Base64
 ```kotlin
   /**
@@ -108,4 +111,166 @@
            Log.e(TAG, "ex: $ex")
        }
    })
+```
+
+## Manage
+Here are the list funtion of manage and how to use it
+
+#### Manage function
+```kotlin
+  /**
+   *  Set the attribute file you want to save or load
+   *  @param fileName is the name of your file.
+   *  @param directory is the directory of the file you want to save or load,
+   *  if it is null or empty, it will saved to your absolute path.
+   *  @param fileExtension is the file extension, it can be ".png", ".jpeg", ".jpg", ".webp".
+   */
+   fun imageAttribute(fileName: String, directory: String?, fileExtension: Extension): ManageImage
+```
+
+#### Save function (bitmap, base64, drawable)
+```kotlin
+  /***
+   * Example of saving base64 to internal storage 
+   * in your_phone_name\Android\data\application_package_name\files\Pictures\
+   */
+  /* Example of save internal storage asynchronously */
+  val isSuccess = manage(this)
+      .imageAttribute("test", "folder/subfolder/", Extension.PNG)
+      .save(base64, 100)
+      
+  /* Example of save internal storage asynchronously */
+  manage(this)
+      .imageAttribute("test", "folder/subfolder/", Extension.PNG)
+      .save(base64, 100, object : ImageCallback{
+          override fun onSuccess() {
+            //your code
+          }
+          override fun onFailed(ex: Exception) {
+            //your code
+          }
+      })
+      
+      
+  /***
+   * Example of save public storage in DCIM folder
+   */
+  
+  /* Example of save public storage synchronously */
+  manage(this)
+      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
+      .savePublic(base64, 100)
+  
+  /* Example of save public storage asynchronously */
+  manage(this)
+      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
+      .savePublic(base64, 100, object : ImageCallback {
+          override fun onSuccess() {
+              //your code
+          }
+          override fun onFailed(ex: Exception) {
+              //your code
+          }
+      })
+```
+
+#### Load function
+```kotlin
+  /* Example of load internal storage synchronously */
+  val bitmap = manage(this)
+      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .load()
+            
+  /* Example of load internal storage asynchronously */
+  manage(this)
+      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .load(object : LoadImageCallback {
+          override fun onResult(bitmap: Bitmap?) {
+              Log.d(TAG, "Success load image test")
+          }
+          override fun onFailed(ex: Exception) {
+              Log.d(TAG, "Failed load image")
+          }
+      })
+  
+  /* Example of load public storage synchronously */
+  val bitmap = manage(this)
+      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
+      .loadPublic()
+  
+  /* Example of load public storage asynchronously */
+  manage(this)
+      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
+      .loadPublic(object : LoadImageCallback {
+          override fun onResult(bitmap: Bitmap?) {
+              Log.d(TAG, "Success load image test_public")
+          }
+          override fun onFailed(ex: Exception) {
+              Log.d(TAG, "Failed load image")
+          }
+      })
+```
+#### Delete function
+```kotlin
+
+  /* Example of delete internal storage asynchronously */ 
+  val isDeleted = manage(this)
+      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .delete()
+      
+  /* Example of delete internal storage asynchronously */ 
+  manage(this)
+      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .delete(object : ImageCallback {
+          override fun onSuccess() {
+              Log.d(TAG, "Success delete image test")
+          }
+          override fun onFailed(ex: Exception) {
+              Log.d(TAG, "Failed delete image")
+          }
+      })
+    
+  /* Example of delete public storage asynchronously */ 
+  val isDeleted = manage(this)
+      .imageAttribute(imageFile, imageDir, Extension.JPG)
+      .deletePublic(intentSenderRequest)
+      
+  /* Example of delete internal storage asynchronously */ 
+  manage(this)
+      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .delete(object : ImageCallback {
+          override fun onSuccess() {
+              Log.d(TAG, "Success delete image test")
+          }
+          override fun onFailed(ex: Exception) {
+              Log.d(TAG, "Failed delete image")
+          }
+      })
+      
+  /**
+    * for delete public image you need intentSenderRequest
+    */
+    intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+          if (it.resultCode == RESULT_OK) {
+              if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                  /** this line of code will arrive here if the user allow to delete file that's not this app create */
+                  deletePublicImage(imageFile, imageDir)
+              }
+          } else {
+              Log.d(TAG, "Failed delete public image")
+          }
+      }
+```
+
+#### Load Image URI (for public image)
+```kotlin
+    /***
+     * Example getting the image URI of public image
+     */
+    manage(this)
+        .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
+        .loadPublicUri()
+        .also {
+            Log.d(TAG, "uri: $it")
+        }
 ```
