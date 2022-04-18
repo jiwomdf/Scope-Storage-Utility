@@ -4,15 +4,12 @@
 # Android Image Util
 Android Image Util is a library to help you converting and managing your image. <br>
 the benefit of this library are
-1. easy to use <br>
-2. provide shared and private storage image management <br>
-3. provide synchronous & asynchronous solution <br>
-4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> <br>
+1. easy to use ✅<br>
+2. provide shared and private storage image management ✅<br>
+3. provide synchronous & asynchronous solution ✅<br>
+4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> ✅<br>
 
 ![](https://github.com/jiwomdf/ImageHarpa/blob/master/androidimageutil/gif/AndroidImageUtilApp.gif)
-
-## For the full documentation, you can find it here
-[Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
 
 ## Features
 1. Convert image <br>
@@ -29,6 +26,9 @@ the benefit of this library are
   d. save base64 formatted image <br>
   e. save drawable formatted image <br>
   f. save drawable formatted image <br>
+
+## For the full documentation of features above, you can find it here👋
+➡️[Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️
 
 ## How to download the lib
 1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
