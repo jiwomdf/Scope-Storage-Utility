@@ -10,18 +10,24 @@ Here are the list funtion of convert and how to use it
    * @return string of base64 if success, or null if fail
    */
 
-  /* Example of convert bitmap to base64 synchronously */
-  return convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG) ?: ""
+    /* Example of convert bitmap to base64 synchronously */
+    return convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG) ?: ""
+
+    /* Example of convert bitmap to base64 asynchronously */
+    convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG, object: Base64Callback {
+        override fun onResult(base64: String) {
+            Log.d(TAG, "Success convert to base64")
+        }
+        override fun onFailed(ex: Exception) {
+            Log.d(TAG, "Failed convert to base64")
+        }
+    })
   
-  /* Example of convert bitmap to base64 asynchronously */
-  convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG, object: Base64Callback {
-      override fun onResult(base64: String) {
-          Log.d(TAG, "Success convert to base64")
-      }
-      override fun onFailed(ex: Exception) {
-          Log.d(TAG, "Failed convert to base64")
-      }
-  })
+   /**
+   * for the format you can use
+   */
+   Bitmap.CompressFormat.JPEG, Bitmap.CompressFormat.PNG, Bitmap.CompressFormat.WEBP
+
 ```
 
 #### Convert Base64 to Bitmap
@@ -126,6 +132,12 @@ Here are the list funtion of manage and how to use it
    *  @param fileExtension is the file extension, it can be ".png", ".jpeg", ".jpg", ".webp".
    */
    fun imageAttribute(fileName: String, directory: String?, fileExtension: Extension): ManageImage
+   
+   /**
+   * for the fileExtension you can use
+   */
+   Extension.PNG, Extension.JPEG, Extension.JPG, Extension.WEBP
+   
 ```
 
 #### Save function (bitmap, base64, drawable)
