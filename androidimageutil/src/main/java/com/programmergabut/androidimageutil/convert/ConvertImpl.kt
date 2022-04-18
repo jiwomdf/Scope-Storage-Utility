@@ -7,6 +7,8 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Base64
+import android.util.Log
+import com.programmergabut.androidimageutil.AndroidImageUtil.Companion.TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ class ConvertImpl: Convert {
 
             Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (ex: Exception){
-            ex.printStackTrace()
+            Log.e(TAG, "bitmapToBase64: $ex")
             null
         }
     }
@@ -48,7 +50,7 @@ class ConvertImpl: Convert {
                 val result = Base64.encodeToString(byteArray, Base64.DEFAULT)
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "bitmapToBase64: $ex")
                 withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
@@ -59,10 +61,15 @@ class ConvertImpl: Convert {
             if(base64.isEmpty())
                 throw InvalidParameterException("Base64 string cannot be empty")
 
-            val byteArray = Base64.decode(base64, Base64.DEFAULT)
-            BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
+            val cleanImage: String = base64
+                .replace("data:image/png;base64,", "")
+                .replace("data:image/jpeg;base64,", "")
+
+            val byteArray = Base64.decode(cleanImage, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
+            bitmap
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            Log.e(TAG, "base64ToBitmap: $ex")
             null
         }
     }
@@ -77,11 +84,15 @@ class ConvertImpl: Convert {
                 if(base64.isEmpty())
                     throw Exception("Base64 string cannot be empty")
 
-                val byteArray = Base64.decode(base64, Base64.DEFAULT)
+                val cleanImage: String = base64
+                    .replace("data:image/png;base64,", "")
+                    .replace("data:image/jpeg;base64,", "")
+
+                val byteArray = Base64.decode(cleanImage, Base64.DEFAULT)
                 val result = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "base64ToBitmap: $ex")
                 withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
@@ -95,11 +106,15 @@ class ConvertImpl: Convert {
             if(base64.isEmpty())
                 throw InvalidParameterException("Base64 string cannot be empty")
 
-            val byteArray = Base64.decode(base64, Base64.DEFAULT)
+            val cleanImage: String = base64
+                .replace("data:image/png;base64,", "")
+                .replace("data:image/jpeg;base64,", "")
+
+            val byteArray = Base64.decode(cleanImage, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
             BitmapDrawable(Resources.getSystem(), bitmap)
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            Log.e(TAG, "base64ToDrawable: $ex")
             null
         }
     }
@@ -114,13 +129,17 @@ class ConvertImpl: Convert {
                 if(base64.isEmpty())
                     throw Exception("Base64 string cannot be empty")
 
-                val byteArray = Base64.decode(base64, Base64.DEFAULT)
+                val cleanImage: String = base64
+                    .replace("data:image/png;base64,", "")
+                    .replace("data:image/jpeg;base64,", "")
+
+                val byteArray = Base64.decode(cleanImage, Base64.DEFAULT)
                 val bitmap = BitmapFactory.decodeByteArray(byteArray, offset, byteArray.size)
                 val result = BitmapDrawable(Resources.getSystem(), bitmap)
 
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
-                ex.printStackTrace()
+                Log.e(TAG, "base64ToDrawable: $ex")
                 callBack.onFailed(ex)
             }
         }
@@ -142,7 +161,7 @@ class ConvertImpl: Convert {
 
             return bitmap
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            Log.e(TAG, "drawableToBitmap: $ex")
             return null
         }
     }
@@ -171,7 +190,7 @@ class ConvertImpl: Convert {
 
                 withContext(Dispatchers.Main){ callBack.onResult(bitmap) }
             } catch (ex: Exception) {
-                ex.printStackTrace()
+                Log.e(TAG, "drawableToBitmap: $ex")
                 withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
@@ -198,7 +217,7 @@ class ConvertImpl: Convert {
 
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            Log.e(TAG, "drawableToBase64: $ex")
             return null
         }
     }
@@ -228,6 +247,7 @@ class ConvertImpl: Convert {
 
                 withContext(Dispatchers.Main){ callBack.onResult(result) }
             } catch (ex: Exception){
+                Log.e(TAG, "drawableToBase64: $ex")
                 withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
