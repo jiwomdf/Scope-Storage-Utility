@@ -11,6 +11,9 @@ the benefit of this library are
 
 ![](https://github.com/jiwomdf/ImageHarpa/blob/master/androidimageutil/gif/AndroidImageUtilApp.gif)
 
+## For the full documentation, you can find it here
+[Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
+
 ## Features
 1. Convert image <br>
   a. convert bitmap to base64 <br>
@@ -26,7 +29,6 @@ the benefit of this library are
   d. save base64 formatted image <br>
   e. save drawable formatted image <br>
   f. save drawable formatted image <br>
-
 
 ## How to download the lib
 1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
@@ -132,8 +134,7 @@ The location of the image will be save in DCIM
 
 ### On Going Development
 1. Add unit test, instrumented test, and CICD
-2. Write more detail documentation about this lib
-3. Add Compress, Black White, Rotate, and other image processing Utilities
+2. Add Compress, Black White, Rotate, and other image processing Utilities
 
 <br><br>
 Feel free to see and contribute
