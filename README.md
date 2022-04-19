@@ -23,7 +23,7 @@ the benefit of this library are
 | | get public image URI |
 
 
-### For the full documentation of features above, you can find it here👋
+## Full Documentation of The Library Can Be Found Here👋
 ➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️
 
 <br>
@@ -52,84 +52,6 @@ Please include this permission in your application <br>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> 
 ```
-
-## Usage
-In this example I will just show the basic of how to use the library, the all feature can be found here ➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️ <br>
-So there are basically one static variable **convert** for converting features and one static function **manage(context)** for managing features. <br>
-
-### Convert Image 
-```kotlin
-  val captureImage = bitmapImg // Image in bitmap format
-  
-  /* synchronously */
-  val base64 = convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG) 
-  
-  /* asynchronously */
-  convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG, 
-      object : Base64Callback {
-          override fun onResult(base64: String) {
-		//your code
-          }
-
-          override fun onFailed(ex: Exception) {
-		//your code
-          }
-  })
-```
-
-### Manage image 
-#### 1. Private storage
-The image will be saved, deleted, and loaded from the internal application storage location, in
-```
-your_phone_name\Android\data\application_package_name\files\Pictures\
-```
-```kotlin
-
-  /* synchronously */
-  manage(this)
-      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
-      .save(base64,100)
-      
-  /* asynchronously */
-  manage(this)
-      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
-      .save(base64, 100, object : ImageCallback {
-          override fun onSuccess() {
-		//your code
-          }
-          override fun onFailed(ex: Exception) {
-		//your code
-          }
-      })
-```
-#### 2. Public storage
-we can also save & load the image to public storage, so the image will be visible in galery </b>
-The location of the image will be save in DCIM
-```kotlin
-
-  /* synchronously */
-  manage(this)
-      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
-      .savePublic(base64,100)
-      
-  /* asynchronously */
-  manage(this)
-      .imageAttribute("test", "myfolder/subfolder", Extension.PNG)
-      .savePublic(base64, 100, object : ImageCallback {
-          override fun onSuccess() {
-		//your code
-          }
-          override fun onFailed(ex: Exception) {
-		//your code
-          }
-      })
-```
-
-### Information 
-1. For syncronize funtion, it will always returned <b>true</b> if the process is success and <b>false</b> if it failed
-2. For tracing the error you can try by searching the logcat of <b>"AndroidImageUtil"</b>
-3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
-4. To see all feature & how to use it, you can check it here ➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️ <br>
 
 ### On Going Development
 1. Add unit test, instrumented test, and CICD
