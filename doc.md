@@ -1,7 +1,22 @@
-## Convert
-Here are the list funtion of convert and how to use it
+# Android Image Util Docs
 
-#### Convert Bitmap to Base64
+## Table of Contents
+1. [Convert Image Format (bitmap, base64, drawable)](#convert)
+2. [Manage Image Storage](#manage) <br>
+  a. [Save](#save) <br>
+  b. [Load](#load) <br>
+  c. [Delete](#delete) <br>
+  d. [Load Image Uri](#loaduri)
+
+Before starting with the lib, here are some useful information
+```
+1. For syncronize funtion, it will always returned true if the process is success and false if it failed
+2. For tracing the error you can try by searching the logcat of "AndroidImageUtil"
+3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
+```
+
+## Convert Image Format (bitmap, base64, drawable)
+#### Convert Bitmap to Base64 <a name="convert"></a>
 ```kotlin
   /**
    * @param bitmap is the image in bitmap format.
@@ -118,10 +133,9 @@ Here are the list funtion of convert and how to use it
        }
    })
 ```
+<br>
 
-## Manage
-Here are the list funtion of manage and how to use it
-
+## Manage Image Storage <a name="manage"></a>
 #### Manage function
 ```kotlin
   /**
@@ -140,7 +154,7 @@ Here are the list funtion of manage and how to use it
    
 ```
 
-#### Save function (bitmap, base64, drawable)
+#### Save function (bitmap, base64, drawable) <a name="save"></a>
 ```kotlin
   /***
    * Example of saving base64 to internal storage 
@@ -186,7 +200,7 @@ Here are the list funtion of manage and how to use it
       })
 ```
 
-#### Load function
+#### Load function <a name="load"></a>
 ```kotlin
   /* Example of load internal storage synchronously */
   val bitmap = manage(this)
@@ -222,7 +236,7 @@ Here are the list funtion of manage and how to use it
           }
       })
 ```
-#### Delete function
+#### Delete function <a name="delete"></a>
 ```kotlin
 
   /* Example of delete internal storage asynchronously */ 
@@ -274,7 +288,7 @@ Here are the list funtion of manage and how to use it
       }
 ```
 
-#### Load Image URI (for public image)
+#### Load Image URI (for public image) <a name="loaduri"></a>
 ```kotlin
     /***
      * Example getting the image URI of public image
