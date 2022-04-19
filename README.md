@@ -29,7 +29,7 @@ the benefit of this library are
 <br>
 
 ## How to download the lib
-1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
+Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
 ```kotlin
 	allprojects {
 		repositories {
@@ -57,5 +57,5 @@ Please include this permission in your application <br>
 1. Add unit test, instrumented test, and CICD
 2. Add Compress, Black White, Rotate, and other image processing Utilities
 
-<br><br>
+<br>
 Feel free to see and contribute
