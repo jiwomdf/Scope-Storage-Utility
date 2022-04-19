@@ -3,10 +3,10 @@
 ## Table of Contents
 1. [Convert Image Format (bitmap, base64, drawable)](#convert)
 2. [Manage Image Storage](#manage) <br>
-  a. [Save](#save) <br>
-  b. [Load](#load) <br>
-  c. [Delete](#delete) <br>
-  d. [Load Image Uri](#loaduri)
+  a. [Save Private And Public Image](#save) <br>
+  b. [Load Private And Public Image](#load) <br>
+  c. [Delete Private And Public Image](#delete) <br>
+  d. [Load Image Uri of Public Image](#loaduri)
 
 Before starting with the lib, here are some useful information
 ```
