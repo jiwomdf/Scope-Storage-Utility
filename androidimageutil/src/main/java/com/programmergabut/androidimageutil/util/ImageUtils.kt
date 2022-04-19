@@ -98,6 +98,12 @@ fun validateReadPermission(context: Context) {
         throw SecurityException("Read external storage permission is not granted")
 }
 
+fun deleteFileIfExist(file: File) {
+    if(file.exists()){
+        file.delete()
+    }
+}
+
 fun decodeByteArray(base64: String): Bitmap {
     val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
     return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
@@ -183,5 +189,14 @@ fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: Act
                 IntentSenderRequest.Builder(sender).build()
             )
         }
+    }
+}
+
+fun deleteExistingPublicImage(context: Context, collection: Uri, projection: Array<String>, where: String){
+    try {
+        val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: return
+        context.contentResolver.delete(photoUri, null, null)
+    } catch (e: SecurityException) {
+        e.printStackTrace()
     }
 }

@@ -126,6 +126,7 @@ class ManageImageImpl(
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
+            deleteFileIfExist(file)
             val outputStream = FileOutputStream(file)
             compressBitmap(outputStream, bitmap, quality, fileExtension)
             true
@@ -145,6 +146,7 @@ class ManageImageImpl(
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
+                deleteFileIfExist(file)
                 runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -173,6 +175,7 @@ class ManageImageImpl(
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
+            deleteFileIfExist(file)
             val outputStream = FileOutputStream(file)
             compressBitmap(outputStream, bitmap, quality, fileExtension)
             true
@@ -194,6 +197,7 @@ class ManageImageImpl(
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
+                deleteFileIfExist(file)
                 runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -220,6 +224,7 @@ class ManageImageImpl(
             val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
             val file = File(directory, "$fileName$extension")
+            deleteFileIfExist(file)
             val outputStream = FileOutputStream(file)
             compressBitmap(outputStream, bitmap, quality, fileExtension)
             true
@@ -242,6 +247,7 @@ class ManageImageImpl(
                 val directory = getOrCreateDirectoryIfEmpty(expectedDir)
 
                 val file = File(directory, "$fileName$extension")
+                deleteFileIfExist(file)
                 runCatching {
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -341,6 +347,7 @@ class ManageImageImpl(
             val directory = "${env}${File.separator}$finalDirectory"
             val expectedDir = File(directory)
             getOrCreateDirectoryIfEmpty(expectedDir)
+            deleteExistingPublicImage(context, collection, projection, where)
             savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
         } catch (ex: Exception){
             Log.e(TAG, "save: ${ex.message}")
@@ -356,6 +363,7 @@ class ManageImageImpl(
                 val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory"
                 val expectedDir = File(directory)
                 getOrCreateDirectoryIfEmpty(expectedDir)
+                deleteExistingPublicImage(context, collection, projection, where)
                 val isSuccess = savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
                 withContext(Dispatchers.Main){
                     if(isSuccess) {
@@ -382,6 +390,7 @@ class ManageImageImpl(
             val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
             val expectedDir = File(directory)
             getOrCreateDirectoryIfEmpty(expectedDir)
+            deleteExistingPublicImage(context, collection, projection, where)
             savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
         } catch (ex: Exception){
             Log.e(TAG, "save: ${ex.message}")
@@ -399,6 +408,7 @@ class ManageImageImpl(
                 val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
                 val expectedDir = File(directory)
                 getOrCreateDirectoryIfEmpty(expectedDir)
+                deleteExistingPublicImage(context, collection, projection, where)
                 val isSuccess = savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
                 withContext(Dispatchers.Main){
                     if(isSuccess) {
@@ -423,6 +433,7 @@ class ManageImageImpl(
             val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
             val expectedDir = File(directory)
             getOrCreateDirectoryIfEmpty(expectedDir)
+            deleteExistingPublicImage(context, collection, projection, where)
             val bitmap = drawableToBitmap(drawable)
             savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
         } catch (ex: Exception){
@@ -439,6 +450,7 @@ class ManageImageImpl(
                 val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
                 val expectedDir = File(directory)
                 getOrCreateDirectoryIfEmpty(expectedDir)
+                deleteExistingPublicImage(context, collection, projection, where)
                 val bitmap = drawableToBitmap(drawable)
                 val isSuccess = savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
                 withContext(Dispatchers.Main){
