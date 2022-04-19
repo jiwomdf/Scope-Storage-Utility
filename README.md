@@ -4,29 +4,29 @@
 # Android Image Util
 Android Image Util is a library to help you converting and managing your image. <br>
 the benefit of this library are
-1. easy to use <br>
-2. provide shared and private storage image management <br>
-3. provide synchronous & asynchronous solution <br>
-4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> <br>
+1. easy to use ✅<br>
+2. provide shared and private storage image management ✅<br>
+3. provide synchronous & asynchronous solution ✅<br>
+4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> ✅<br>
 
 ![](https://github.com/jiwomdf/ImageHarpa/blob/master/androidimageutil/gif/AndroidImageUtilApp.gif)
 
-## Features
-1. Convert image <br>
-  a. convert bitmap to base64 <br>
-  b. convert base64 to Bitmap <br>
-  c. convert base64 to Drawable <br>
-  d. convert drawable to Bitmap <br>
-  e. convert drawable to base64 <br>
-  
-2. Manage image <br>
-  a. load image <br>
-  b. delete image <br>
-  c. save bitmap formatted image <br>
-  d. save base64 formatted image <br>
-  e. save drawable formatted image <br>
-  f. save drawable formatted image <br>
+## Features  
+| Convert image | Manage image  |
+| :---   | :--- |
+| convert bitmap to base64 | load image |
+| convert base64 to Bitmap | delete image |
+| convert base64 to Drawable | save bitmap formatted image |
+| convert drawable to Bitmap | save base64 formatted image |
+| convert drawable to base64 | save drawable formatted image |
+| | save drawable formatted image |
+| | get public image URI |
 
+
+### For the full documentation of features above, you can find it here👋
+➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️
+
+<br>
 
 ## How to download the lib
 1. Add jitpack package repository in your root build.gradle at the allprojects inside repositories:
@@ -54,7 +54,7 @@ Please include this permission in your application <br>
 ```
 
 ## Usage
-In this example I will just show the basic of how to use the library, the all feature can be found when you try it! <br>
+In this example I will just show the basic of how to use the library, the all feature can be found here ➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️ <br>
 So there are basically one static variable **convert** for converting features and one static function **manage(context)** for managing features. <br>
 
 ### Convert Image 
@@ -129,11 +129,11 @@ The location of the image will be save in DCIM
 1. For syncronize funtion, it will always returned <b>true</b> if the process is success and <b>false</b> if it failed
 2. For tracing the error you can try by searching the logcat of <b>"AndroidImageUtil"</b>
 3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
+4. To see all feature & how to use it, you can check it here ➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️ <br>
 
 ### On Going Development
 1. Add unit test, instrumented test, and CICD
-2. Write more detail documentation about this lib
-3. Add Compress, Black White, Rotate, and other image processing Utilities
+2. Add Compress, Black White, Rotate, and other image processing Utilities
 
 <br><br>
 Feel free to see and contribute
