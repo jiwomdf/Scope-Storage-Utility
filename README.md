@@ -8,6 +8,9 @@ the benefit of this library are
 2. provide shared and private storage image management ✅<br>
 3. provide synchronous & asynchronous solution ✅<br>
 4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> ✅<br>
+5. more info, see the full doc here [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
+
+
 
 ![](https://github.com/jiwomdf/ImageHarpa/blob/master/androidimageutil/gif/AndroidImageUtilApp.gif)
 
