@@ -1,7 +1,13 @@
 # Android Image Util Docs
 
 ## Table of Contents
-1. [Convert Image Format (bitmap, base64, drawable)](#convert)
+1. [Convert Image Format (bitmap, base64, drawable)](#convert) <br>
+  a. [Convert Bitmap to Base64](#convert_bitmap_to_base64) <br>
+  b. [Convert Base64 to Bitmap](#convert_base64_to_bitmap) <br>
+  c. [Convert Base64 to Drawable](#convert_base64_to_drawable) <br>
+  d. [Convert Drawable to Bitmap](#convert_drawable_to_bitmap) <br>
+  e. [Convert Drawahpe to Base64](#convert_drawable_to_base64)
+
 2. [Manage Image Storage](#manage) <br>
   a. [Save Private And Public Image](#save) <br>
   b. [Load Private And Public Image](#load) <br>
@@ -15,8 +21,8 @@ Before starting with the lib, here are some useful information
 3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
 ```
 
-## Convert Image Format (bitmap, base64, drawable)
-#### Convert Bitmap to Base64 <a name="convert"></a>
+## Convert Image Format (bitmap, base64, drawable) <a name="convert"></a>
+#### Convert Bitmap to Base64 <a name="convert_bitmap_to_base64"></a>
 ```kotlin
   /**
    * @param bitmap is the image in bitmap format.
@@ -45,7 +51,7 @@ Before starting with the lib, here are some useful information
 
 ```
 
-#### Convert Base64 to Bitmap
+#### Convert Base64 to Bitmap <a name="convert_base64_to_bitmap"></a>
 ```kotlin
   /**
    * convert base64 to Bitmap
@@ -67,7 +73,7 @@ Before starting with the lib, here are some useful information
    })
 ```
 
-#### Convert Base64 To Drawable
+#### Convert Base64 To Drawable <a name="convert_base64_to_drawable"></a>
 ```kotlin
   /**
    * convert base64 to Drawable
@@ -90,7 +96,7 @@ Before starting with the lib, here are some useful information
    })
 ```
 
-#### Convert Drawable To Bitmap
+#### Convert Drawable To Bitmap <a name="convert_drawable_to_bitmap"></a>
 ```kotlin
   /**
    * convert drawable to Bitmap
@@ -112,7 +118,7 @@ Before starting with the lib, here are some useful information
    })
 ```
 
-#### Convert Drawable to Base64
+#### Convert Drawable to Base64 <a name="convert_drawable_to_base64"></a>
 ```kotlin
   /**
    * convert drawable to base64
@@ -239,7 +245,7 @@ Before starting with the lib, here are some useful information
 #### Delete function <a name="delete"></a>
 ```kotlin
 
-  /* Example of delete internal storage asynchronously */ 
+  /* Example of delete internal storage synchronously */ 
   val isDeleted = manage(this)
       .imageAttribute("test","folder/subfolder/", Extension.PNG)
       .delete()
@@ -256,15 +262,15 @@ Before starting with the lib, here are some useful information
           }
       })
     
-  /* Example of delete public storage asynchronously */ 
+  /* Example of delete public storage synchronously */ 
   val isDeleted = manage(this)
       .imageAttribute(imageFile, imageDir, Extension.JPG)
       .deletePublic(intentSenderRequest)
       
-  /* Example of delete internal storage asynchronously */ 
+  /* Example of delete public storage asynchronously */ 
   manage(this)
       .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .delete(object : ImageCallback {
+      .deletePublic(object : ImageCallback {
           override fun onSuccess() {
               Log.d(TAG, "Success delete image test")
           }
