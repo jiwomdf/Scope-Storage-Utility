@@ -53,9 +53,5 @@ Please include this permission in your application <br>
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> 
 ```
 
-### On Going Development
-1. Add unit test, instrumented test, and CICD
-2. Add Compress, Black White, Rotate, and other image processing Utilities
-
 <br>
 Feel free to see and contribute
