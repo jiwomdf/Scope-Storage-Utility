@@ -33,6 +33,12 @@ class ManageImage(
             override fun onFailed(ex: Exception) { callBack.onFailed(ex) }
         })
     }
+    fun delete(block: () -> Unit, catch: ((e: Exception) -> Unit)? = null){
+        delete.d(object: ImageCallback {
+            override fun onSuccess() { block.invoke() }
+            override fun onFailed(ex: Exception) { catch?.invoke(ex) }
+        })
+    }
     fun deletePublic(
         intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>
     ) = delete.dPublic(intentSenderRequest)
@@ -125,7 +131,7 @@ class ManageImage(
             override fun onFailed(ex: Exception) {catch?.invoke(ex)}
         })
     }
-    fun savePublic(bitmap: Bitmap, quality: Int): Boolean = save.s(bitmap, quality)
+    fun savePublic(bitmap: Bitmap, quality: Int): Boolean = save.sPublic(bitmap, quality)
     fun savePublic(bitmap: Bitmap, quality: Int, imageCallBack: ImageCallback){
         save.sPublic(bitmap, quality, object : ImageCallback {
             override fun onSuccess() {imageCallBack.onSuccess()}
@@ -133,12 +139,12 @@ class ManageImage(
         })
     }
     fun savePublic(bitmap: Bitmap, quality: Int, block: () -> Unit, catch: ((e: Exception) -> Unit)? = null){
-        save.s(bitmap, quality, object : ImageCallback {
+        save.sPublic(bitmap, quality, object : ImageCallback {
             override fun onSuccess() {block.invoke()}
             override fun onFailed(ex: Exception) {catch?.invoke(ex)}
         })
     }
-    fun savePublic(base64: String, quality: Int): Boolean = save.s(base64, quality)
+    fun savePublic(base64: String, quality: Int): Boolean = save.sPublic(base64, quality)
     fun savePublic(base64: String, quality: Int, imageCallBack: ImageCallback) {
         save.sPublic(base64, quality, object : ImageCallback {
             override fun onSuccess() {imageCallBack.onSuccess()}
@@ -146,12 +152,12 @@ class ManageImage(
         })
     }
     fun savePublic(base64: String, quality: Int, block: () -> Unit, catch: ((e: Exception) -> Unit)? = null){
-        save.s(base64, quality, object : ImageCallback {
+        save.sPublic(base64, quality, object : ImageCallback {
             override fun onSuccess() {block.invoke()}
             override fun onFailed(ex: Exception) {catch?.invoke(ex)}
         })
     }
-    fun savePublic(drawable: Drawable, quality: Int): Boolean = save.s(drawable, quality)
+    fun savePublic(drawable: Drawable, quality: Int): Boolean = save.sPublic(drawable, quality)
     fun savePublic(drawable: Drawable, quality: Int, imageCallBack: ImageCallback){
         save.sPublic(drawable, quality, object : ImageCallback {
             override fun onSuccess() {imageCallBack.onSuccess()}
@@ -159,7 +165,7 @@ class ManageImage(
         })
     }
     fun savePublic(drawable: Drawable, quality: Int, block: () -> Unit, catch: ((e: Exception) -> Unit)? = null){
-        save.s(drawable, quality, object : ImageCallback {
+        save.sPublic(drawable, quality, object : ImageCallback {
             override fun onSuccess() {block.invoke()}
             override fun onFailed(ex: Exception) {catch?.invoke(ex)}
         })
