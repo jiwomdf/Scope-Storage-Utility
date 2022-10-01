@@ -21,6 +21,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
+val isUsingScopeStorage = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
 fun compressBitmap(outStream: OutputStream, bitmap: Bitmap, quality: Int, fileExtension: Extension) {
     when (fileExtension) {
         Extension.PNG -> {
@@ -130,26 +132,30 @@ fun drawableToBitmap(drawable: Drawable): Bitmap {
 }
 
 fun loadPublicPhotoUri(context: Context, collection: Uri, projection: Array<String>, where: String): Uri? {
-    val photos = mutableListOf<Uri>()
-    context.contentResolver.query(
-        collection,
-        projection,
-        where,
-        null,
-        "${MediaStore.Images.Media.DISPLAY_NAME} ASC"
-    )?.use { cursor ->
-        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-        while (cursor.moveToNext()) {
-            val id = cursor.getLong(idColumn)
-            val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-            photos.add(contentUri)
-        }
-        return photos.first()
-    } ?: return null
+    try {
+        val photos = mutableListOf<Uri>()
+        context.contentResolver.query(
+            collection,
+            projection,
+            where,
+            null,
+            "${MediaStore.Images.Media.DISPLAY_NAME} ASC"
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                photos.add(contentUri)
+            }
+            return photos.firstOrNull()
+        } ?: return null
+    } catch (ex: Exception) {
+        return null
+    }
 }
 
 fun savePublicImage(context: Context, bitmap: Bitmap, directory: String, quality: Int, fileName: String, fileExtension: Extension): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    return if (isUsingScopeStorage) {
             val mediaContentUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             val type = mapMimeType(fileExtension)
             val values = ContentValues().apply {
@@ -163,7 +169,8 @@ fun savePublicImage(context: Context, bitmap: Bitmap, directory: String, quality
             true
     } else {
         val imagePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
-        val file = File(imagePath, fileName)
+        val fileExt = setExtension(fileExtension)
+        val file = File(imagePath, "$fileName$fileExt")
         val outputStream = FileOutputStream(file)
         compressBitmap(outputStream, bitmap, quality, fileExtension)
         true

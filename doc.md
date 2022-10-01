@@ -2,17 +2,17 @@
 
 ## Table of Contents
 1. [Convert Image Format (bitmap, base64, drawable)](#convert) <br>
-  a. [Convert Bitmap to Base64](#convert_bitmap_to_base64) <br>
-  b. [Convert Base64 to Bitmap](#convert_base64_to_bitmap) <br>
-  c. [Convert Base64 to Drawable](#convert_base64_to_drawable) <br>
-  d. [Convert Drawable to Bitmap](#convert_drawable_to_bitmap) <br>
-  e. [Convert Drawable to Base64](#convert_drawable_to_base64)
+   a. [Convert Bitmap to Base64](#convert_bitmap_to_base64) <br>
+   b. [Convert Base64 to Bitmap](#convert_base64_to_bitmap) <br>
+   c. [Convert Base64 to Drawable](#convert_base64_to_drawable) <br>
+   d. [Convert Drawable to Bitmap](#convert_drawable_to_bitmap) <br>
+   e. [Convert Drawable to Base64](#convert_drawable_to_base64)
 
 2. [Manage Image Storage](#manage) <br>
-  a. [Save Private And Public Image](#save) <br>
-  b. [Load Private And Public Image](#load) <br>
-  c. [Delete Private And Public Image](#delete) <br>
-  d. [Load Image Uri of Public Image](#loaduri)
+   a. [Save Private And Public Image](#save) <br>
+   b. [Load Private And Public Image](#load) <br>
+   c. [Delete Private And Public Image](#delete) <br>
+   d. [Load Image Uri of Public Image](#loaduri)
 
 Before starting with the lib, here are some useful information
 ```
