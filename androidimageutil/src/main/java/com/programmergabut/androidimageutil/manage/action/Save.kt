@@ -64,14 +64,10 @@ class Save(
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
                 }
-                withContext(Dispatchers.Main){
-                    imageCallBack.onSuccess()
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onSuccess() }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
-                withContext(Dispatchers.Main){
-                    imageCallBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onFailed(ex) }
             }
         }
 
@@ -115,14 +111,10 @@ class Save(
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
                 }
-                withContext(Dispatchers.Main){
-                    imageCallBack.onSuccess()
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onSuccess() }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
-                withContext(Dispatchers.Main){
-                    imageCallBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onFailed(ex) }
             }
         }
     }
@@ -165,14 +157,10 @@ class Save(
                     val outputStream = FileOutputStream(file)
                     compressBitmap(outputStream, bitmap, quality, fileExtension)
                 }
-                withContext(Dispatchers.Main){
-                    imageCallBack.onSuccess()
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onSuccess() }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
-                withContext(Dispatchers.Main){
-                    imageCallBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onFailed(ex) }
             }
         }
     }
@@ -203,17 +191,11 @@ class Save(
                 deleteExistingPublicImage(context, collection, projection, where)
                 val isSuccess = savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
                 withContext(Dispatchers.Main){
-                    if(isSuccess) {
-                        imageCallBack.onSuccess()
-                    } else {
-                        imageCallBack.onFailed(Exception())
-                    }
+                    if(isSuccess) imageCallBack.onSuccess() else imageCallBack.onFailed(Exception())
                 }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
-                withContext(Dispatchers.Main){
-                    imageCallBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onFailed(ex) }
             }
         }
     }
@@ -249,11 +231,7 @@ class Save(
                 deleteExistingPublicImage(context, collection, projection, where)
                 val isSuccess = savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
                 withContext(Dispatchers.Main){
-                    if(isSuccess) {
-                        imageCallBack.onSuccess()
-                    } else {
-                        imageCallBack.onFailed(Exception())
-                    }
+                    if(isSuccess) imageCallBack.onSuccess() else imageCallBack.onFailed(Exception())
                 }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
@@ -292,17 +270,11 @@ class Save(
                 val bitmap = drawableToBitmap(drawable)
                 val isSuccess = savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
                 withContext(Dispatchers.Main){
-                    if(isSuccess) {
-                        imageCallBack.onSuccess()
-                    } else {
-                        imageCallBack.onFailed(Exception())
-                    }
+                    if(isSuccess) imageCallBack.onSuccess() else imageCallBack.onFailed(Exception())
                 }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
-                withContext(Dispatchers.Main){
-                    imageCallBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main){ imageCallBack.onFailed(ex) }
             }
         }
     }

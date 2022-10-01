@@ -167,7 +167,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of deleting public image
          */
         manage(this)
-            .imageAttribute(imageFile, imageDir, Extension.JPG)
+            .imageAttribute(imageFile, imageDir, Extension.PNG)
             .deletePublic(intentSenderRequest,{
                 Log.d(TAG, "Success delete image $imageDir/$imageFile")
             },{

@@ -51,11 +51,8 @@ class Delete(
 
             try {
                 val file = File(directory, "$fileName$extension")
-                if(file.delete()){
-                    withContext(Dispatchers.Main) { callBack.onSuccess() }
-                } else {
-                    throw Exception("file not deleted")
-                }
+                if(file.delete()) withContext(Dispatchers.Main){callBack.onSuccess()}
+                else throw Exception("file not deleted")
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "delete: ${ex.message}")
                 withContext(Dispatchers.Main) {
@@ -69,8 +66,16 @@ class Delete(
         return try {
             validateFileName(fileName)
             validateReadPermission(context)
-            val uri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
-            deletePublicImage(context, uri, intentSenderRequest)
+            if(isUsingScopeStorage){
+                val uri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                deletePublicImage(context, uri, intentSenderRequest)
+            } else {
+                val imagePath = Environment.getExternalStoragePublicDirectory("${env}${File.separator}$finalDirectory").absolutePath
+                validateDirectory(File(imagePath))
+                val fileExt = setExtension(fileExtension)
+                val file = File(imagePath, "$fileName$fileExt")
+                file.delete()
+            }
             true
         } catch (ex: Exception){
             Log.e(AndroidImageUtil.TAG, "deletePublic: ${ex.message}", )
@@ -83,14 +88,20 @@ class Delete(
             try {
                 validateFileName(fileName)
                 validateReadPermission(context)
-                val uri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
-                deletePublicImage(context, uri, intentSenderRequest)
+                if(isUsingScopeStorage){
+                    val uri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                    deletePublicImage(context, uri, intentSenderRequest)
+                } else {
+                    val imagePath = Environment.getExternalStoragePublicDirectory("${env}${File.separator}$finalDirectory").absolutePath
+                    validateDirectory(File(imagePath))
+                    val fileExt = setExtension(fileExtension)
+                    val file = File(imagePath, "$fileName$fileExt")
+                    if(file.delete()) callBack.onSuccess() else callBack.onFailed(Exception(("can't delete photo")))
+                }
                 withContext(Dispatchers.Main) { callBack.onSuccess() }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "deletePublic: ${ex.message}")
-                withContext(Dispatchers.Main) {
-                    callBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main) { callBack.onFailed(ex) }
             }
         }
     }

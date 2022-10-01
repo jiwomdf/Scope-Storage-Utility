@@ -57,14 +57,9 @@ class Load(
 
                 val file = File(directory, "$fileName$extension")
                 val result = BitmapFactory.decodeFile(file.path)
-                withContext(Dispatchers.Main) {
-                    callBack.onResult(result)
-                }
+                withContext(Dispatchers.Main) { callBack.onResult(result) }
             } catch (ex: Exception) {
-                Log.e(AndroidImageUtil.TAG, "load: ${ex.message}")
-                withContext(Dispatchers.Main) {
-                    callBack.onResult(null)
-                }
+                withContext(Dispatchers.Main) { callBack.onResult(null) }
             }
         }
     }
@@ -99,19 +94,15 @@ class Load(
                     loadBitmapFromUri(context, photoUri)
                 } else {
                     val imagePath = Environment.getExternalStoragePublicDirectory("${env}${File.separator}$finalDirectory").absolutePath
-                    //validateDirectory(File(imagePath))
+                    validateDirectory(File(imagePath))
                     val fileExt = setExtension(fileExtension)
                     val file = File(imagePath, "$fileName$fileExt")
                     BitmapFactory.decodeFile(file.path)
                 }
-                withContext(Dispatchers.Main){
-                    callBack.onResult(bitmap)
-                }
+                withContext(Dispatchers.Main){ callBack.onResult(bitmap) }
             } catch (ex: Exception){
                 Log.e(AndroidImageUtil.TAG, "loadPublic: ${ex.message}", )
-                withContext(Dispatchers.Main){
-                    callBack.onFailed(ex)
-                }
+                withContext(Dispatchers.Main){ callBack.onFailed(ex) }
             }
         }
     }
