@@ -81,14 +81,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         /***
          * Example of convert to base64 with callback
          */
-        convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG, object:
-            Base64Callback {
-            override fun onResult(base64: String) {
-                Log.d(TAG, "Success convert to base64", )
-            }
-            override fun onFailed(ex: Exception) {
-                Log.d(TAG, "Failed convert to base64")
-            }
+        convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG,{
+            Log.d(TAG, "Success convert to base64", )
+        }, {
+            Log.d(TAG, "Failed convert to base64")
         })
 
         /***
@@ -110,17 +106,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          */
         manage(this)
             .imageAttribute("test","folder/subfolder/", Extension.PNG)
-            .load(object : LoadImageCallback {
-                override fun onResult(bitmap: Bitmap?) {
-                    Log.d(TAG, "Success load image test")
-                    Glide.with(applicationContext)
-                        .load(bitmap)
-                        .into(binding.ivImage1)
-                    deleteImage()
-                }
-                override fun onFailed(ex: Exception) {
-                    Log.d(TAG, "Failed load image")
-                }
+            .load({
+                Glide.with(applicationContext)
+                    .load(it)
+                    .into(binding.ivImage1)
+                deleteImage()
             })
     }
 
