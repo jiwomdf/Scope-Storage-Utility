@@ -4,11 +4,13 @@
 # Android Image Util
 Android Image Util is a library to help you converting and managing your image. <br>
 the benefit of this library are
-1. easy to use ✅<br>
-2. provide shared and private storage image management ✅<br>
-3. provide synchronous & asynchronous solution ✅<br>
-4. safe from throwing an error, the error can be trace by searching the logcat of <b>"AndroidImageUtil"</b> ✅<br>
-5. for more detail info, see the full doc here [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
+1. Easy to use ✅<br>
+2. Provide <b>shared and private storage</b> image management <br>
+```as now for the android API 30+ there is a new rule of saving data to public storage ```✅<br>
+3. Provide synchronous & asynchronous solution ✅<br>
+4. Safe from throwing an error <br>
+```the error can be trace by searching the logcat of "AndroidImageUtil"``` ✅<br>
+5. For more detail info, see the full doc here [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
 
 
 
@@ -17,12 +19,12 @@ the benefit of this library are
 ## Features  
 | Convert image | Manage image  |
 | :---   | :--- |
-| convert bitmap to base64 | load image |
-| convert base64 to Bitmap | delete image |
-| convert base64 to Drawable | save bitmap formatted image |
-| convert drawable to Bitmap | save base64 formatted image |
-| convert drawable to base64 | save drawable formatted image |
-| | save drawable formatted image |
+| convert bitmap to base64 | load image (private & shared) |
+| convert base64 to Bitmap | delete image (private & shared) |
+| convert base64 to Drawable | save bitmap formatted image (private & shared) |
+| convert drawable to Bitmap | save base64 formatted image (private & shared) |
+| convert drawable to base64 | save drawable formatted image (private & shared) |
+| | save drawable formatted image (private & shared) |
 | | get public image URI |
 
 
