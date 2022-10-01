@@ -2,17 +2,17 @@
 
 ## Table of Contents
 1. [Convert Image Format (bitmap, base64, drawable)](#convert) <br>
-  a. [Convert Bitmap to Base64](#convert_bitmap_to_base64) <br>
-  b. [Convert Base64 to Bitmap](#convert_base64_to_bitmap) <br>
-  c. [Convert Base64 to Drawable](#convert_base64_to_drawable) <br>
-  d. [Convert Drawable to Bitmap](#convert_drawable_to_bitmap) <br>
-  e. [Convert Drawable to Base64](#convert_drawable_to_base64)
+   a. [Convert Bitmap to Base64](#convert_bitmap_to_base64) <br>
+   b. [Convert Base64 to Bitmap](#convert_base64_to_bitmap) <br>
+   c. [Convert Base64 to Drawable](#convert_base64_to_drawable) <br>
+   d. [Convert Drawable to Bitmap](#convert_drawable_to_bitmap) <br>
+   e. [Convert Drawable to Base64](#convert_drawable_to_base64)
 
 2. [Manage Image Storage](#manage) <br>
-  a. [Save Private And Public Image](#save) <br>
-  b. [Load Private And Public Image](#load) <br>
-  c. [Delete Private And Public Image](#delete) <br>
-  d. [Load Image Uri of Public Image](#loaduri)
+   a. [Save Private And Public Image](#save) <br>
+   b. [Load Private And Public Image](#load) <br>
+   c. [Delete Private And Public Image](#delete) <br>
+   d. [Load Image Uri of Public Image](#loaduri)
 
 Before starting with the lib, here are some useful information
 ```
@@ -35,13 +35,10 @@ Before starting with the lib, here are some useful information
     return convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG) ?: ""
 
     /* Example of convert bitmap to base64 asynchronously */
-    convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG, object: Base64Callback {
-        override fun onResult(base64: String) {
-            Log.d(TAG, "Success convert to base64")
-        }
-        override fun onFailed(ex: Exception) {
-            Log.d(TAG, "Failed convert to base64")
-        }
+    convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG, {
+        Log.d(TAG, "Success convert to base64")
+    },{
+        Log.d(TAG, "Failed convert to base64")
     })
   
    /**
@@ -63,13 +60,10 @@ Before starting with the lib, here are some useful information
    val bitmap = convert.base64ToBitmap(base64, 0)
 
    /* Example of convert base64 to Bitmap with asynchronously */
-   convert.base64ToBitmap(base64, 0, object: BitmapCallback {
-       override fun onResult(bitmap: Bitmap) {
-           Log.d(TAG, "bitmap: $bitmap")
-       }
-       override fun onFailed(ex: Exception) {
-           Log.d(TAG, "ex: $ex")
-       }
+   convert.base64ToBitmap(base64, 0,{
+      Log.d(TAG, "bitmap: $bitmap")
+   },{
+      Log.d(TAG, "ex: $ex")  
    })
 ```
 
@@ -86,13 +80,10 @@ Before starting with the lib, here are some useful information
         Log.e(TAG, "drawable: $drawable")
 
    /* Example of convert base64 to Drawable asynchronously */
-   convert.base64ToDrawable(base64, 0, object: DrawableCallback {
-       override fun onResult(drawable: Drawable) {
-           Log.e(TAG, "drawable: $drawable")
-       }
-       override fun onFailed(ex: Exception) {
-           Log.e(TAG, "drawable: $ex")
-       }
+   convert.base64ToDrawable(base64, 0, {
+       Log.e(TAG, "drawable: $drawable")
+   },{
+       Log.e(TAG, "drawable: $ex")
    })
 ```
 
@@ -108,13 +99,10 @@ Before starting with the lib, here are some useful information
    Log.e(TAG, "bitmap: $bitmap")
 
    /* Example of convert drawable to bitmap asynchronously */
-   convert.drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!, object: BitmapCallback{
-       override fun onResult(bitmap: Bitmap) {
-           Log.e(TAG, "bitmap: $bitmap")
-       }
-       override fun onFailed(ex: Exception) {
-           Log.e(TAG, "ex: $ex")
-       }
+   convert.drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!, {
+       Log.e(TAG, "bitmap: $bitmap")
+   },{
+       Log.e(TAG, "ex: $ex")
    })
 ```
 
@@ -130,13 +118,10 @@ Before starting with the lib, here are some useful information
         Log.e(TAG, "base64: $base642")
 
    /* Example of convert drawable to base64 asynchronously */
-   convert.drawableToBase64(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!, object: Base64Callback{
-       override fun onResult(base64: String) {
-           Log.e(TAG, "base64: $base64")
-       }
-       override fun onFailed(ex: Exception) {
-           Log.e(TAG, "ex: $ex")
-       }
+   convert.drawableToBase64(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!, {
+       Log.e(TAG, "base64: $base64")
+   },{
+       Log.e(TAG, "ex: $ex")
    })
 ```
 <br>
@@ -174,13 +159,10 @@ Before starting with the lib, here are some useful information
   /* Example of save internal storage asynchronously */
   manage(this)
       .imageAttribute("test", "folder/subfolder/", Extension.PNG)
-      .save(base64, 100, object : ImageCallback{
-          override fun onSuccess() {
-            //your code
-          }
-          override fun onFailed(ex: Exception) {
-            //your code
-          }
+      .save(base64, 100, {
+        //success
+      },{
+        //failed
       })
       
       
@@ -196,13 +178,10 @@ Before starting with the lib, here are some useful information
   /* Example of save public storage asynchronously */
   manage(this)
       .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-      .savePublic(base64, 100, object : ImageCallback {
-          override fun onSuccess() {
-              //your code
-          }
-          override fun onFailed(ex: Exception) {
-              //your code
-          }
+      .savePublic(base64, 100, {
+        //success
+      },{
+        //failed
       })
 ```
 
@@ -216,13 +195,10 @@ Before starting with the lib, here are some useful information
   /* Example of load internal storage asynchronously */
   manage(this)
       .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .load(object : LoadImageCallback {
-          override fun onResult(bitmap: Bitmap?) {
-              Log.d(TAG, "Success load image test")
-          }
-          override fun onFailed(ex: Exception) {
-              Log.d(TAG, "Failed load image")
-          }
+      .load({
+         Log.d(TAG, "Success load image test")
+      },{
+         Log.d(TAG, "Failed load image")
       })
   
   /* Example of load public storage synchronously */
@@ -233,13 +209,10 @@ Before starting with the lib, here are some useful information
   /* Example of load public storage asynchronously */
   manage(this)
       .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-      .loadPublic(object : LoadImageCallback {
-          override fun onResult(bitmap: Bitmap?) {
-              Log.d(TAG, "Success load image test_public")
-          }
-          override fun onFailed(ex: Exception) {
-              Log.d(TAG, "Failed load image")
-          }
+      .loadPublic({
+          Log.d(TAG, "Success load image test_public")
+      },{       
+          Log.d(TAG, "Failed load image")
       })
 ```
 #### Delete function <a name="delete"></a>
@@ -253,13 +226,10 @@ Before starting with the lib, here are some useful information
   /* Example of delete internal storage asynchronously */ 
   manage(this)
       .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .delete(object : ImageCallback {
-          override fun onSuccess() {
-              Log.d(TAG, "Success delete image test")
-          }
-          override fun onFailed(ex: Exception) {
-              Log.d(TAG, "Failed delete image")
-          }
+      .delete({
+          Log.d(TAG, "Success delete image test")
+      },{
+          Log.d(TAG, "Failed delete image")
       })
     
   /* Example of delete public storage synchronously */ 
@@ -270,13 +240,10 @@ Before starting with the lib, here are some useful information
   /* Example of delete public storage asynchronously */ 
   manage(this)
       .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .deletePublic(object : ImageCallback {
-          override fun onSuccess() {
-              Log.d(TAG, "Success delete image test")
-          }
-          override fun onFailed(ex: Exception) {
-              Log.d(TAG, "Failed delete image")
-          }
+      .deletePublic({
+          Log.d(TAG, "Success delete image test")
+      },{
+          Log.d(TAG, "Failed delete image")
       })
       
   /**
