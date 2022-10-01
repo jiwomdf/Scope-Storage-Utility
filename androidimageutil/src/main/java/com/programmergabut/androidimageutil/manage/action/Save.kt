@@ -21,7 +21,7 @@ class Save(
     fileName: String,
     directory: String?,
     fileExtension: Extension,
-    env: String = Environment.DIRECTORY_PICTURES
+    env: String
 ): BaseAction(
     context,
     fileName,
@@ -181,7 +181,6 @@ class Save(
         return try {
             validateImageQuality(quality)
             validateStoragePermission(context)
-            val env = Environment.DIRECTORY_DCIM
             val directory = "${env}${File.separator}$finalDirectory"
             val expectedDir = File(directory)
             getOrCreateDirectoryIfEmpty(expectedDir)
@@ -198,7 +197,7 @@ class Save(
             try {
                 validateImageQuality(quality)
                 validateStoragePermission(context)
-                val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory"
+                val directory = "${env}${File.separator}$finalDirectory"
                 val expectedDir = File(directory)
                 getOrCreateDirectoryIfEmpty(expectedDir)
                 deleteExistingPublicImage(context, collection, projection, where)
@@ -225,8 +224,9 @@ class Save(
             validateBase64String(base64)
             validateStoragePermission(context)
             val bitmap = decodeByteArray(base64)
-            val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
-            val expectedDir = File(directory)
+            val directory = "${env}${File.separator}$finalDirectory"
+            val publicDir = Environment.getExternalStoragePublicDirectory(directory).absolutePath
+            val expectedDir = File(publicDir)
             getOrCreateDirectoryIfEmpty(expectedDir)
             deleteExistingPublicImage(context, collection, projection, where)
             savePublicImage(context, bitmap, directory, quality, fileName, fileExtension)
@@ -243,7 +243,7 @@ class Save(
                 validateBase64String(base64)
                 validateStoragePermission(context)
                 val bitmap = decodeByteArray(base64)
-                val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
+                val directory = "${env}${File.separator}$finalDirectory${File.separator}"
                 val expectedDir = File(directory)
                 getOrCreateDirectoryIfEmpty(expectedDir)
                 deleteExistingPublicImage(context, collection, projection, where)
@@ -268,7 +268,7 @@ class Save(
         return try {
             validateImageQuality(quality)
             validateStoragePermission(context)
-            val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
+            val directory = "${env}${File.separator}$finalDirectory${File.separator}"
             val expectedDir = File(directory)
             getOrCreateDirectoryIfEmpty(expectedDir)
             deleteExistingPublicImage(context, collection, projection, where)
@@ -285,7 +285,7 @@ class Save(
             try {
                 validateImageQuality(quality)
                 validateStoragePermission(context)
-                val directory = "${Environment.DIRECTORY_DCIM}${File.separator}$finalDirectory${File.separator}"
+                val directory = "${env}${File.separator}$finalDirectory${File.separator}"
                 val expectedDir = File(directory)
                 getOrCreateDirectoryIfEmpty(expectedDir)
                 deleteExistingPublicImage(context, collection, projection, where)

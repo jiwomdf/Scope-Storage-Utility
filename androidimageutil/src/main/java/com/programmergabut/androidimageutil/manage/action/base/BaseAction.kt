@@ -13,7 +13,7 @@ abstract class BaseAction(
     protected val fileName: String,
     directory: String?,
     protected val fileExtension: Extension,
-    env: String = Environment.DIRECTORY_PICTURES
+    protected val env: String
 ) {
 
     /**

@@ -9,7 +9,7 @@ class Manage(private val context: Context) {
         fileName: String,
         directory: String?,
         fileExtension: Extension,
-        env: String = Environment.DIRECTORY_PICTURES
+        env: String = Environment.DIRECTORY_DCIM
     ) = ManageImage(
         context,
         fileName,

@@ -20,7 +20,7 @@ class Delete(
     fileName: String,
     directory: String?,
     fileExtension: Extension,
-    env: String = Environment.DIRECTORY_PICTURES
+    env: String
 ): BaseAction(
     context,
     fileName,

@@ -21,7 +21,7 @@ class Load(
     fileName: String,
     directory: String?,
     fileExtension: Extension,
-    env: String = Environment.DIRECTORY_PICTURES
+    env: String
 ): BaseAction(
     context,
     fileName,
@@ -73,8 +73,16 @@ class Load(
         return try {
             validateFileName(fileName)
             validateReadPermission(context)
-            val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
-            loadBitmapFromUri(context, photoUri)
+            if(isUsingScopeStorage){
+                val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                loadBitmapFromUri(context, photoUri)
+            } else {
+                val imagePath = Environment.getExternalStoragePublicDirectory("${env}${File.separator}$finalDirectory").absolutePath
+                validateDirectory(File(imagePath))
+                val fileExt = setExtension(fileExtension)
+                val file = File(imagePath, "$fileName$fileExt")
+                BitmapFactory.decodeFile(file.path)
+            }
         } catch (ex: Exception){
             Log.e(AndroidImageUtil.TAG, "loadPublic: ${ex.message}", )
             null
@@ -86,8 +94,16 @@ class Load(
             try {
                 validateFileName(fileName)
                 validateReadPermission(context)
-                val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
-                val bitmap = loadBitmapFromUri(context, photoUri)
+                val bitmap = if(isUsingScopeStorage){
+                    val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+                    loadBitmapFromUri(context, photoUri)
+                } else {
+                    val imagePath = Environment.getExternalStoragePublicDirectory("${env}${File.separator}$finalDirectory").absolutePath
+                    //validateDirectory(File(imagePath))
+                    val fileExt = setExtension(fileExtension)
+                    val file = File(imagePath, "$fileName$fileExt")
+                    BitmapFactory.decodeFile(file.path)
+                }
                 withContext(Dispatchers.Main){
                     callBack.onResult(bitmap)
                 }
