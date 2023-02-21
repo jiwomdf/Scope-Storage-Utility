@@ -11,13 +11,14 @@ abstract class BaseActivity<VB: ViewBinding>(
     private val layout: Int
 ): AppCompatActivity() {
 
+    companion object {
+        const val TAKE_PHOTO_REQUEST_PERMISSION_CODE = 1002
+    }
+
     abstract fun getViewBinding(): VB
     private var _binding: ViewBinding? = null
     protected val binding: VB
         get() = _binding as VB
-
-
-    protected val TAKE_PHOTO_REQUEST_PERMISSION_CODE = 1002
 
     // Camera Permission
     protected val arrPermissionTakePhoto = arrayOf(

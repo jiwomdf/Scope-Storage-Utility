@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -13,11 +14,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
-import com.programmergabut.androidimageutil.AndroidImageUtil.Companion.convert
 import com.programmergabut.androidimageutil.AndroidImageUtil.Companion.manage
-import com.programmergabut.androidimageutil.convert.Base64Callback
-import com.programmergabut.androidimageutil.manage.ImageCallback
-import com.programmergabut.androidimageutil.manage.LoadImageCallback
 import com.programmergabut.androidimageutil.util.Extension
 import com.programmergabut.androidimageutilapp.databinding.ActivityMainBinding
 
@@ -25,6 +22,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     companion object {
         const val TAKE_PHOTO_REQUEST_CODE = 1001
+        private const val TAG = "TestMainActivity"
     }
 
     private val TAG = "TestMainActivity"
@@ -46,13 +44,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
                 if (it.resultCode == RESULT_OK) {
                     if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                        val imageDir = etImageDir.text.toString()
-                        val imageFile = etImageFile.text.toString()
                         /** this line of code will arrive here if the user allow to delete file that's not this app create */
-                        deletePublicImage(imageFile, imageDir)
+                        deletePublicImage(
+                            imageFile = etImageFile.text.toString(),
+                            imageDir = etImageDir.text.toString()
+                        )
                     }
                 } else {
-                    Log.d(TAG, "Failed delete public image")
+                    Log.d(Companion.TAG, "Failed delete public image")
                 }
             }
         }
@@ -73,40 +72,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     private fun tryAndroidImageUtil(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
-        val base64 = convertSection(captureImage)
-        internalStorageSection(base64)
-        sharedStorageSection(base64)
+        internalStorageSection(captureImage)
+        sharedStorageSection(captureImage)
     }
 
-    private fun convertSection(captureImage: Bitmap): String {
-        /***
-         * Example of convert to base64 with callback
-         */
-        convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG,{
-            Log.d(TAG, "Success convert to base64", )
-        }, {
-            Log.d(TAG, "Failed convert to base64")
-        })
-
-        /***
-         * Example of convert to base64 without callback
-         */
-        return convert.bitmapToBase64(captureImage, 100, Bitmap.CompressFormat.PNG) ?: ""
-    }
-
-    private fun internalStorageSection(base64: String) {
+    private fun internalStorageSection(bitmap: Bitmap) {
         /***
          * Example of saving base64 to internal storage
          */
         manage(this)
-            .imageAttribute("test", "folder/subfolder/", Extension.PNG)
-            .save(base64, 100)
+            .imageAttribute("test", "folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = false)
+            .save(bitmap, 100)
 
         /***
          * Example of load internal storage with callback
          */
         manage(this)
-            .imageAttribute("test","folder/subfolder/", Extension.PNG)
+            .imageAttribute("test","folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = false)
             .load({
                 Glide.with(applicationContext)
                     .load(it)
@@ -115,20 +97,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             })
     }
 
-    private fun sharedStorageSection(base64: String) {
+    private fun sharedStorageSection(bitmap: Bitmap) {
         /***
          * Example of save public storage
          */
         manage(this)
-            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-            .savePublic(base64, 100)
+            .imageAttribute("test_public","folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = true)
+            .save(bitmap, 100)
+
+        manage(this)
+            .imageAttribute("123", "", Environment.DIRECTORY_DCIM, Extension.JPG, isSharedStorage = true)
+            .save(bitmap, 100)
 
         /***
          * Example of load public storage with callback
          */
         manage(this)
-            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-            .loadPublic({
+            .imageAttribute("test_public","folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = true)
+            .load({
                 Log.d(TAG, "Success load image test_public")
                 Glide.with(applicationContext)
                     .load(it)
@@ -142,8 +128,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example getting the image URI
          */
         manage(this)
-            .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-            .loadPublicUri()
+            .imageAttribute("test_public","folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = true)
+            .loadUri(this, BuildConfig.APPLICATION_ID)
             .also {
                 Log.d(TAG, "uri: $it")
             }
@@ -154,8 +140,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of delete internal storage with callback
          */
         manage(this)
-            .imageAttribute("test","folder/subfolder/", Extension.PNG)
-            .delete({
+            .imageAttribute("test","folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = false)
+            .delete(null, {
                 Log.d(TAG, "Success delete image test")
             },{
                 Log.d(TAG, "Failed delete image")
@@ -167,8 +153,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of deleting public image
          */
         manage(this)
-            .imageAttribute(imageFile, imageDir, Extension.PNG)
-            .deletePublic(intentSenderRequest,{
+            .imageAttribute(imageFile, imageDir, Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = true)
+            .delete(intentSenderRequest, {
                 Log.d(TAG, "Success delete image $imageDir/$imageFile")
             },{
                 Log.d(TAG, it.message.toString())

@@ -1,5 +1,7 @@
 package com.programmergabut.androidimageutil.util
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.RecoverableSecurityException
 import android.content.ContentUris
 import android.content.ContentValues
@@ -15,8 +17,12 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
+import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
+import com.programmergabut.androidimageutil.AndroidImageUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -47,16 +53,6 @@ fun compressBitmap(outStream: OutputStream, bitmap: Bitmap, quality: Int, fileEx
     outStream.close()
 }
 
-fun loadBitmapFromUri(context: Context, photoUri: Uri): Bitmap {
-    return if(Build.VERSION.SDK_INT < 28) {
-        MediaStore.Images.Media.getBitmap(context.contentResolver, photoUri)
-    } else {
-        val source = ImageDecoder.createSource(context.contentResolver, photoUri)
-        val bitmap = ImageDecoder.decodeBitmap(source)
-        return bitmap.copy(Bitmap.Config.ARGB_8888, true)
-    }
-}
-
 fun getOrCreateDirectoryIfEmpty(directory: File): File {
     if (!directory.exists())
         directory.mkdirs()
@@ -65,13 +61,7 @@ fun getOrCreateDirectoryIfEmpty(directory: File): File {
 
 fun validateDirectory(directory: File){
     if (!directory.exists()){
-        throw Exception("directory is not exists")
-    }
-}
-
-fun validateBase64String(base64: String) {
-    if (base64.isEmpty()) {
-        throw IllegalArgumentException("Base64 encoded cannot be empty")
+        throw Exception(ErrorMessage.DIRECTORY_NOT_FOUND)
     }
 }
 
@@ -90,14 +80,27 @@ fun validateFileName(fileName: String): String {
 }
 
 fun validateStoragePermission(context: Context) {
-    if (!writePermissionGranted(context)) {
-        throw SecurityException("Write external storage permission is not granted")
+    if(!isUsingScopeStorage){
+        if (!writePermissionGranted(context)) {
+            throw SecurityException("Write external storage permission is not granted")
+        }
     }
 }
 
 fun validateReadPermission(context: Context) {
-    if (!readPermissionGranted(context))
-        throw SecurityException("Read external storage permission is not granted")
+    if(!isUsingScopeStorage){
+        if (!readPermissionGranted(context)){
+            throw SecurityException("Read external storage permission is not granted")
+        }
+    }
+}
+
+fun validateIntentSenderRequest(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?) {
+    if(isUsingScopeStorage){
+        if (intentSenderRequest == null){
+            throw SecurityException("intentSenderRequest is require in public directory delete")
+        }
+    }
 }
 
 fun deleteFileIfExist(file: File) {
@@ -106,28 +109,13 @@ fun deleteFileIfExist(file: File) {
     }
 }
 
-fun decodeByteArray(base64: String): Bitmap {
-    val decodedString: ByteArray = Base64.decode(base64, Base64.DEFAULT)
-    return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-        ?: throw NullPointerException("Failed decode base64 string to bitmap")
-}
-
-fun drawableToBitmap(drawable: Drawable): Bitmap {
-    if (drawable is BitmapDrawable)
-        return drawable.bitmap
-
-    try {
-        val width = if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else 1
-        val height = if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else 1
-
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-
-        return bitmap
-    } catch (ex: Exception) {
-        throw Exception(ex.message.toString())
+fun loadBitmapFromUri(context: Context, photoUri: Uri): Bitmap {
+    return if(Build.VERSION.SDK_INT < 28) {
+        MediaStore.Images.Media.getBitmap(context.contentResolver, photoUri)
+    } else {
+        val source = ImageDecoder.createSource(context.contentResolver, photoUri)
+        val bitmap = ImageDecoder.decodeBitmap(source)
+        return bitmap.copy(Bitmap.Config.ARGB_8888, true)
     }
 }
 
@@ -154,29 +142,7 @@ fun loadPublicPhotoUri(context: Context, collection: Uri, projection: Array<Stri
     }
 }
 
-fun savePublicImage(context: Context, bitmap: Bitmap, directory: String, quality: Int, fileName: String, fileExtension: Extension): Boolean {
-    return if (isUsingScopeStorage) {
-            val mediaContentUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            val type = mapMimeType(fileExtension)
-            val values = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                put(MediaStore.MediaColumns.MIME_TYPE, type)
-                put(MediaStore.MediaColumns.RELATIVE_PATH, directory)
-            }
-            val uri = context.contentResolver.insert(mediaContentUri, values) ?: throw Exception("there is an error on contentResolver.insert")
-            val outputStream = context.contentResolver.openOutputStream(uri) ?: throw Exception("there is an error on contentResolver.openOutputStream")
-            compressBitmap(outputStream, bitmap, quality, fileExtension)
-            true
-    } else {
-        val imagePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
-        val fileExt = setExtension(fileExtension)
-        val file = File(imagePath, "$fileName$fileExt")
-        val outputStream = FileOutputStream(file)
-        compressBitmap(outputStream, bitmap, quality, fileExtension)
-        true
-    }
-}
-
+@SuppressLint("NewApi")
 fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>) {
     try {
         context.contentResolver.delete(photoUri, null, null)
@@ -185,7 +151,7 @@ fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: Act
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 MediaStore.createDeleteRequest(context.contentResolver, listOf(photoUri)).intentSender
             }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+            isUsingScopeStorage -> {
                 val recoverableSecurityException = e as? RecoverableSecurityException
                 recoverableSecurityException?.userAction?.actionIntent?.intentSender
             }
@@ -199,11 +165,108 @@ fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: Act
     }
 }
 
+fun deletePrivateImage(fileName: String, filePath: String, fileExtension: Extension): Boolean? {
+    val files = File(filePath)
+    var existsFile: File? = null
+    files.walk().forEach ret@{
+        if(it.name.equals(fileName, true)){
+            existsFile = it
+            return@ret
+        }
+    }
+
+    val file = if(existsFile != null){
+        existsFile
+    } else {
+        val fileExt = setExtension(fileExtension)
+        File(filePath, "$fileName$fileExt")
+    }
+    return file?.delete()
+}
+
 fun deleteExistingPublicImage(context: Context, collection: Uri, projection: Array<String>, where: String){
     try {
         val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: return
         context.contentResolver.delete(photoUri, null, null)
     } catch (e: SecurityException) {
         e.printStackTrace()
+    }
+}
+
+fun getOutStream(context: Context, directory: String, fileName: String, fileExtension: Extension): OutputStream {
+    return if (isUsingScopeStorage) {
+        val mediaContentUri: Uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+
+        val type = mapMimeType(fileExtension)
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, type)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, directory)
+        }
+        val uri = context.contentResolver.insert(mediaContentUri, values) ?: throw Exception("there is an error on contentResolver.insert")
+        val outputStream = context.contentResolver.openOutputStream(uri) ?: throw Exception("there is an error on contentResolver.openOutputStream")
+        outputStream
+    } else {
+        val filePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
+        val fileDir = File(filePath)
+        fileDir.mkdirs()
+        val fileExt = setExtension(fileExtension)
+        val file = File(filePath, "$fileName$fileExt")
+        file.createNewFile()
+
+        val outputStream = FileOutputStream(file)
+        outputStream
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.Q)
+fun loadUri(context: Context, collection: Uri, projection: Array<String>, where: String): Uri? {
+    try {
+        val photos = mutableListOf<Uri>()
+        context.contentResolver.query(
+            collection,
+            projection,
+            where,
+            null,
+            "${MediaStore.Downloads.DISPLAY_NAME} ASC"
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                val contentUri = ContentUris.withAppendedId(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), id)
+                photos.add(contentUri)
+            }
+            return photos.firstOrNull()
+        } ?: return null
+    } catch (ex: Exception) {
+        return null
+    }
+}
+
+fun loadPrivateFileUri(appId: String, activity: Activity, files: File, fileName: String, filePath: String, fileExtension: Extension): Uri? {
+    var existsFile: File? = null
+    files.walk().forEach ret@{
+        if(it.name.contains(fileName, true)){
+            existsFile = it
+            return@ret
+        }
+    }
+
+    val file = if(existsFile != null){
+        existsFile
+    } else {
+        val fileExt = setExtension(fileExtension)
+        File(filePath, "$fileName$fileExt")
+    }
+
+    return file?.let {
+        FileProvider.getUriForFile(
+            activity,
+            "$appId.provider", //(use your app signature + ".provider" ),
+            file
+        )
+    } ?: run {
+        Log.e(AndroidImageUtil.TAG, "loadPublicUri: File not found")
+        null
     }
 }

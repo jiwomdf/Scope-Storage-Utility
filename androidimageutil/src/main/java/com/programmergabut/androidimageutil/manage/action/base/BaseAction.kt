@@ -2,7 +2,6 @@ package com.programmergabut.androidimageutil.manage.action.base
 
 import android.content.Context
 import android.net.Uri
-import android.os.Environment
 import android.provider.MediaStore
 import com.programmergabut.androidimageutil.util.Extension
 import com.programmergabut.androidimageutil.util.sdk29AndUp
@@ -25,8 +24,18 @@ abstract class BaseAction(
     /**
      * Variable for public image
      */
-    protected val collection: Uri = sdk29AndUp { MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) }
-        ?: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    protected val projection = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,)
+    protected val collection: Uri = sdk29AndUp {
+        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+    } ?: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    protected val projection = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME)
     protected val where = MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
+
+    /**
+     * Variable for public file
+     */
+    protected val collectionFile: Uri? = sdk29AndUp {
+        MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL)
+    }
+    protected val projectionFile = arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME)
+    protected val whereFile = MediaStore.Downloads.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
 }

@@ -138,7 +138,7 @@
                     android:backgroundTint="@color/black"
                     android:hint="Folder"
                     android:inputType="text"
-                    android:text="Camera/"
+                    android:text="DCIM/"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

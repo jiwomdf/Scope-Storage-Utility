@@ -8,13 +8,15 @@ class Manage(private val context: Context) {
     fun imageAttribute(
         fileName: String,
         directory: String?,
+        env: String = Environment.DIRECTORY_DCIM,
         fileExtension: Extension,
-        env: String = Environment.DIRECTORY_DCIM
+        isSharedStorage: Boolean,
     ) = ManageImage(
-        context,
-        fileName,
-        directory,
-        fileExtension,
-        env
+        context = context,
+        fileName = fileName,
+        directory = directory,
+        env = env,
+        fileExtension = fileExtension,
+        isSharedStorage = isSharedStorage,
     )
 }
