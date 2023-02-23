@@ -2,7 +2,6 @@ package com.programmergabut.androidimageutil.manage.action
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Environment
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -32,10 +31,10 @@ class Delete(
 ) {
 
     @SuppressLint("NewApi")
-    private fun deletePublicFileShareStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
-        return collectionFile?.let {
-            val uri = loadUri(context, collectionFile, projectionFile, whereFile) ?: throw Exception("cant get photo Uri")
-            deletePublicImage(context, uri, intentSenderRequest)
+    private fun deletePublicFileScopeStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
+        return collection?.let {
+            val uri = loadUriScopeStorage(context, collection, projection, where, env) ?: throw Exception("cant get photo Uri")
+            deletePublicImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
             true
         } ?: kotlin.run {
             Log.e(AndroidImageUtil.TAG, "loadPublicUri: collection is null")
@@ -44,28 +43,27 @@ class Delete(
     }
 
     private fun deletePublicFileNonSharedStorage(): Boolean? {
-        val filePath = Environment.getExternalStoragePublicDirectory("${env}${File.separator}$finalDirectory").absolutePath
+        val filePath = externalStoragePublicDir
         validateDirectory(File(filePath))
-        return deletePrivateImage(fileName, filePath, fileExtension)
+        return deletePrivateImage(fileName, filePath)
     }
 
     private fun deletePrivateStorage(): Boolean {
         val extension = setExtension(fileExtension)
-        val directory = File("${absolutePath}${File.separator}$finalDirectory")
         validateDirectory(directory)
         val file = File(directory, "$fileName$extension")
         return file.delete()
     }
 
     @SuppressLint("NewApi")
-    fun deletePrivateStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?): Boolean? {
+    fun delete(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?): Boolean? {
         try {
             validateFileName(fileName)
             validateReadPermission(context)
             return if(isSharedStorage){
                 if(isUsingScopeStorage) {
                     validateIntentSenderRequest(intentSenderRequest)
-                    deletePublicFileShareStorage(intentSenderRequest!!)
+                    deletePublicFileScopeStorage(intentSenderRequest!!)
                 } else {
                     deletePublicFileNonSharedStorage()
                 }
@@ -79,7 +77,7 @@ class Delete(
     }
 
     @SuppressLint("NewApi")
-    fun deletePrivateStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?, callBack: ImageCallback) {
+    fun delete(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?, callBack: ImageCallback) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateFileName(fileName)
@@ -87,7 +85,7 @@ class Delete(
                 if(isSharedStorage){
                     if(isUsingScopeStorage){
                         validateIntentSenderRequest(intentSenderRequest)
-                        val isDeleted = deletePublicFileShareStorage(intentSenderRequest!!)
+                        val isDeleted = deletePublicFileScopeStorage(intentSenderRequest!!)
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{

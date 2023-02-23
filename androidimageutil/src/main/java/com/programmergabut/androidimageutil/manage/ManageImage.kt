@@ -24,17 +24,18 @@ class ManageImage(
     fileExtension: Extension,
     isSharedStorage: Boolean,
 ) {
+
     /**
      *  Delete Region
      */
     private val deleteObj = Delete(context, fileName, directory, fileExtension, env, isSharedStorage)
-    fun delete(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>) = deleteObj.deletePrivateStorage(intentSenderRequest)
+    fun delete(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>) = deleteObj.delete(intentSenderRequest)
     fun delete(
         intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>? = null,
         block: () -> Unit,
         catch: ((e: Exception) -> Unit)? = null,
     ) {
-        deleteObj.deletePrivateStorage(intentSenderRequest, object: ImageCallback {
+        deleteObj.delete(intentSenderRequest, object: ImageCallback {
             override fun onSuccess() { block.invoke() }
             override fun onFailed(ex: Exception) { catch?.invoke(ex) }
         })

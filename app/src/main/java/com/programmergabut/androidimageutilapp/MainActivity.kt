@@ -105,10 +105,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .imageAttribute("test_public","folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = true)
             .save(bitmap, 100)
 
-        manage(this)
-            .imageAttribute("123", "", Environment.DIRECTORY_DCIM, Extension.JPG, isSharedStorage = true)
-            .save(bitmap, 100)
-
         /***
          * Example of load public storage with callback
          */
@@ -119,6 +115,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 Glide.with(applicationContext)
                     .load(it)
                     .into(binding.ivImage2)
+
                 deletePublicImage("test_public", "folder/subfolder/")
             },{
                 Log.d(TAG, "Failed load image")
@@ -153,7 +150,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          * Example of deleting public image
          */
         manage(this)
-            .imageAttribute(imageFile, imageDir, Environment.DIRECTORY_DCIM, Extension.PNG, isSharedStorage = true)
+            .imageAttribute(imageFile, imageDir, Environment.DIRECTORY_DCIM, Extension.JPG, isSharedStorage = true)
             .delete(intentSenderRequest, {
                 Log.d(TAG, "Success delete image $imageDir/$imageFile")
             },{

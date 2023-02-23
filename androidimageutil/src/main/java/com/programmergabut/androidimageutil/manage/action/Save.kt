@@ -34,8 +34,7 @@ class Save(
         validateImageQuality(quality)
         validateStoragePermission(context)
         val extension = setExtension(fileExtension)
-        val expectedDir = File("${absolutePath}${File.separator}$finalDirectory")
-        val directory = getOrCreateDirectoryIfEmpty(expectedDir)
+        val directory = getOrCreateDirectoryIfEmpty(directory)
         val file = File(directory, "$fileName$extension")
         deleteFileIfExist(file)
         runCatching {
@@ -48,8 +47,7 @@ class Save(
         validateImageQuality(quality)
         validateStoragePermission(context)
         deleteExistingPublicImage(context, collection, projection, where)
-        val directory = "${env}${File.separator}$finalDirectory${File.separator}"
-        val outputStream = getOutStream(context, directory, fileName, fileExtension)
+        val outputStream = getOutStream(context, externalStorageDirectory, fileName, fileExtension, env)
         compressBitmap(outputStream, bitmap, quality, fileExtension)
     }
 
@@ -88,8 +86,13 @@ class Save(
             try {
                 validateStoragePermission(context)
                 deleteExistingPublicImage(context, collection, projection, where)
-                val directory = "${env}${File.separator}$finalDirectory${File.separator}"
-                val outputStream = getOutStream(context, directory, fileName, fileExtension)
+                val outputStream = getOutStream(
+                    context,
+                    externalStorageDirectory,
+                    fileName,
+                    fileExtension,
+                    env
+                )
                 withContext(Dispatchers.Main){
                     outStreamCallback.onSuccess(outputStream)
                 }

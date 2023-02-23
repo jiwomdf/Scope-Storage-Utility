@@ -2,10 +2,10 @@ package com.programmergabut.androidimageutil.manage.action.base
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
+import android.os.Environment
 import com.programmergabut.androidimageutil.util.Extension
-import com.programmergabut.androidimageutil.util.sdk29AndUp
-import com.programmergabut.androidimageutil.util.setExtension
+import com.programmergabut.androidimageutil.util.MediaQueryHelper
+import java.io.File
 
 abstract class BaseAction(
     protected val context: Context,
@@ -18,24 +18,21 @@ abstract class BaseAction(
     /**
      * Variable for internal image
      */
-    protected val absolutePath = context.getExternalFilesDir(env)?.absolutePath ?: ""
-    protected val finalDirectory = if(directory.isNullOrEmpty()) "" else directory.trim()
+    private val finalDirectory = if(directory.isNullOrEmpty()) "" else directory.trim()
+    private val externalFileDir = context.getExternalFilesDir(env)?.absolutePath ?: ""
+    protected val directory = File("${externalFileDir}${File.separator}$finalDirectory")
 
     /**
-     * Variable for public image
+     * Variable for public image scope storage
      */
-    protected val collection: Uri = sdk29AndUp {
-        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-    } ?: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    protected val projection = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME)
-    protected val where = MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
+    private val mediaQueryHelper = MediaQueryHelper(env)
+    protected val collection: Uri? = mediaQueryHelper.setMediaStore()
+    protected val projection = mediaQueryHelper.setMediaStoreProjection()
+    protected val where = mediaQueryHelper.setMediaStoreWhere(fileName, fileExtension)
 
     /**
-     * Variable for public file
+     * Variable for public image non scope storage
      */
-    protected val collectionFile: Uri? = sdk29AndUp {
-        MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL)
-    }
-    protected val projectionFile = arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME)
-    protected val whereFile = MediaStore.Downloads.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
+    protected val externalStorageDirectory = "${env}${File.separator}$finalDirectory"
+    protected val externalStoragePublicDir: String = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
 }

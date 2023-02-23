@@ -7,16 +7,11 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.ImageDecoder
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -119,8 +114,9 @@ fun loadBitmapFromUri(context: Context, photoUri: Uri): Bitmap {
     }
 }
 
-fun loadPublicPhotoUri(context: Context, collection: Uri, projection: Array<String>, where: String): Uri? {
+fun loadPublicPhotoUri(context: Context, collection: Uri?, projection: Array<String>, where: String): Uri? {
     try {
+        if(collection == null) return null
         val photos = mutableListOf<Uri>()
         context.contentResolver.query(
             collection,
@@ -143,7 +139,7 @@ fun loadPublicPhotoUri(context: Context, collection: Uri, projection: Array<Stri
 }
 
 @SuppressLint("NewApi")
-fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>) {
+fun deletePublicImageScopeStorageWithSecurity(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>) {
     try {
         context.contentResolver.delete(photoUri, null, null)
     } catch (e: SecurityException) {
@@ -165,7 +161,7 @@ fun deletePublicImage(context: Context, photoUri: Uri, intentSenderLauncher: Act
     }
 }
 
-fun deletePrivateImage(fileName: String, filePath: String, fileExtension: Extension): Boolean? {
+fun deletePrivateImage(fileName: String, filePath: String): Boolean? {
     val files = File(filePath)
     var existsFile: File? = null
     files.walk().forEach ret@{
@@ -174,18 +170,12 @@ fun deletePrivateImage(fileName: String, filePath: String, fileExtension: Extens
             return@ret
         }
     }
-
-    val file = if(existsFile != null){
-        existsFile
-    } else {
-        val fileExt = setExtension(fileExtension)
-        File(filePath, "$fileName$fileExt")
-    }
-    return file?.delete()
+    return existsFile?.delete()
 }
 
-fun deleteExistingPublicImage(context: Context, collection: Uri, projection: Array<String>, where: String){
+fun deleteExistingPublicImage(context: Context, collection: Uri?, projection: Array<String>, where: String){
     try {
+        if(collection == null) return
         val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: return
         context.contentResolver.delete(photoUri, null, null)
     } catch (e: SecurityException) {
@@ -193,9 +183,15 @@ fun deleteExistingPublicImage(context: Context, collection: Uri, projection: Arr
     }
 }
 
-fun getOutStream(context: Context, directory: String, fileName: String, fileExtension: Extension): OutputStream {
+fun getOutStream(
+    context: Context,
+    directory: String,
+    fileName: String,
+    fileExtension: Extension,
+    env: String
+): OutputStream {
     return if (isUsingScopeStorage) {
-        val mediaContentUri: Uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val mediaContentUri: Uri = MediaQueryHelper(env).setMediaStore() ?: throw Exception("there is an error on get query media type")
 
         val type = mapMimeType(fileExtension)
         val values = ContentValues().apply {
@@ -220,21 +216,24 @@ fun getOutStream(context: Context, directory: String, fileName: String, fileExte
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
-fun loadUri(context: Context, collection: Uri, projection: Array<String>, where: String): Uri? {
+fun loadUriScopeStorage(context: Context, collection: Uri, projection: Array<String>, where: String, env: String): Uri? {
     try {
         val photos = mutableListOf<Uri>()
+        val mediaQueryHelper = MediaQueryHelper(env)
         context.contentResolver.query(
             collection,
             projection,
             where,
             null,
-            "${MediaStore.Downloads.DISPLAY_NAME} ASC"
+            "${mediaQueryHelper.getMediaStoreDisplayName()} ASC"
         )?.use { cursor ->
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+            val idColumn = cursor.getColumnIndexOrThrow(mediaQueryHelper.getMediaStoreId())
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
-                val contentUri = ContentUris.withAppendedId(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), id)
-                photos.add(contentUri)
+                mediaQueryHelper.setMediaStore()?.let {
+                    val contentUri = ContentUris.withAppendedId(it, id)
+                    photos.add(contentUri)
+                }
             }
             return photos.firstOrNull()
         } ?: return null
@@ -243,7 +242,7 @@ fun loadUri(context: Context, collection: Uri, projection: Array<String>, where:
     }
 }
 
-fun loadPrivateFileUri(appId: String, activity: Activity, files: File, fileName: String, filePath: String, fileExtension: Extension): Uri? {
+fun loadUriPrivateStorage(appId: String, activity: Activity, files: File, fileName: String, filePath: String, fileExtension: Extension): Uri? {
     var existsFile: File? = null
     files.walk().forEach ret@{
         if(it.name.contains(fileName, true)){
@@ -252,19 +251,8 @@ fun loadPrivateFileUri(appId: String, activity: Activity, files: File, fileName:
         }
     }
 
-    val file = if(existsFile != null){
-        existsFile
-    } else {
-        val fileExt = setExtension(fileExtension)
-        File(filePath, "$fileName$fileExt")
-    }
-
-    return file?.let {
-        FileProvider.getUriForFile(
-            activity,
-            "$appId.provider", //(use your app signature + ".provider" ),
-            file
-        )
+    return existsFile?.let {
+        FileProvider.getUriForFile(activity, "$appId.provider", it)
     } ?: run {
         Log.e(AndroidImageUtil.TAG, "loadPublicUri: File not found")
         null
