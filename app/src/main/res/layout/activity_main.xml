@@ -45,15 +45,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/iv_image_1"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_image_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/black"
+                app:cardCornerRadius="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_1" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_1">
+
+                <ImageView
+                    android:id="@+id/iv_image_1"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:background="@color/black" />
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/tv_image_1"
@@ -64,19 +72,27 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/iv_image_1"
-                app:layout_constraintStart_toStartOf="@id/iv_image_1"
-                app:layout_constraintTop_toBottomOf="@id/iv_image_1" />
+                app:layout_constraintEnd_toEndOf="@id/cv_image_1"
+                app:layout_constraintStart_toStartOf="@id/cv_image_1"
+                app:layout_constraintTop_toBottomOf="@id/cv_image_1" />
 
-            <ImageView
-                android:id="@+id/iv_image_2"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_image_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@color/black"
+                app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_1" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_1">
+
+                <ImageView
+                    android:id="@+id/iv_image_2"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:background="@color/black" />
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/tv_image_2"
@@ -87,9 +103,9 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/iv_image_2"
-                app:layout_constraintStart_toStartOf="@id/iv_image_2"
-                app:layout_constraintTop_toBottomOf="@id/iv_image_2" />
+                app:layout_constraintEnd_toEndOf="@id/cv_image_2"
+                app:layout_constraintStart_toStartOf="@id/cv_image_2"
+                app:layout_constraintTop_toBottomOf="@id/cv_image_2" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_dispatch_camera"
@@ -181,6 +197,79 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_title_file"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="3. Create some file with out stream, it can be public or private directory"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_file">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_file_dir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
+                    android:hint="Folder"
+                    android:inputType="text"
+                    android:text="folder/subfolder/"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_2" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_file_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
+                    android:hint="File Name"
+                    android:inputType="text"
+                    android:text="somefile"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_image_dir" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=".txt"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_create_file"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@color/white"
+                android:text="Create file"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_file" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

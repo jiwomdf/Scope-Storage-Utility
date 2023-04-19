@@ -1,7 +1,5 @@
 package com.programmergabut.androidimageutil.util
 
-import android.os.Build
-
 enum class Extension {
     PNG,
     JPEG,
