@@ -114,7 +114,13 @@ fun loadBitmapFromUri(context: Context, photoUri: Uri): Bitmap {
     }
 }
 
-fun loadPublicPhotoUri(context: Context, collection: Uri?, projection: Array<String>, where: String): Uri? {
+fun loadPublicPhotoUri(
+    context: Context,
+    collection: Uri?,
+    projection: Array<String>,
+    directory: String,
+    where: String
+): Uri? {
     try {
         if(collection == null) return null
         val photos = mutableListOf<Uri>()
@@ -122,7 +128,7 @@ fun loadPublicPhotoUri(context: Context, collection: Uri?, projection: Array<Str
             collection,
             projection,
             where,
-            null,
+            arrayOf("%$directory%"),
             "${MediaStore.Images.Media.DISPLAY_NAME} ASC"
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
@@ -161,22 +167,21 @@ fun deletePublicImageScopeStorageWithSecurity(context: Context, photoUri: Uri, i
     }
 }
 
-fun deletePrivateImage(fileName: String, filePath: String): Boolean? {
-    val files = File(filePath)
-    var existsFile: File? = null
-    files.walk().forEach ret@{
-        if(it.name.equals(fileName, true)){
-            existsFile = it
-            return@ret
-        }
-    }
-    return existsFile?.delete()
+fun deletePrivateImage(fileName: String, filePath: String, fileExtension: Extension): Boolean {
+    val files = File("$filePath${File.separator}$fileName${setExtension(fileExtension)}")
+    return files.delete()
 }
 
-fun deleteExistingPublicImage(context: Context, collection: Uri?, projection: Array<String>, where: String){
+fun deleteExistingPublicImage(
+    context: Context,
+    collection: Uri?,
+    projection: Array<String>,
+    directory: String,
+    where: String
+){
     try {
         if(collection == null) return
-        val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: return
+        val photoUri = loadPublicPhotoUri(context, collection, projection, directory, where) ?: return
         context.contentResolver.delete(photoUri, null, null)
     } catch (e: SecurityException) {
         e.printStackTrace()
@@ -216,7 +221,14 @@ fun getOutStream(
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
-fun loadUriScopeStorage(context: Context, collection: Uri, projection: Array<String>, where: String, env: String): Uri? {
+fun loadUriScopeStorage(
+    context: Context,
+    collection: Uri,
+    projection: Array<String>,
+    where: String,
+    directory: String,
+    env: String
+): Uri? {
     try {
         val photos = mutableListOf<Uri>()
         val mediaQueryHelper = MediaQueryHelper(env)
@@ -224,7 +236,7 @@ fun loadUriScopeStorage(context: Context, collection: Uri, projection: Array<Str
             collection,
             projection,
             where,
-            null,
+            arrayOf("%$directory%"),
             "${mediaQueryHelper.getMediaStoreDisplayName()} ASC"
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(mediaQueryHelper.getMediaStoreId())

@@ -33,7 +33,7 @@ class Delete(
     @SuppressLint("NewApi")
     private fun deletePublicFileScopeStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
         return collection?.let {
-            val uri = loadUriScopeStorage(context, collection, projection, where, env) ?: throw Exception("cant get photo Uri")
+            val uri = loadUriScopeStorage(context, collection, projection, where, cleanDirectory, env) ?: throw Exception("cant get photo Uri")
             deletePublicImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
             true
         } ?: kotlin.run {
@@ -42,10 +42,10 @@ class Delete(
         }
     }
 
-    private fun deletePublicFileNonSharedStorage(): Boolean? {
+    private fun deletePublicFileNonSharedStorage(): Boolean {
         val filePath = externalStoragePublicDir
         validateDirectory(File(filePath))
-        return deletePrivateImage(fileName, filePath)
+        return deletePrivateImage(fileName, filePath, fileExtension)
     }
 
     private fun deletePrivateStorage(): Boolean {
@@ -93,7 +93,7 @@ class Delete(
                         }
                     } else {
                         val isDeleted = deletePublicFileNonSharedStorage()
-                        if(isDeleted == true){
+                        if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
                             withContext(Dispatchers.Main){ callBack.onFailed(Exception(("can't delete photo"))) }

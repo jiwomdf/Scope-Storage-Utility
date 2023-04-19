@@ -18,9 +18,9 @@ abstract class BaseAction(
     /**
      * Variable for internal image
      */
-    private val finalDirectory = if(directory.isNullOrEmpty()) "" else directory.trim()
+    protected val cleanDirectory = if(directory.isNullOrEmpty()) "" else directory.trim()
     private val externalFileDir = context.getExternalFilesDir(env)?.absolutePath ?: ""
-    protected val directory = File("${externalFileDir}${File.separator}$finalDirectory")
+    protected val directory = File("${externalFileDir}${File.separator}$cleanDirectory")
 
     /**
      * Variable for public image scope storage
@@ -33,6 +33,6 @@ abstract class BaseAction(
     /**
      * Variable for public image non scope storage
      */
-    protected val externalStorageDirectory = "${env}${File.separator}$finalDirectory"
+    protected val externalStorageDirectory = "${env}${File.separator}$cleanDirectory"
     protected val externalStoragePublicDir: String = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
 }

@@ -1,5 +1,6 @@
 package com.programmergabut.androidimageutil.util
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -12,6 +13,7 @@ class MediaQueryHelper(
      *  https://developer.android.com/training/data-storage/shared/media
      **/
 
+    @SuppressLint("InlinedApi")
     fun setMediaStore(): Uri? {
         return when (env) {
             Environment.DIRECTORY_DOWNLOADS -> {
@@ -55,13 +57,16 @@ class MediaQueryHelper(
     fun setMediaStoreWhere(fileName: String, fileExtension: Extension): String {
         return when (env) {
             Environment.DIRECTORY_DOWNLOADS -> {
-                MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
+                MediaStore.Downloads.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}' AND " +
+                        MediaStore.Downloads.DATA + " LIKE ? "
             }
             Environment.DIRECTORY_DCIM, Environment.DIRECTORY_PICTURES -> {
-                MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
+                MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}' AND " +
+                        MediaStore.Images.Media.DATA + " LIKE ? "
             }
             else -> {
-                MediaStore.Files.FileColumns.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}'"
+                MediaStore.Files.FileColumns.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}' AND " +
+                        MediaStore.Files.FileColumns.DATA + " LIKE ? "
             }
         }
     }

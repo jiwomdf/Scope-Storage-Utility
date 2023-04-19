@@ -46,7 +46,7 @@ class Save(
     private fun savePublic(quality: Int, bitmap: Bitmap) {
         validateImageQuality(quality)
         validateStoragePermission(context)
-        deleteExistingPublicImage(context, collection, projection, where)
+        deleteExistingPublicImage(context, collection, projection, cleanDirectory, where)
         val outputStream = getOutStream(context, externalStorageDirectory, fileName, fileExtension, env)
         compressBitmap(outputStream, bitmap, quality, fileExtension)
     }
@@ -85,7 +85,7 @@ class Save(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateStoragePermission(context)
-                deleteExistingPublicImage(context, collection, projection, where)
+                deleteExistingPublicImage(context, collection, projection, cleanDirectory, where)
                 val outputStream = getOutStream(
                     context,
                     externalStorageDirectory,

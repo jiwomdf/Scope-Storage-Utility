@@ -22,13 +22,7 @@ fun mapMimeType(fileExtension: Extension): String {
     return when (fileExtension) {
         Extension.PNG -> "image/png"
         Extension.JPEG -> "image/jpeg"
-        Extension.WEBP -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                "image/webp"
-            } else {
-                "image/webp"
-            }
-        }
+        Extension.WEBP -> "image/webp"
         Extension.JPG -> "image/jpeg"
     }
 }

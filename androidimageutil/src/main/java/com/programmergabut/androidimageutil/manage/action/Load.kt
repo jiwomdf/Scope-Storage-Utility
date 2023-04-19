@@ -54,7 +54,7 @@ class Load(
 
     private fun loadPublicBitmap(): Bitmap? {
         return if(isUsingScopeStorage){
-            val photoUri = loadPublicPhotoUri(context, collection, projection, where) ?: throw Exception("cant get photo Uri")
+            val photoUri = loadPublicPhotoUri(context, collection, projection, cleanDirectory, where) ?: throw Exception("cant get photo Uri")
             loadBitmapFromUri(context, photoUri)
         } else {
             val imagePath = externalStoragePublicDir
@@ -101,7 +101,7 @@ class Load(
             validateReadPermission(context)
             if(isUsingScopeStorage) {
                 collection?.let {
-                    loadUriScopeStorage(context, collection, projection, where, env) ?: throw Exception("cant get photo Uri")
+                    loadUriScopeStorage(context, collection, projection, where, cleanDirectory, env) ?: throw Exception("cant get photo Uri")
                 } ?: kotlin.run {
                     Log.e(AndroidImageUtil.TAG, "loadPublicUri: collection is null")
                     null
