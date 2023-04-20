@@ -19,7 +19,7 @@ class Delete(
     context: Context,
     fileName: String,
     directory: String?,
-    fileExtension: Extension,
+    fileExtension: Extension.ExtensionModel,
     env: String,
     private val isSharedStorage: Boolean
 ): BaseAction(
@@ -43,15 +43,13 @@ class Delete(
     }
 
     private fun deletePublicFileNonSharedStorage(): Boolean {
-        val filePath = externalStoragePublicDir
-        validateDirectory(File(filePath))
-        return deletePrivateImage(fileName, filePath, fileExtension)
+        validateDirectory(File(externalStoragePublicDir))
+        return deletePrivateFile(fileName, externalStoragePublicDir, fileExtension)
     }
 
     private fun deletePrivateStorage(): Boolean {
-        val extension = setExtension(fileExtension)
         validateDirectory(directory)
-        val file = File(directory, "$fileName$extension")
+        val file = File(directory, "$fileName${fileExtension.extension}")
         return file.delete()
     }
 

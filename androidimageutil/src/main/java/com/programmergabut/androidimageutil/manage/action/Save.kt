@@ -19,7 +19,7 @@ class Save(
     context: Context,
     fileName: String,
     directory: String?,
-    fileExtension: Extension,
+    fileExtension: Extension.ExtensionModel,
     env: String,
     private val toSharedStorage: Boolean
 ): BaseAction(
@@ -33,9 +33,8 @@ class Save(
     private fun savePrivate(quality: Int, bitmap: Bitmap) {
         validateImageQuality(quality)
         validateStoragePermission(context)
-        val extension = setExtension(fileExtension)
         val directory = getOrCreateDirectoryIfEmpty(directory)
-        val file = File(directory, "$fileName$extension")
+        val file = File(directory, "$fileName${fileExtension.extension}")
         deleteFileIfExist(file)
         runCatching {
             val outputStream = FileOutputStream(file)
@@ -46,7 +45,7 @@ class Save(
     private fun savePublic(quality: Int, bitmap: Bitmap) {
         validateImageQuality(quality)
         validateStoragePermission(context)
-        deleteExistingPublicImage(context, collection, projection, cleanDirectory, where)
+        deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
         val outputStream = getOutStream(context, externalStorageDirectory, fileName, fileExtension, env)
         compressBitmap(outputStream, bitmap, quality, fileExtension)
     }
@@ -85,7 +84,11 @@ class Save(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 validateStoragePermission(context)
-                deleteExistingPublicImage(context, collection, projection, cleanDirectory, where)
+                if(isUsingScopeStorage){
+                    deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
+                } else {
+                    deletePrivateFile(fileName, externalStoragePublicDir, fileExtension)
+                }
                 val outputStream = getOutStream(
                     context,
                     externalStorageDirectory,

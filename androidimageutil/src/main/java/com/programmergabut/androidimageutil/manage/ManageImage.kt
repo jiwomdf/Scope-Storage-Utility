@@ -21,7 +21,7 @@ class ManageImage(
     fileName: String,
     directory: String?,
     env: String = Environment.DIRECTORY_DCIM,
-    fileExtension: Extension,
+    fileExtension: Extension.ExtensionModel,
     isSharedStorage: Boolean,
 ) {
 

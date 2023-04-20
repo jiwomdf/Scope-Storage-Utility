@@ -14,10 +14,9 @@ import com.programmergabut.androidimageutil.util.ErrorMessage
 import com.programmergabut.androidimageutil.util.Extension
 import com.programmergabut.androidimageutil.util.isUsingScopeStorage
 import com.programmergabut.androidimageutil.util.loadBitmapFromUri
+import com.programmergabut.androidimageutil.util.loadPublicUri
 import com.programmergabut.androidimageutil.util.loadUriPrivateStorage
-import com.programmergabut.androidimageutil.util.loadPublicPhotoUri
 import com.programmergabut.androidimageutil.util.loadUriScopeStorage
-import com.programmergabut.androidimageutil.util.setExtension
 import com.programmergabut.androidimageutil.util.validateDirectory
 import com.programmergabut.androidimageutil.util.validateFileName
 import com.programmergabut.androidimageutil.util.validateReadPermission
@@ -31,7 +30,7 @@ class Load(
     context: Context,
     fileName: String,
     directory: String?,
-    fileExtension: Extension,
+    fileExtension: Extension.ExtensionModel,
     env: String,
     private val toSharedStorage: Boolean
 ): BaseAction(
@@ -45,22 +44,20 @@ class Load(
     private fun loadPrivateBitmap(): Bitmap? {
         validateFileName(fileName)
         validateReadPermission(context)
-        val extension = setExtension(fileExtension)
         validateDirectory(directory)
 
-        val file = File(directory, "$fileName$extension")
+        val file = File(directory, "$fileName${fileExtension.extension}")
         return BitmapFactory.decodeFile(file.path)
     }
 
     private fun loadPublicBitmap(): Bitmap? {
         return if(isUsingScopeStorage){
-            val photoUri = loadPublicPhotoUri(context, collection, projection, cleanDirectory, where) ?: throw Exception("cant get photo Uri")
+            val photoUri = loadPublicUri(context, collection, projection, cleanDirectory, where) ?: throw Exception("cant get photo Uri")
             loadBitmapFromUri(context, photoUri)
         } else {
             val imagePath = externalStoragePublicDir
             validateDirectory(File(imagePath))
-            val fileExt = setExtension(fileExtension)
-            val file = File(imagePath, "$fileName$fileExt")
+            val file = File(imagePath, "$fileName${fileExtension.extension}")
             BitmapFactory.decodeFile(file.path)
         }
     }
@@ -107,12 +104,11 @@ class Load(
                     null
                 }
             } else {
-                val filePath = externalStoragePublicDir
-                val files = File(filePath)
+                val files = File(externalStoragePublicDir)
                 if(!files.exists()){
                     throw Exception(ErrorMessage.FILE_NOT_FOUND)
                 }
-                loadUriPrivateStorage(appId, activity, files, fileName, filePath, fileExtension)
+                loadUriPrivateStorage(appId, activity, fileName, externalStoragePublicDir, fileExtension)
             }
         } catch (ex: Exception){
             Log.e(AndroidImageUtil.TAG, "loadPublicUri: ${ex.message}")

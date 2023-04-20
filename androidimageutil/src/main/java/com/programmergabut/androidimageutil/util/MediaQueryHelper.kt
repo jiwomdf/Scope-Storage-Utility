@@ -20,7 +20,7 @@ class MediaQueryHelper(
                 if(isUsingScopeStorage) {
                     MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL)
                 } else {
-                    MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                    null
                 }
             }
             Environment.DIRECTORY_DCIM, Environment.DIRECTORY_PICTURES -> {
@@ -54,18 +54,18 @@ class MediaQueryHelper(
         }
     }
 
-    fun setMediaStoreWhere(fileName: String, fileExtension: Extension): String {
+    fun setMediaStoreWhere(fileName: String, fileExtension: Extension.ExtensionModel): String {
         return when (env) {
             Environment.DIRECTORY_DOWNLOADS -> {
-                MediaStore.Downloads.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}' AND " +
+                MediaStore.Downloads.DISPLAY_NAME + " LIKE " + "'$fileName${fileExtension.extension}' AND " +
                         MediaStore.Downloads.DATA + " LIKE ? "
             }
             Environment.DIRECTORY_DCIM, Environment.DIRECTORY_PICTURES -> {
-                MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}' AND " +
+                MediaStore.Images.Media.DISPLAY_NAME + " LIKE " + "'$fileName${fileExtension.extension}' AND " +
                         MediaStore.Images.Media.DATA + " LIKE ? "
             }
             else -> {
-                MediaStore.Files.FileColumns.DISPLAY_NAME + " LIKE " + "'$fileName${setExtension(fileExtension)}' AND " +
+                MediaStore.Files.FileColumns.DISPLAY_NAME + " LIKE " + "'$fileName${fileExtension.extension}' AND " +
                         MediaStore.Files.FileColumns.DATA + " LIKE ? "
             }
         }

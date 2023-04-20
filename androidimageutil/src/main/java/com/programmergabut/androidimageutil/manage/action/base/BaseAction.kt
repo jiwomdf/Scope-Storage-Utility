@@ -11,7 +11,7 @@ abstract class BaseAction(
     protected val context: Context,
     protected val fileName: String,
     directory: String?,
-    protected val fileExtension: Extension,
+    protected val fileExtension: Extension.ExtensionModel,
     protected val env: String
 ) {
 

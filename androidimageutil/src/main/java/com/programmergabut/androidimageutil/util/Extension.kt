@@ -1,26 +1,39 @@
 package com.programmergabut.androidimageutil.util
 
-enum class Extension {
-    PNG,
-    JPEG,
-    JPG,
-    WEBP,
-}
 
-fun setExtension(e: Extension): String {
-    return when (e) {
-        Extension.PNG -> ".png"
-        Extension.JPEG -> ".jpeg"
-        Extension.JPG -> ".jpg"
-        Extension.WEBP -> ".webp"
-    }
-}
 
-fun mapMimeType(fileExtension: Extension): String {
-    return when (fileExtension) {
-        Extension.PNG -> "image/png"
-        Extension.JPEG -> "image/jpeg"
-        Extension.WEBP -> "image/webp"
-        Extension.JPG -> "image/jpeg"
-    }
+object Extension {
+    const val PNG = ".png"
+    const val JPEG = ".jpeg"
+    const val JPG = ".jpg"
+    const val WEBP = ".webp"
+
+    private val extensions = mutableListOf(
+        ExtensionModel(
+            extension = PNG,
+            mimeType = "image/png"
+        ),
+        ExtensionModel(
+            extension = JPEG,
+            mimeType = "image/jpeg"
+        ),
+        ExtensionModel(
+            extension = JPG,
+            mimeType = "image/jpeg"
+        ),
+        ExtensionModel(
+            extension = WEBP,
+            mimeType = ".webp"
+        ),
+    )
+
+    data class ExtensionModel(
+        val extension: String,
+        val mimeType: String
+    )
+
+    fun get(extension: String): ExtensionModel = extensions.find { it.extension == extension }
+        ?: throw NullPointerException("Extension doesn't exists")
+
+    fun getOrNull(extension: String): ExtensionModel? = extensions.find { it.extension == extension }
 }
