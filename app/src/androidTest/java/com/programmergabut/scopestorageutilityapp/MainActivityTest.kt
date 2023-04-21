@@ -81,6 +81,11 @@ class MainActivityTest {
 
         val file = File(imagePath, "somefile.txt")
         assertTrue(file.exists())
+
+        /** Cleanup folder **/
+        val parentExternalStorageDirectory = "${Environment.DIRECTORY_DOWNLOADS}${File.separator}folder"
+        val filePathParent = Environment.getExternalStoragePublicDirectory(parentExternalStorageDirectory).absolutePath
+        File(filePathParent).deleteRecursively()
     }
 
     @Test
@@ -105,6 +110,7 @@ class MainActivityTest {
         val file = File(filePath, "${fileName}.txt")
         assertTrue(file.exists())
 
+        /** Cleanup folder **/
         val parentExternalStorageDirectory = "${Environment.DIRECTORY_DOWNLOADS}${File.separator}folder2"
         val filePathParent = Environment.getExternalStoragePublicDirectory(parentExternalStorageDirectory).absolutePath
         File(filePathParent).deleteRecursively()
