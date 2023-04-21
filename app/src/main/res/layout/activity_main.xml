@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/teal_700"
         android:orientation="vertical">
 
         <TextView
@@ -18,9 +19,21 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
-            android:textStyle="bold"
-            android:text="Scope Storage Utility By Katili Jiwo AW"
-            android:textColor="@color/black" />
+            android:text="@string/app_title"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="@string/app_welcome"
+            android:textColor="@color/teal_50"
+            android:textSize="12sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_capture_image"
@@ -37,26 +50,37 @@
             app:layout_constraintVertical_bias="0.1">
 
             <TextView
-                android:id="@+id/tv_title_1"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_example_1_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="1. Save, Load, and Delete private and public image,
-                \n
-                \n\t\tto see the full code see MainActivity class"
+                android:text="@string/example_1"
                 android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_example_1_dsc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/example_1_dsc"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_example_1_title" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_image_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_1">
+                app:layout_constraintTop_toBottomOf="@+id/tv_example_1_dsc">
 
                 <ImageView
                     android:id="@+id/iv_image_1"
@@ -83,11 +107,11 @@
                 android:id="@+id/cv_image_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_1">
+                app:layout_constraintTop_toBottomOf="@+id/tv_example_1_dsc">
 
                 <ImageView
                     android:id="@+id/iv_image_2"
@@ -133,18 +157,28 @@
 
             <TextView
                 android:id="@+id/tv_title_2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="2. Delete public image by directory and name,
-                \n\t\tfor this testing the file extension is hardcoded to png
-                \n
-                \n\t\tIf the file is created by other app, it will prompt a delete
-                \n\t\tpermission dialog"
+                android:text="@string/example_2"
                 android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_title_2_dsc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/example_2_dsc"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_2" />
 
             <LinearLayout
                 android:id="@+id/ll_delete_content"
@@ -153,40 +187,69 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_2">
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_2_dsc">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_image_dir"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
-                    android:hint="Folder"
-                    android:inputType="text"
-                    android:text="folder/subfolder/"
-                    android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_title_2" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_2">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_image_file"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_image_dir"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:hint="Folder"
+                        android:inputType="text"
+                        android:text="folder/subfolder/"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
-                    android:hint="File Name"
-                    android:inputType="text"
-                    android:text="123"
-                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_image_dir" />
+                    app:layout_constraintTop_toBottomOf="@id/et_image_dir">
 
-                <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_image_file"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:hint="Name"
+                        android:inputType="text"
+                        android:text="test"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=".png"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_image_dir">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_image_extension"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:hint="extension"
+                        android:inputType="text"
+                        android:text=".png"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -206,57 +269,89 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/white">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_title_file"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="3. Create some file from the out stream, it can be public or private directory"
+                android:text="@string/example_3"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_dsc_file"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/example_3_dsc"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_title_file" />
+
             <LinearLayout
                 android:id="@+id/ll_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_file">
+                app:layout_constraintTop_toBottomOf="@+id/tv_dsc_file">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_file_dir"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
-                    android:hint="Folder"
-                    android:inputType="text"
-                    android:text="folder/subfolder/"
-                    android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_title_2" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_2">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_file_name"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_file_dir"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/teal_50"
+                        android:hint="Folder"
+                        android:inputType="text"
+                        android:text="folder/subfolder/"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
-                    android:hint="File Name"
-                    android:inputType="text"
-                    android:text="somefile"
-                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_image_dir" />
+                    app:layout_constraintTop_toBottomOf="@id/et_image_dir">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_file_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/teal_50"
+                        android:hint="File Name"
+                        android:inputType="text"
+                        android:text="somefile"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text=".txt"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
@@ -269,8 +364,8 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/purple_500"
-                android:textColor="@color/white"
                 android:text="Create file"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

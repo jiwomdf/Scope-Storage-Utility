@@ -88,7 +88,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     imageFile = etImageFile.text.toString(),
                     imageDir = etImageDir.text.toString(),
                     env = Environment.DIRECTORY_DCIM,
-                    fileExtension = Extension.get(Extension.PNG),
+                    fileExtension = Extension.get(etImageExtension.text.toString()),
                     isSharedStorage = true
                 )
             }

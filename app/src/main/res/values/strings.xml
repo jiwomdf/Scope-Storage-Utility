@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">ScopeStorageUtility</string>
+    <string name="app_title">Scope Storage Utility By Katili Jiwo AW</string>
+    <string name="app_welcome">Welcome to Scope Storage Utility Library, this library will help you managing your image and file from the Android Scope Storage Policy Easier</string>
+
+    <string name="example_1"><b>1. Save, Load, and Delete Private and Public Image</b></string>
+    <string name="example_1_dsc">
+        \nIn this example, you can see how to save an image, load it to the screen, and delete it in both private and public storage
+        \n
+        \n<b>to see the full code and how to use the library, you can see MainActivity class</b>
+    </string>
+    <string name="example_2"><b>2. Delete Public Image by Directory and Name</b></string>
+    <string name="example_2_dsc">
+        \nAs the new scope storage security policy, when we deleting media files in android 10 and above
+        \n\n
+        <ol><li>If the file is created by other app, it will prompt a delete permission dialog</li>\n
+        <li>if the file created by this app, it will delete it without prompt</li>
+        </ol>
+    </string>
+    <string name="example_3"><b>3. Create File From The Out Stream</b></string>
+    <string name="example_3_dsc">If you want to create some file like text, pdf, or the other file that use out stream, you can use this library to help you manage the scope storage easier</string>
 </resources>
