@@ -1,30 +1,32 @@
 package com.programmergabut.scopestorageutilityapp
 
-import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
-import android.graphics.BitmapFactory
-import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.programmergabut.scopestorageutilityapp.ImageViewHasDrawableMatcher.hasDrawable
+import com.programmergabut.scopestorageutilityapp.util.ImageViewHasDrawableMatcher.hasDrawable
+import com.programmergabut.scopestorageutilityapp.util.createImageCaptureActivityResultStub
+import com.programmergabut.scopestorageutilityapp.util.getText
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -42,98 +44,71 @@ class MainActivityTest {
     @Rule
     var activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-    @After
-    fun tearDown() {
-        // Clears Intents state.
+    @Test
+    fun testSaveLoadAndDeletePhotoPrivateAndPublic_Success() {
+        Intents.init()
+        val result: Instrumentation.ActivityResult = createImageCaptureActivityResultStub()
+        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result)
+
+        val cleanDirectory = "folder/subfolder"
+        val externalStorageDirectory = "${Environment.DIRECTORY_DCIM}${File.separator}$cleanDirectory"
+        val imagePath = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
+
+        onView(withId(R.id.iv_image_1)).check(matches(not(hasDrawable())))
+        onView(withId(R.id.iv_image_2)).check(matches(not(hasDrawable())))
+
+        onView(withId(R.id.btn_dispatch_camera)).perform(click())
+
+        onView(withId(R.id.iv_image_1)).check(matches(hasDrawable()))
+        onView(withId(R.id.iv_image_2)).check(matches(hasDrawable()))
+
+        val file = File(imagePath, "test.png")
+        assertTrue(!file.exists())
+
         Intents.release()
     }
 
-    @Before
-    fun stubCameraIntent() {
-        Intents.init()
-        val result: Instrumentation.ActivityResult = createImageCaptureActivityResultStub()
+    @Test
+    fun testCreateFile_Success() {
+        val cleanDirectory = "folder/subfolder"
+        val externalStorageDirectory = "${Environment.DIRECTORY_DOWNLOADS}${File.separator}$cleanDirectory"
+        val imagePath = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
 
-        // Stub the Intent.
-        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result)
+        onView(withId(R.id.btn_create_file))
+            .perform(scrollTo(), click())
+
+        onView(withId(R.id.btn_create_file)).perform(click())
+
+        val file = File(imagePath, "somefile.txt")
+        assertTrue(file.exists())
     }
 
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        Assert.assertEquals("com.programmergabut.scopestorageutilityapp", appContext.packageName)
+    fun testCreateFile_UpdateEnvDirectoryAndName_Success() {
+        val fileName = "test2"
+        onView(withId(R.id.btn_create_file))
+            .perform(scrollTo(), click())
+
+        onView(withId(R.id.et_file_dir))
+            .perform(clearText(), typeText("folder2/subfolder2"))
+        onView(withId(R.id.et_file_name))
+            .perform(clearText(), typeText(fileName))
+
+        onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard())
+
+        val cleanDirectory = onView(withId(R.id.et_file_dir)).getText()
+        val externalStorageDirectory = "${Environment.DIRECTORY_DOWNLOADS}${File.separator}$cleanDirectory"
+        val filePath = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
+
+        onView(withId(R.id.btn_create_file)).perform(click())
+
+        val file = File(filePath, "${fileName}.txt")
+        assertTrue(file.exists())
+
+        val parentExternalStorageDirectory = "${Environment.DIRECTORY_DOWNLOADS}${File.separator}folder2"
+        val filePathParent = Environment.getExternalStoragePublicDirectory(parentExternalStorageDirectory).absolutePath
+        File(filePathParent).deleteRecursively()
     }
 
-    @Test
-    fun testPhoto() {
-
-        // Check that the ImageView doesn't have a drawable applied.
-        onView(withId(R.id.iv_image_1)).check(matches(not(hasDrawable())))
-
-        onView(withId(R.id.btn_dispatch_camera)).perform(click())
-
-        onView(withId(R.id.btn_dispatch_camera)).perform(click())
-        onView(withId(R.id.iv_image_1)).check(matches(hasDrawable()))
-        Thread.sleep(5000)
-    }
-
-    private fun createImageCaptureActivityResultStub(): Instrumentation.ActivityResult {
-
-        // Put the drawable in a bundle.
-        val bundle = Bundle()
-        bundle.putParcelable(
-            "data", BitmapFactory.decodeResource(
-                InstrumentationRegistry.getInstrumentation().targetContext.resources,
-                R.drawable.ic_android_24dp
-            )
-        )
-
-        // Create the Intent that will include the bundle.
-        val resultData = Intent()
-        resultData.putExtras(bundle)
-
-        // Create the ActivityResult with the Intent.
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
-
-    /* TODO: CARA2 @Test
-    fun testPhoto() {
-        activityRule.scenario.onActivity { activity ->
-            onView(withId(R.id.btn_dispatch_camera)).perform(click())
-            val imgCaptureResult = createImageCaptureActivityResultStub(activity)
-            intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(imgCaptureResult)
-            onView(withId(R.id.btn_dispatch_camera)).perform(click())
-            onView(withId(R.id.iv_image_1)).check(matches(hasImageSet()))
-            Thread.sleep(5000)
-        }
-    }
-
-
-    fun createImageGallerySetResultStub(activity: Activity): Instrumentation.ActivityResult {
-        val bundle = Bundle()
-        val parcels = ArrayList<Parcelable>()
-
-        val resultData = Intent()
-        val file = File(Environment.DIRECTORY_DCIM + "/folder/subfolder/", "test.png")
-        val uri = Uri.fromFile(file)
-        val parcelable1 = uri as Parcelable
-        parcels.add(parcelable1)
-        bundle.putParcelableArrayList(Intent.EXTRA_STREAM, parcels)
-
-        resultData.putExtras(bundle)
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
-
-    private fun hasImageSet(): BoundedMatcher<View, ImageView> {
-        return object : BoundedMatcher<View, ImageView>(ImageView::class.java) {
-            override fun describeTo(description: Description) {
-                description.appendText("has image set.")
-            }
-
-            override fun matchesSafely(imageView: ImageView): Boolean {
-                return imageView.background != null
-            }
-        }
-    } */
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.programmergabut.scopestorageutilityapp;
+package com.programmergabut.scopestorageutilityapp.util;
 
 import android.view.View;
 import android.widget.ImageView;
