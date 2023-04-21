@@ -32,7 +32,7 @@ class Save(
 
     private fun savePrivate(quality: Int, bitmap: Bitmap) {
         validateImageQuality(quality)
-        validateStoragePermission(context)
+        validateWritePermission(context)
         val directory = getOrCreateDirectoryIfEmpty(directory)
         val file = File(directory, "$fileName${fileExtension.extension}")
         deleteFileIfExist(file)
@@ -44,7 +44,7 @@ class Save(
 
     private fun savePublic(quality: Int, bitmap: Bitmap) {
         validateImageQuality(quality)
-        validateStoragePermission(context)
+        validateWritePermission(context)
         deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
         val outputStream = getOutStream(context, externalStorageDirectory, fileName, fileExtension, env)
         compressBitmap(outputStream, bitmap, quality, fileExtension)
@@ -83,7 +83,7 @@ class Save(
     fun getRawOutStream(outStreamCallback: OutStreamCallback) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                validateStoragePermission(context)
+                validateWritePermission(context)
                 if(isUsingScopeStorage){
                     deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
                 } else {

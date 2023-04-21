@@ -76,19 +76,17 @@ fun validateFileName(fileName: String): String {
     return fixFileName
 }
 
-fun validateStoragePermission(context: Context) {
+fun validateWritePermission(context: Context) {
     if(!isUsingScopeStorage){
-        if (!writePermissionGranted(context)) {
+        if (!isWriteStorageGranted(context)) {
             throw SecurityException(ErrorMessage.WRITE_EXTERNAL_STORAGE_PERMISSION_IS_NOT_GRANTED)
         }
     }
 }
 
 fun validateReadPermission(context: Context) {
-    if(!isUsingScopeStorage){
-        if (!readPermissionGranted(context)){
-            throw SecurityException(ErrorMessage.READ_EXTERNAL_STORAGE_PERMISSION_IS_NOT_GRANTED)
-        }
+    if (!isReadStorageGranted(context)){
+        throw SecurityException(ErrorMessage.READ_EXTERNAL_STORAGE_PERMISSION_IS_NOT_GRANTED)
     }
 }
 

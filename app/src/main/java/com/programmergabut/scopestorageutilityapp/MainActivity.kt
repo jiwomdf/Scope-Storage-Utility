@@ -73,6 +73,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     }
                 } else {
                     Log.d(TAG, "Failed delete public image")
+                    showToast("Failed delete public image")
                 }
             }
         }
@@ -110,8 +111,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                         outWriter.append("Some word here")
                         outWriter.close()
                         it.close()
+
+                        showToast("Success write some txt file")
                     }, {
                         Log.d(TAG, "Failed write some txt file")
+                        showToast("Failed write some txt file")
                     })
             }
         }
@@ -119,14 +123,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     private fun tryAndroidImageUtil(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
-        internalStorageSection(captureImage)
+        privateStorageSection(captureImage)
         sharedStorageSection(captureImage)
     }
 
-    private fun internalStorageSection(bitmap: Bitmap) {
+    private fun privateStorageSection(bitmap: Bitmap) {
 
         /***
-         * Example of saving base64 to internal storage
+         * Example of saving base64 to private storage
          */
         manage(this)
             .isShareStorage(false)
@@ -139,7 +143,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .save(bitmap, 100)
 
         /***
-         * Example of load internal storage with callback
+         * Example of load private storage with callback
          */
         manage(this)
             .isShareStorage(false)
@@ -185,6 +189,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             )
             .load({
                 Log.d(TAG, "Success load image test_public")
+                showToast("Success load image test_public")
+
                 Glide.with(applicationContext)
                     .load(it)
                     .into(binding.ivImage2)
@@ -192,6 +198,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 deletePublicImage("test_public", "folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.get(Extension.PNG), isSharedStorage = true)
             },{
                 Log.d(TAG, "Failed load image")
+                showToast("Failed load image")
             })
 
         /***
@@ -208,15 +215,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             .loadUri(this, BuildConfig.APPLICATION_ID)
             .also {
                 Log.d(TAG, "uri: $it")
+                showToast("uri: $it")
             }
     }
 
     private fun deleteImage() {
         /***
-         * Example of delete internal storage with callback
+         * Example of delete private storage with callback
          */
         manage(this)
-            .isShareStorage(true)
+            .isShareStorage(false)
             .attribute(
                 fileName = "test",
                 directory = "folder/subfolder/",
@@ -225,8 +233,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             )
             .delete(null, {
                 Log.d(TAG, "Success delete image test")
+                showToast("Success delete image test")
             },{
                 Log.d(TAG, "Failed delete image")
+                showToast("Failed delete image")
             })
     }
 
@@ -249,9 +259,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 extension = fileExtension
             )
             .delete(intentSenderRequest, {
-                Log.d(TAG, "Success delete image $imageDir/$imageFile")
+                Log.d(TAG, "Success delete image $imageDir$imageFile")
+                showToast("Success delete image $imageDir$imageFile")
             },{
                 Log.d(TAG, it.message.toString())
+                showToast(it.message.toString())
             })
     }
 

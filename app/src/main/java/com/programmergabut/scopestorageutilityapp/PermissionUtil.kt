@@ -1,6 +1,9 @@
 package com.programmergabut.scopestorageutilityapp
 
-import android.Manifest
+import android.Manifest.permission.CAMERA
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
@@ -11,34 +14,26 @@ class PermissionUtil(
     context: Context
 ): ContextWrapper(context) {
 
+    private fun isGranted(permission: String) =
+        (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)
+
     val arrPermissionTakePhoto = arrayOf(
-        Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE
+        CAMERA, WRITE_EXTERNAL_STORAGE,
+        READ_EXTERNAL_STORAGE
     )
 
     val arrPermissionTakePhotoScopeStorage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES)
+        arrayOf(CAMERA, READ_MEDIA_IMAGES)
     } else {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+        arrayOf(CAMERA, READ_EXTERNAL_STORAGE)
     }
 
     fun isPermissionGranted() :Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED) &&
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) ==
-                PackageManager.PERMISSION_GRANTED)
+        isGranted(CAMERA) && isGranted(READ_MEDIA_IMAGES)
     } else {
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED) &&
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED)
+        isGranted(CAMERA) && isGranted(READ_EXTERNAL_STORAGE)
     }
 
     fun isPermissionGrantedScopeStorage(): Boolean =
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED) &&
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_GRANTED) &&
-        (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_GRANTED)
+        isGranted(CAMERA) && isGranted(WRITE_EXTERNAL_STORAGE) && isGranted(READ_EXTERNAL_STORAGE)
 }
