@@ -20,10 +20,6 @@ import java.io.OutputStreamWriter
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
-    companion object {
-        private const val TAG = "TestMainActivity"
-    }
-
     private var isPermissionsGranted = true
     private lateinit var intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>
 
@@ -61,18 +57,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         with(binding){
             intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
                 if (it.resultCode == RESULT_OK) {
-                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                    if (isUsingScopeStorage) {
                         /** this line of code will arrive here if the user allow to delete file that's not this app create */
                         deletePublicImage(
                             imageFile = etImageFile.text.toString(),
                             imageDir = etImageDir.text.toString(),
                             env = Environment.DIRECTORY_DCIM,
-                            fileExtension = Extension.get(Extension.JPEG),
+                            fileExtension = Extension.get(Extension.PNG),
                             isSharedStorage = true
                         )
                     }
                 } else {
-                    Log.d(TAG, "Failed delete public image")
                     showToast("Failed delete public image")
                 }
             }
@@ -93,7 +88,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     imageFile = etImageFile.text.toString(),
                     imageDir = etImageDir.text.toString(),
                     env = Environment.DIRECTORY_DCIM,
-                    fileExtension = Extension.get(Extension.JPG),
+                    fileExtension = Extension.get(Extension.PNG),
                     isSharedStorage = true
                 )
             }
@@ -114,7 +109,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
                         showToast("Success write some txt file")
                     }, {
-                        Log.d(TAG, "Failed write some txt file")
                         showToast("Failed write some txt file")
                     })
             }
@@ -188,16 +182,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 extension = Extension.get(Extension.PNG)
             )
             .load({
-                Log.d(TAG, "Success load image test_public")
                 showToast("Success load image test_public")
 
                 Glide.with(applicationContext)
                     .load(it)
                     .into(binding.ivImage2)
 
-                deletePublicImage("test_public", "folder/subfolder/", Environment.DIRECTORY_DCIM, Extension.get(Extension.PNG), isSharedStorage = true)
+                deletePublicImage(
+                    imageFile = "test_public",
+                    imageDir = "folder/subfolder/",
+                    env = Environment.DIRECTORY_DCIM,
+                    fileExtension = Extension.get(Extension.PNG),
+                    isSharedStorage = true
+                )
             },{
-                Log.d(TAG, "Failed load image")
                 showToast("Failed load image")
             })
 
@@ -214,7 +212,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             )
             .loadUri(this, BuildConfig.APPLICATION_ID)
             .also {
-                Log.d(TAG, "uri: $it")
                 showToast("uri: $it")
             }
     }
@@ -232,10 +229,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 extension = Extension.get(Extension.PNG)
             )
             .delete(null, {
-                Log.d(TAG, "Success delete image test")
                 showToast("Success delete image test")
             },{
-                Log.d(TAG, "Failed delete image")
                 showToast("Failed delete image")
             })
     }
@@ -259,10 +254,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 extension = fileExtension
             )
             .delete(intentSenderRequest, {
-                Log.d(TAG, "Success delete image $imageDir$imageFile")
                 showToast("Success delete image $imageDir$imageFile")
             },{
-                Log.d(TAG, it.message.toString())
                 showToast(it.message.toString())
             })
     }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="com.programmergabut.scopestorageutilityapp.MainActivity">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
+            android:textStyle="bold"
             android:text="Android Image Util By Katili Jiwo AW"
             android:textColor="@color/black" />
 
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="1. Testing save, load, delete private file and public file,\n\t\tfor more info see MainActivity class"
+                android:text="1. Save, Load, and Delete private and public image,\n\t\tto see the full code see MainActivity class"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -134,7 +135,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="2. Testing delete public image by file directory and file name,\n\t\tfor this testing the file extension is hardcoded jpg"
+                android:text="2. Delete public image by directory and name,
+                \n\t\tfor this testing the file extension is hardcoded to png
+                \n
+                \n\t\tIf the file is created by other app, it will prompt a delete
+                \n\t\tpermission dialog"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -177,7 +182,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=".jpg"
+                    android:text=".png"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
             </LinearLayout>
