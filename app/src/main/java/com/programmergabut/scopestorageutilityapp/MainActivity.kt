@@ -68,7 +68,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                         )
                     }
                 } else {
-                    showToast("Failed delete public image")
+                    showToast("Photo not deleted")
                 }
             }
         }
@@ -124,7 +124,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     private fun privateStorageSection(bitmap: Bitmap) {
 
         /***
-         * Example of saving base64 to private storage
+         * Example of saving bitmap to private storage
          */
         manage(this)
             .isShareStorage(false)
@@ -158,7 +158,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     private fun sharedStorageSection(bitmap: Bitmap) {
 
         /***
-         * Example of save public storage
+         * Example of save bitmap to public storage
          */
         manage(this)
             .isShareStorage(true)

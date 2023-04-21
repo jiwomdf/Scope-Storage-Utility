@@ -1,3 +1,3 @@
-rootProject.name = "scopestorageutility"
+rootProject.name = "scopestorageutilityapp"
 include ':app'
 include ':scopestorageutility'

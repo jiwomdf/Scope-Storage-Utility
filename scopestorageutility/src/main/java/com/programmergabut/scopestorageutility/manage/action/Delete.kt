@@ -34,8 +34,8 @@ class Delete(
     private fun deletePublicFileScopeStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
         return collection?.let {
             val uri = loadUriScopeStorage(context, collection, projection, where, cleanDirectory, env) ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
-            deletePublicImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
-            true
+            val isDeleted = deletePublicImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
+            isDeleted
         } ?: kotlin.run {
             Log.e(AndroidImageUtil.TAG, "loadPublicUri: collection is null")
             false
@@ -54,7 +54,7 @@ class Delete(
     }
 
     @SuppressLint("NewApi")
-    fun delete(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?): Boolean? {
+    fun delete(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?): Boolean {
         try {
             validateFileName(fileName)
             validateReadPermission(context)

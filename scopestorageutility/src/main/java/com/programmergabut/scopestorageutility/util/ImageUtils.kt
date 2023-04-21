@@ -145,9 +145,10 @@ fun loadPublicUri(
 }
 
 @SuppressLint("NewApi")
-fun deletePublicImageScopeStorageWithSecurity(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>) {
-    try {
+fun deletePublicImageScopeStorageWithSecurity(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>): Boolean {
+    return try {
         context.contentResolver.delete(photoUri, null, null)
+        true
     } catch (e: SecurityException) {
         val intentSender = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
@@ -164,6 +165,7 @@ fun deletePublicImageScopeStorageWithSecurity(context: Context, photoUri: Uri, i
                 IntentSenderRequest.Builder(sender).build()
             )
         }
+        false
     }
 }
 
