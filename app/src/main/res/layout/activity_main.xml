@@ -19,7 +19,7 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:textStyle="bold"
-            android:text="Android Image Util By Katili Jiwo AW"
+            android:text="Scope Storage Utility By Katili Jiwo AW"
             android:textColor="@color/black" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +41,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="1. Save, Load, and Delete private and public image,\n\t\tto see the full code see MainActivity class"
+                android:text="1. Save, Load, and Delete private and public image,
+                \n
+                \n\t\tto see the full code see MainActivity class"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -211,7 +213,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="3. Create some file with out stream, it can be public or private directory"
+                android:text="3. Create some file from the out stream, it can be public or private directory"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
