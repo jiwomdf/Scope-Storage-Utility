@@ -17,7 +17,7 @@ the benefit of this library are
 ```the error can be trace by search the logcat of "ScopeStorageUtility"``` ✅<br>
 5. For more detail info, see the full doc here [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
 
-<img src="https://github.com/jiwomdf/Scope-Storage-Utility/blob/master/scopestorageutility/gif/ScopeStorageUtilityGif.gif" width="250" height="450"/>
+<img src="https://github.com/jiwomdf/Scope-Storage-Utility/blob/master/scopestorageutility/gif/ScopeStorageUtilityGif.gif" width="220" height="450"/>
 
 ## Features  
 | Bitmap  |
