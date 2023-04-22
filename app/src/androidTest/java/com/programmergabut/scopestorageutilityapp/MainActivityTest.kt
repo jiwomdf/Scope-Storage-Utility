@@ -28,6 +28,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 
+/**
+ * This Instrumented test is tested well on Pixel 5 API 28
+ */
+
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
