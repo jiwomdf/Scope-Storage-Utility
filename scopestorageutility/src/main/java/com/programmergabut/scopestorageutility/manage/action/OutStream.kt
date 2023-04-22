@@ -16,6 +16,7 @@ import com.programmergabut.scopestorageutility.util.validateWritePermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -75,15 +76,15 @@ class OutStream(
     fun getOutputStream(outputStreamCallback: OutputStreamCallback) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val outStream = if(isUsingScopeStorage){
+                val outStream = if(toSharedStorage){
                     getOutputStreamShared()
                 } else {
                     getOutputStreamPrivate()
                 }
-                outputStreamCallback.onSuccess(outStream)
+                withContext(Dispatchers.Main) { outputStreamCallback.onSuccess(outStream) }
             } catch (ex: Exception){
                 Log.e(ScopeStorageUtility.TAG, "outStream: ${ex.message}")
-                outputStreamCallback.onFailed(ex)
+                withContext(Dispatchers.Main) { outputStreamCallback.onFailed(ex) }
             }
         }
     }

@@ -14,7 +14,6 @@ import com.programmergabut.scopestorageutility.ScopeStorageUtility.Companion.man
 import com.programmergabut.scopestorageutility.util.Extension
 import com.programmergabut.scopestorageutility.util.isUsingScopeStorage
 import com.programmergabut.scopestorageutilityapp.databinding.ActivityMainBinding
-import java.io.File
 import java.io.OutputStreamWriter
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
@@ -81,43 +80,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 )
             }
             btnCreateFile.setOnClickListener {
-                manage(this@MainActivity)
-                    .isShareStorage(true)
-                    .attribute(
-                        fileName = etFileName.text.toString(),
-                        directory = etFileDir.text.toString(),
-                        env = Environment.DIRECTORY_DOWNLOADS,
-                        extension = Extension.ExtensionModel(".txt", "text/plain"),
-                    )
-                    .getOutputStream({
-                        val outWriter = OutputStreamWriter(it)
-                        outWriter.append("this is shared storage text")
-                        outWriter.close()
-                        it.close()
-
-                        showToast("Success write txt file on ${Environment.DIRECTORY_DOWNLOADS}${File.separator}${etFileName.text} in share storage")
-                    }, {
-                        showToast("Failed write txt file in share storage")
-                    })
-
-                manage(this@MainActivity)
-                    .isShareStorage(false)
-                    .attribute(
-                        fileName = etFileName.text.toString(),
-                        directory = etFileDir.text.toString(),
-                        env = Environment.DIRECTORY_DOWNLOADS,
-                        extension = Extension.ExtensionModel(".txt", "text/plain"),
-                    )
-                    .getOutputStream({
-                        val outWriter = OutputStreamWriter(it)
-                        outWriter.append("this is private storage text")
-                        outWriter.close()
-                        it.close()
-
-                        showToast("Success write txt file on ${Environment.DIRECTORY_DOWNLOADS}${File.separator}${etFileName.text} in private storage")
-                    }, {
-                        showToast("Failed write some txt file in private storage")
-                    })
+                createFileSection(
+                    filename = etFileName.text.toString(),
+                    fileDir = etFileDir.text.toString()
+                )
             }
         }
     }
@@ -282,6 +248,46 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 }
             }
         }
+    }
+
+    private fun createFileSection(filename: String, fileDir: String) {
+        manage(this@MainActivity)
+            .isShareStorage(true)
+            .attribute(
+                fileName = filename,
+                directory = fileDir,
+                env = Environment.DIRECTORY_DOWNLOADS,
+                extension = Extension.ExtensionModel(".txt", "text/plain"),
+            )
+            .getOutputStream({
+                val outWriter = OutputStreamWriter(it)
+                outWriter.append("this is shared storage text")
+                outWriter.close()
+                it.close()
+
+                showToast("Success write txt file on /${fileDir}${filename} in shared storage")
+            }, {
+                showToast("Failed write txt file in share storage")
+            })
+
+        manage(this@MainActivity)
+            .isShareStorage(false)
+            .attribute(
+                fileName = filename,
+                directory = fileDir,
+                env = Environment.DIRECTORY_DOWNLOADS,
+                extension = Extension.ExtensionModel(".txt", "text/plain"),
+            )
+            .getOutputStream({
+                val outWriter = OutputStreamWriter(it)
+                outWriter.append("this is private storage text")
+                outWriter.close()
+                it.close()
+
+                showToast("Success write txt file on /${fileDir}${filename} in private storage")
+            }, {
+                showToast("Failed write some txt file in private storage")
+            })
     }
 
 }
