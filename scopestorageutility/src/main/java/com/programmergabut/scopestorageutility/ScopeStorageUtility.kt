@@ -5,7 +5,7 @@ import com.programmergabut.scopestorageutility.manage.Manage
 
 class ScopeStorageUtility {
     companion object {
-        const val TAG = "AndroidImageUtil"
+        const val TAG = "ScopeStorageUtility"
         fun manage(context: Context) = Manage(context)
     }
 }
