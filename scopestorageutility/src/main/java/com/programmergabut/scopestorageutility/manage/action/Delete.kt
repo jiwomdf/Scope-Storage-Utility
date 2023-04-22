@@ -31,20 +31,20 @@ class Delete(
 ) {
 
     @SuppressLint("NewApi")
-    private fun deletePublicFileScopeStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
+    private fun deleteSharedFileScopeStorage(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>): Boolean {
         return collection?.let {
             val uri = loadUriScopeStorage(context, collection, projection, where, cleanDirectory, env) ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
-            val isDeleted = deletePublicImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
+            val isDeleted = deleteSharedImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
             isDeleted
         } ?: kotlin.run {
-            Log.e(ScopeStorageUtility.TAG, "loadPublicUri: collection is null")
+            Log.e(ScopeStorageUtility.TAG, "deleteSharedFileScopeStorage: collection is null")
             false
         }
     }
 
-    private fun deletePublicFileNonSharedStorage(): Boolean {
-        validateDirectory(File(externalStoragePublicDir))
-        return deletePrivateFile(fileName, externalStoragePublicDir, fileExtension)
+    private fun deleteSharedFileNonSharedStorage(): Boolean {
+        validateDirectory(File(externalStorageSharedDir))
+        return deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
     }
 
     private fun deletePrivateStorage(): Boolean {
@@ -61,15 +61,15 @@ class Delete(
             return if(isSharedStorage){
                 if(isUsingScopeStorage) {
                     validateIntentSenderRequest(intentSenderRequest)
-                    deletePublicFileScopeStorage(intentSenderRequest!!)
+                    deleteSharedFileScopeStorage(intentSenderRequest!!)
                 } else {
-                    deletePublicFileNonSharedStorage()
+                    deleteSharedFileNonSharedStorage()
                 }
             } else {
                 deletePrivateStorage()
             }
         } catch (ex: Exception){
-            Log.e(ScopeStorageUtility.TAG, "deletePublic: ${ex.message}")
+            Log.e(ScopeStorageUtility.TAG, "deleteShared: ${ex.message}")
             return false
         }
     }
@@ -83,14 +83,14 @@ class Delete(
                 if(isSharedStorage){
                     if(isUsingScopeStorage){
                         validateIntentSenderRequest(intentSenderRequest)
-                        val isDeleted = deletePublicFileScopeStorage(intentSenderRequest!!)
+                        val isDeleted = deleteSharedFileScopeStorage(intentSenderRequest!!)
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
                             withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_PHOTO))) }
                         }
                     } else {
-                        val isDeleted = deletePublicFileNonSharedStorage()
+                        val isDeleted = deleteSharedFileNonSharedStorage()
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
@@ -101,7 +101,7 @@ class Delete(
                     deletePrivateStorage()
                 }
             } catch (ex: Exception){
-                Log.e(ScopeStorageUtility.TAG, "deletePublic: ${ex.message}")
+                Log.e(ScopeStorageUtility.TAG, "deleteShared: ${ex.message}")
                 withContext(Dispatchers.Main) { callBack.onFailed(ex) }
             }
         }

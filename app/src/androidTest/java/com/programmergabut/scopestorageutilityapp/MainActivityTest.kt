@@ -45,7 +45,7 @@ class MainActivityTest {
     var activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun testSaveLoadAndDeletePhotoPrivateAndPublic_Success() {
+    fun testSaveLoadAndDeletePhotoPrivateAndShared_Success() {
         Intents.init()
         val result: Instrumentation.ActivityResult = createImageCaptureActivityResultStub()
         intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result)

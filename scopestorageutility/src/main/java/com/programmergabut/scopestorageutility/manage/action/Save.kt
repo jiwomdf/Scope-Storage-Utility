@@ -6,12 +6,10 @@ import android.util.Log
 import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.callback.ImageCallback
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
-import com.programmergabut.scopestorageutility.manage.callback.OutStreamCallback
 import com.programmergabut.scopestorageutility.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -42,18 +40,18 @@ class Save(
         }
     }
 
-    private fun savePublic(quality: Int, bitmap: Bitmap) {
+    private fun saveShared(quality: Int, bitmap: Bitmap) {
         validateImageQuality(quality)
         validateWritePermission(context)
         deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
-        val outputStream = getOutStream(context, externalStorageDirectory, fileName, fileExtension, env)
+        val outputStream = getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
         compressBitmap(outputStream, bitmap, quality, fileExtension)
     }
 
     fun save(bitmap: Bitmap, quality: Int): Boolean {
         return try {
             if(toSharedStorage){
-                savePublic(quality, bitmap)
+                saveShared(quality, bitmap)
             } else {
                 savePrivate(quality, bitmap)
             }
@@ -67,8 +65,8 @@ class Save(
     fun save(bitmap: Bitmap, quality: Int, imageCallBack: ImageCallback) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                if(isUsingScopeStorage){
-                    savePublic(quality, bitmap)
+                if(toSharedStorage){
+                    saveShared(quality, bitmap)
                 } else {
                     savePrivate(quality, bitmap)
                 }
@@ -76,32 +74,6 @@ class Save(
             } catch (ex: Exception){
                 Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
                 imageCallBack.onFailed(ex)
-            }
-        }
-    }
-
-    fun getRawOutStream(outStreamCallback: OutStreamCallback) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                validateWritePermission(context)
-                if(isUsingScopeStorage){
-                    deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
-                } else {
-                    deletePrivateFile(fileName, externalStoragePublicDir, fileExtension)
-                }
-                val outputStream = getOutStream(
-                    context,
-                    externalStorageDirectory,
-                    fileName,
-                    fileExtension,
-                    env
-                )
-                withContext(Dispatchers.Main){
-                    outStreamCallback.onSuccess(outputStream)
-                }
-            } catch (ex: Exception){
-                Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
-                withContext(Dispatchers.Main){ outStreamCallback.onFailed(ex) }
             }
         }
     }

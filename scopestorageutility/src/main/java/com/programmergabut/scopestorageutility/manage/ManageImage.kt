@@ -9,10 +9,11 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.appcompat.app.AppCompatActivity
 import com.programmergabut.scopestorageutility.manage.action.Delete
 import com.programmergabut.scopestorageutility.manage.action.Load
+import com.programmergabut.scopestorageutility.manage.action.OutStream
 import com.programmergabut.scopestorageutility.manage.action.Save
 import com.programmergabut.scopestorageutility.manage.callback.ImageCallback
 import com.programmergabut.scopestorageutility.manage.callback.LoadImageCallback
-import com.programmergabut.scopestorageutility.manage.callback.OutStreamCallback
+import com.programmergabut.scopestorageutility.manage.callback.OutputStreamCallback
 import com.programmergabut.scopestorageutility.util.Extension
 import java.io.OutputStream
 
@@ -52,8 +53,8 @@ class ManageImage(
             override fun onFailed(ex: Exception) { catch?.invoke(ex) }
         })
     }
-    fun loadUri(activity: AppCompatActivity, appId: String): Uri? =
-        loadObj.loadUri(activity, appId)
+    fun loadSharedFileUri(activity: AppCompatActivity, appId: String): Uri? =
+        loadObj.loadSharedFileUri(activity, appId)
 
     /**
      *  Save Region
@@ -66,8 +67,14 @@ class ManageImage(
             override fun onFailed(ex: Exception) {catch?.invoke(ex)}
         })
     }
-    fun getOutStreamPublic(block: (outputStream: OutputStream) -> Unit, catch: ((e: Exception) -> Unit)? = null){
-        saveObj.getRawOutStream(object : OutStreamCallback {
+
+    /**
+     *  OutStream Region
+     */
+    private val outStream = OutStream(context, fileName, directory, fileExtension, env, isSharedStorage)
+    fun getOutputStream() = outStream.getOutStream()
+    fun getOutputStream(block: (outputStream: OutputStream) -> Unit, catch: ((e: Exception) -> Unit)? = null){
+        outStream.getOutputStream(object : OutputStreamCallback {
             override fun onSuccess(outputStream: OutputStream) {block.invoke(outputStream)}
             override fun onFailed(ex: Exception) {catch?.invoke(ex)}
         })

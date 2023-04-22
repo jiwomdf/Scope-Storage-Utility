@@ -14,7 +14,7 @@ import com.programmergabut.scopestorageutility.util.ErrorMessage
 import com.programmergabut.scopestorageutility.util.Extension
 import com.programmergabut.scopestorageutility.util.isUsingScopeStorage
 import com.programmergabut.scopestorageutility.util.loadBitmapFromUri
-import com.programmergabut.scopestorageutility.util.loadPublicUri
+import com.programmergabut.scopestorageutility.util.loadSharedUri
 import com.programmergabut.scopestorageutility.util.loadUriPrivateStorage
 import com.programmergabut.scopestorageutility.util.loadUriScopeStorage
 import com.programmergabut.scopestorageutility.util.validateDirectory
@@ -50,13 +50,13 @@ class Load(
         return BitmapFactory.decodeFile(file.path)
     }
 
-    private fun loadPublicBitmap(): Bitmap? {
+    private fun loadSharedBitmap(): Bitmap? {
         return if(isUsingScopeStorage){
-            val photoUri = loadPublicUri(context, collection, projection, cleanDirectory, where)
+            val photoUri = loadSharedUri(context, collection, projection, cleanDirectory, where)
                 ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
             loadBitmapFromUri(context, photoUri)
         } else {
-            val imagePath = externalStoragePublicDir
+            val imagePath = externalStorageSharedDir
             validateDirectory(File(imagePath))
             val file = File(imagePath, "$fileName${fileExtension.extension}")
             BitmapFactory.decodeFile(file.path)
@@ -66,7 +66,7 @@ class Load(
     fun load(): Bitmap? {
         return try {
             if(toSharedStorage){
-                loadPublicBitmap()
+                loadSharedBitmap()
             } else {
                 loadPrivateBitmap()
             }
@@ -80,7 +80,7 @@ class Load(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val bitmap = if(toSharedStorage){
-                    loadPublicBitmap()
+                    loadSharedBitmap()
                 } else {
                     loadPrivateBitmap()
                 }
@@ -93,7 +93,7 @@ class Load(
     }
 
     @SuppressLint("NewApi")
-    fun loadUri(activity: AppCompatActivity, appId: String): Uri? {
+    fun loadSharedFileUri(activity: AppCompatActivity, appId: String): Uri? {
         return try {
             validateFileName(fileName)
             validateReadPermission(context)
@@ -101,18 +101,18 @@ class Load(
                 collection?.let {
                     loadUriScopeStorage(context, collection, projection, where, cleanDirectory, env) ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
                 } ?: kotlin.run {
-                    Log.e(ScopeStorageUtility.TAG, "loadPublicUri: collection is null")
+                    Log.e(ScopeStorageUtility.TAG, "loadSharedUri: collection is null")
                     null
                 }
             } else {
-                val files = File(externalStoragePublicDir)
+                val files = File(externalStorageSharedDir)
                 if(!files.exists()){
                     throw Exception(ErrorMessage.FILE_NOT_FOUND)
                 }
-                loadUriPrivateStorage(appId, activity, fileName, externalStoragePublicDir, fileExtension)
+                loadUriPrivateStorage(appId, activity, fileName, externalStorageSharedDir, fileExtension)
             }
         } catch (ex: Exception){
-            Log.e(ScopeStorageUtility.TAG, "loadPublicUri: ${ex.message}")
+            Log.e(ScopeStorageUtility.TAG, "loadSharedUri: ${ex.message}")
             null
         }
     }

@@ -23,7 +23,7 @@ abstract class BaseAction(
     protected val directory = File("${externalFileDir}${File.separator}$cleanDirectory")
 
     /**
-     * Variable for public image scope storage
+     * Variable for shared image scope storage
      */
     private val mediaQueryHelper = MediaQueryHelper(env)
     protected val collection: Uri? = mediaQueryHelper.setMediaStore()
@@ -31,8 +31,8 @@ abstract class BaseAction(
     protected val where = mediaQueryHelper.setMediaStoreWhere(fileName, fileExtension)
 
     /**
-     * Variable for public image non scope storage
+     * Variable for shared image non scope storage
      */
     protected val externalStorageDirectory = "${env}${File.separator}$cleanDirectory"
-    protected val externalStoragePublicDir: String = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
+    protected val externalStorageSharedDir: String = Environment.getExternalStoragePublicDirectory(externalStorageDirectory).absolutePath
 }

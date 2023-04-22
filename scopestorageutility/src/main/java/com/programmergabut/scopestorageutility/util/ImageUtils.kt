@@ -93,7 +93,7 @@ fun validateReadPermission(context: Context) {
 fun validateIntentSenderRequest(intentSenderRequest: ActivityResultLauncher<IntentSenderRequest>?) {
     if(isUsingScopeStorage){
         if (intentSenderRequest == null){
-            throw SecurityException(ErrorMessage.INTENT_SENDER_REQUEST_IS_REQUIRE_IN_PUBLIC_DIRECTORY_DELETE)
+            throw SecurityException(ErrorMessage.INTENT_SENDER_REQUEST_IS_REQUIRE_IN_SHARED_DIRECTORY_DELETE)
         }
     }
 }
@@ -114,7 +114,7 @@ fun loadBitmapFromUri(context: Context, photoUri: Uri): Bitmap {
     }
 }
 
-fun loadPublicUri(
+fun loadSharedUri(
     context: Context,
     collection: Uri?,
     projection: Array<String>,
@@ -145,7 +145,7 @@ fun loadPublicUri(
 }
 
 @SuppressLint("NewApi")
-fun deletePublicImageScopeStorageWithSecurity(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>): Boolean {
+fun deleteSharedImageScopeStorageWithSecurity(context: Context, photoUri: Uri, intentSenderLauncher: ActivityResultLauncher<IntentSenderRequest>): Boolean {
     return try {
         context.contentResolver.delete(photoUri, null, null)
         true
@@ -183,14 +183,13 @@ fun deleteExistingSharedFile(
 ){
     try {
         if(collection == null) return
-        val photoUri = loadPublicUri(context, collection, projection, directory, where) ?: return
+        val photoUri = loadSharedUri(context, collection, projection, directory, where) ?: return
         context.contentResolver.delete(photoUri, null, null)
     } catch (e: SecurityException) {
         e.printStackTrace()
     }
 }
-
-fun getOutStream(
+fun getOutStreamOnShareStorage(
     context: Context,
     directory: String,
     fileName: String,
@@ -229,7 +228,7 @@ fun loadUriScopeStorage(
     env: String
 ): Uri? {
     try {
-        val photos = mutableListOf<Uri>()
+        val file = mutableListOf<Uri>()
         val mediaQueryHelper = MediaQueryHelper(env)
         context.contentResolver.query(
             collection,
@@ -243,10 +242,10 @@ fun loadUriScopeStorage(
                 val id = cursor.getLong(idColumn)
                 mediaQueryHelper.setMediaStore()?.let {
                     val contentUri = ContentUris.withAppendedId(it, id)
-                    photos.add(contentUri)
+                    file.add(contentUri)
                 }
             }
-            return photos.firstOrNull()
+            return file.firstOrNull()
         } ?: return null
     } catch (ex: Exception) {
         return null
@@ -265,7 +264,7 @@ fun loadUriPrivateStorage(
     return file.let {
         FileProvider.getUriForFile(activity, "$appId.provider", it)
     } ?: run {
-        Log.e(ScopeStorageUtility.TAG, "loadPublicUri: File not found")
+        Log.e(ScopeStorageUtility.TAG, "loadSharedUri: File not found")
         null
     }
 }
