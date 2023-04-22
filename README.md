@@ -66,19 +66,19 @@ Please include this permission in your application <br>
 ```
 ```For android Tiramisu use READ_MEDIA_IMAGES instead of READ_EXTERNAL_STORAGE```
 
-## Quick view how simple it is to use the lib
-This is the example of Load png file in shared storage, it already handle loading png 
+## Quick view how to use the lib
+This is the example of load png file in shared storage, it already handle loading png 
 using media query for scope storage device and using the Environment class for non scope storage device <br>
 ```kotlin
     manage(this)
-        .isShareStorage(false)
+        .isShareStorage(true)
         .attribute(
             fileName = "test_shared",
             directory = "folder/subfolder/",
             env = Environment.DIRECTORY_DCIM,
             extension = Extension.get(Extension.PNG)
         )
-        .load({
+        .load({ bitmap ->
             //success
         },{
             //failed
