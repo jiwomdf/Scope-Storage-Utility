@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import com.programmergabut.scopestorageutility.AndroidImageUtil
+import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.callback.ImageCallback
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
 import com.programmergabut.scopestorageutility.util.*
@@ -37,7 +37,7 @@ class Delete(
             val isDeleted = deletePublicImageScopeStorageWithSecurity(context, uri, intentSenderRequest)
             isDeleted
         } ?: kotlin.run {
-            Log.e(AndroidImageUtil.TAG, "loadPublicUri: collection is null")
+            Log.e(ScopeStorageUtility.TAG, "loadPublicUri: collection is null")
             false
         }
     }
@@ -69,7 +69,7 @@ class Delete(
                 deletePrivateStorage()
             }
         } catch (ex: Exception){
-            Log.e(AndroidImageUtil.TAG, "deletePublic: ${ex.message}")
+            Log.e(ScopeStorageUtility.TAG, "deletePublic: ${ex.message}")
             return false
         }
     }
@@ -101,7 +101,7 @@ class Delete(
                     deletePrivateStorage()
                 }
             } catch (ex: Exception){
-                Log.e(AndroidImageUtil.TAG, "deletePublic: ${ex.message}")
+                Log.e(ScopeStorageUtility.TAG, "deletePublic: ${ex.message}")
                 withContext(Dispatchers.Main) { callBack.onFailed(ex) }
             }
         }

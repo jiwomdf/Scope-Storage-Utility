@@ -3,7 +3,7 @@ package com.programmergabut.scopestorageutility.manage.action
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import com.programmergabut.scopestorageutility.AndroidImageUtil
+import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.callback.ImageCallback
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
 import com.programmergabut.scopestorageutility.manage.callback.OutStreamCallback
@@ -59,7 +59,7 @@ class Save(
             }
             true
         } catch (ex: Exception){
-            Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
+            Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
             false
         }
     }
@@ -74,7 +74,7 @@ class Save(
                 }
                 imageCallBack.onSuccess()
             } catch (ex: Exception){
-                Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
+                Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
                 imageCallBack.onFailed(ex)
             }
         }
@@ -100,7 +100,7 @@ class Save(
                     outStreamCallback.onSuccess(outputStream)
                 }
             } catch (ex: Exception){
-                Log.e(AndroidImageUtil.TAG, "save: ${ex.message}")
+                Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
                 withContext(Dispatchers.Main){ outStreamCallback.onFailed(ex) }
             }
         }

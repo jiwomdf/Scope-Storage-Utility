@@ -3,16 +3,14 @@ package com.programmergabut.scopestorageutilityapp
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
-import com.programmergabut.scopestorageutility.AndroidImageUtil.Companion.manage
+import com.programmergabut.scopestorageutility.ScopeStorageUtility.Companion.manage
 import com.programmergabut.scopestorageutility.util.Extension
 import com.programmergabut.scopestorageutility.util.isUsingScopeStorage
 import com.programmergabut.scopestorageutilityapp.databinding.ActivityMainBinding

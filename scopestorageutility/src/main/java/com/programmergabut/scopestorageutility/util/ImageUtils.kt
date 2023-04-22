@@ -18,7 +18,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import com.programmergabut.scopestorageutility.AndroidImageUtil
+import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -265,7 +265,7 @@ fun loadUriPrivateStorage(
     return file.let {
         FileProvider.getUriForFile(activity, "$appId.provider", it)
     } ?: run {
-        Log.e(AndroidImageUtil.TAG, "loadPublicUri: File not found")
+        Log.e(ScopeStorageUtility.TAG, "loadPublicUri: File not found")
         null
     }
 }

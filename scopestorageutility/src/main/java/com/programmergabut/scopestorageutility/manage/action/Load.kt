@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.programmergabut.scopestorageutility.AndroidImageUtil
+import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
 import com.programmergabut.scopestorageutility.manage.callback.LoadImageCallback
 import com.programmergabut.scopestorageutility.util.ErrorMessage
@@ -71,7 +71,7 @@ class Load(
                 loadPrivateBitmap()
             }
         } catch (ex: Exception) {
-            Log.e(AndroidImageUtil.TAG, "load: ${ex.message}")
+            Log.e(ScopeStorageUtility.TAG, "load: ${ex.message}")
             null
         }
     }
@@ -86,7 +86,7 @@ class Load(
                 }
                 withContext(Dispatchers.Main) { callBack.onResult(bitmap) }
             } catch (ex: Exception) {
-                Log.e(AndroidImageUtil.TAG, "load: ${ex.message}")
+                Log.e(ScopeStorageUtility.TAG, "load: ${ex.message}")
                 withContext(Dispatchers.Main) { callBack.onResult(null) }
             }
         }
@@ -101,7 +101,7 @@ class Load(
                 collection?.let {
                     loadUriScopeStorage(context, collection, projection, where, cleanDirectory, env) ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
                 } ?: kotlin.run {
-                    Log.e(AndroidImageUtil.TAG, "loadPublicUri: collection is null")
+                    Log.e(ScopeStorageUtility.TAG, "loadPublicUri: collection is null")
                     null
                 }
             } else {
@@ -112,7 +112,7 @@ class Load(
                 loadUriPrivateStorage(appId, activity, fileName, externalStoragePublicDir, fileExtension)
             }
         } catch (ex: Exception){
-            Log.e(AndroidImageUtil.TAG, "loadPublicUri: ${ex.message}")
+            Log.e(ScopeStorageUtility.TAG, "loadPublicUri: ${ex.message}")
             null
         }
     }
