@@ -18,8 +18,7 @@ the benefit of this library are
 5. For more detail info, see the full doc here [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md)
 
 
-
-![](https://github.com/jiwomdf/ImageHarpa/blob/master/androidimageutil/gif/ScopeStorageUtilityGif.gif)
+![](https://github.com/jiwomdf/Scope-Storage-Utility/blob/master/scopestorageutility/gif/ScopeStorageUtilityGif.gif)
 
 ## Features  
 | Bitmap  |
