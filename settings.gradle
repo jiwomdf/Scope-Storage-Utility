@@ -1,3 +1,3 @@
-rootProject.name = "androidImageUtilApp"
+rootProject.name = "scopestorageutilityapp"
 include ':app'
-include ':androidimageutil'
+include ':scopestorageutility'

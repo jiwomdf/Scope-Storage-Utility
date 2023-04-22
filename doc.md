@@ -1,164 +1,73 @@
-# Android Image Util Docs
+# Scope Storage Utility Docs
 
 ## Table of Contents
-1. [Convert Image Format (bitmap, base64, drawable)](#convert) <br>
-   a. [Convert Bitmap to Base64](#convert_bitmap_to_base64) <br>
-   b. [Convert Base64 to Bitmap](#convert_base64_to_bitmap) <br>
-   c. [Convert Base64 to Drawable](#convert_base64_to_drawable) <br>
-   d. [Convert Drawable to Bitmap](#convert_drawable_to_bitmap) <br>
-   e. [Convert Drawable to Base64](#convert_drawable_to_base64)
-
-2. [Manage Image Storage](#manage) <br>
-   a. [Save Private And Public Image](#save) <br>
-   b. [Load Private And Public Image](#load) <br>
-   c. [Delete Private And Public Image](#delete) <br>
-   d. [Load Image Uri of Public Image](#loaduri)
+1. [Manage Image Storage](#manage) <br>
+   a. [Save Private And Shared Image](#save) <br>
+   b. [Load Private And Shared Image](#load) <br>
+   c. [Delete Private And Shared Image](#delete) <br>
+   d. [Load Image Uri of Shared Storage](#loaduri)   
+   e. [Load Outstream For File Creation in Private And Shared](#load) <br>
 
 Before starting with the lib, here are some useful information
 ```
 1. For syncronize funtion, it will always returned true if the process is success and false if it failed
-2. For tracing the error you can try by searching the logcat of "AndroidImageUtil"
+2. For tracing the error you can try by searching the logcat of "ScopeStorageUtility"
 3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
 ```
 
-## Convert Image Format (bitmap, base64, drawable) <a name="convert"></a>
-#### Convert Bitmap to Base64 <a name="convert_bitmap_to_base64"></a>
-```kotlin
-  /**
-   * @param bitmap is the image in bitmap format.
-   * @param quality is the quality of the image, must be between 0 and 100.
-   * @param format is the file extension, it can be ".png", ".jpeg", ".jpg", ".webp".
-   * @return string of base64 if success, or null if fail
-   */
-
-    /* Example of convert bitmap to base64 synchronously */
-    return convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG) ?: ""
-
-    /* Example of convert bitmap to base64 asynchronously */
-    convert.bitmapToBase64(bitmap, 100, Bitmap.CompressFormat.PNG, {
-        Log.d(TAG, "Success convert to base64")
-    },{
-        Log.d(TAG, "Failed convert to base64")
-    })
-  
-   /**
-   * for the format you can use
-   */
-   Bitmap.CompressFormat.JPEG, Bitmap.CompressFormat.PNG, Bitmap.CompressFormat.WEBP
-
-```
-
-#### Convert Base64 to Bitmap <a name="convert_base64_to_bitmap"></a>
-```kotlin
-  /**
-   * convert base64 to Bitmap
-   * @param base64 is the image in base64 string format.
-   * @param offset is a number of values to skip before the first color in the array of colors.
-   */
-   
-   /* Example of convert base64 to Bitmap synchronously */
-   val bitmap = convert.base64ToBitmap(base64, 0)
-
-   /* Example of convert base64 to Bitmap with asynchronously */
-   convert.base64ToBitmap(base64, 0,{
-      Log.d(TAG, "bitmap: $bitmap")
-   },{
-      Log.d(TAG, "ex: $ex")  
-   })
-```
-
-#### Convert Base64 To Drawable <a name="convert_base64_to_drawable"></a>
-```kotlin
-  /**
-   * convert base64 to Drawable
-   * @param base64 is the image in base64 string format.
-   * @param offset is a number of values to skip before the first color in the array of colors.
-   */
-   
-   /* Example of convert base64 to Drawable synchronously */
-   val drawable = convert.base64ToDrawable(base64, 0)
-        Log.e(TAG, "drawable: $drawable")
-
-   /* Example of convert base64 to Drawable asynchronously */
-   convert.base64ToDrawable(base64, 0, {
-       Log.e(TAG, "drawable: $drawable")
-   },{
-       Log.e(TAG, "drawable: $ex")
-   })
-```
-
-#### Convert Drawable To Bitmap <a name="convert_drawable_to_bitmap"></a>
-```kotlin
-  /**
-   * convert drawable to Bitmap
-   * @param drawable is the image in drawable.
-   */
-   
-   /* Example of convert drawable to bitmap synchronously */
-   val bitmap = convert.drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!)
-   Log.e(TAG, "bitmap: $bitmap")
-
-   /* Example of convert drawable to bitmap asynchronously */
-   convert.drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!, {
-       Log.e(TAG, "bitmap: $bitmap")
-   },{
-       Log.e(TAG, "ex: $ex")
-   })
-```
-
-#### Convert Drawable to Base64 <a name="convert_drawable_to_base64"></a>
-```kotlin
-  /**
-   * convert drawable to base64
-   * @param drawable is the image in drawable.
-   */
-   
-   /* Example of convert drawable to base64 synchronously */
-   val base642 = convert.drawableToBase64(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!)
-        Log.e(TAG, "base64: $base642")
-
-   /* Example of convert drawable to base64 asynchronously */
-   convert.drawableToBase64(ContextCompat.getDrawable(this, R.drawable.ic_android_24dp)!!, {
-       Log.e(TAG, "base64: $base64")
-   },{
-       Log.e(TAG, "ex: $ex")
-   })
-```
-<br>
-
 ## Manage Image Storage <a name="manage"></a>
-#### Manage function
+#### Manage, isShareStorage, attribute function
 ```kotlin
+
+  manage() -> 
   /**
-   *  Set the attribute file you want to save or load
+   * @param context, the activity or app context
+   */
+
+  isShareStorage() -> 
+  /**
+   *  @param value, the value of isShareStorage, 
+   *  if it's false then it mean it will be save private storage, you can find in your_phone_name\Android\data\application_package_name
+   *  if it's true then it mean it will be save to shared storage
+   */
+   //if the isShareStorage is not inputed, it will be false as it default value
+   
+  attribute() -> 
+  /**
    *  @param fileName is the name of your file.
    *  @param directory is the directory of the file you want to save or load,
-   *  if it is null or empty, it will saved to your absolute path.
-   *  @param fileExtension is the file extension, it can be ".png", ".jpeg", ".jpg", ".webp".
-   */
-   fun imageAttribute(fileName: String, directory: String?, fileExtension: Extension): ManageImage
-   
-   /**
-   * for the fileExtension you can use
-   */
-   Extension.PNG, Extension.JPEG, Extension.JPG, Extension.WEBP
-   
+   *  @param env is the Environment of the file you want to save or load, eg: Environment.DIRECTORY_DCIM
+   *  @param extension is the file extension, it can be ".png", ".jpeg", ".jpg", ".webp".
+   *  you can use eg: Extension.get(Extension.PNG) or create new extension eg: Extension.ExtensionModel(".png", "image/png")
+   */   
 ```
 
-#### Save function (bitmap, base64, drawable) <a name="save"></a>
+#### Save function <a name="save"></a>
 ```kotlin
   /***
-   * Example of saving base64 to internal storage 
-   * in your_phone_name\Android\data\application_package_name\files\Pictures\
+   * Example of saving bitmap to private storage 
+   * in your_phone_name\Android\data\application_package_name\DCIM\folder\subfolder\test_shared.png
    */
-  /* Example of save internal storage asynchronously */
+  /* Example of save private storage asynchronously */
   val isSuccess = manage(this)
-      .imageAttribute("test", "folder/subfolder/", Extension.PNG)
+      .isShareStorage(false)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG),
+      )
       .save(base64, 100)
       
-  /* Example of save internal storage asynchronously */
+  /* Example of save private storage asynchronously */
   manage(this)
-      .imageAttribute("test", "folder/subfolder/", Extension.PNG)
+      .isShareStorage(false)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG),
+      )
       .save(base64, 100, {
         //success
       },{
@@ -167,18 +76,29 @@ Before starting with the lib, here are some useful information
       
       
   /***
-   * Example of save public storage in DCIM folder
+   * Example of save shared storage in DCIM folder
    */
   
-  /* Example of save public storage synchronously */
+  /* Example of save shared storage synchronously */
   manage(this)
-      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-      .savePublic(base64, 100)
+      isShareStorage(true)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG),
+      )
+      .save(base64, 100)
   
-  /* Example of save public storage asynchronously */
+  /* Example of save shared storage asynchronously */
   manage(this)
-      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-      .savePublic(base64, 100, {
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG),
+      )
+      .save(base64, 100, {
         //success
       },{
         //failed
@@ -187,89 +107,166 @@ Before starting with the lib, here are some useful information
 
 #### Load function <a name="load"></a>
 ```kotlin
-  /* Example of load internal storage synchronously */
+  /* Example of load private storage synchronously */
   val bitmap = manage(this)
-      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .isShareStorage(false)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
       .load()
             
-  /* Example of load internal storage asynchronously */
+  /* Example of load private storage asynchronously */
   manage(this)
-      .imageAttribute("test","folder/subfolder/", Extension.PNG)
+      .isShareStorage(false)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
       .load({
-         Log.d(TAG, "Success load image test")
+        //success
       },{
-         Log.d(TAG, "Failed load image")
+        //failed
       })
   
-  /* Example of load public storage synchronously */
+  /* Example of load shared storage synchronously */
   val bitmap = manage(this)
-      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-      .loadPublic()
+      .isShareStorage(true)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
+      .load()
   
-  /* Example of load public storage asynchronously */
+  /* Example of load shared storage asynchronously */
   manage(this)
-      .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-      .loadPublic({
-          Log.d(TAG, "Success load image test_public")
-      },{       
-          Log.d(TAG, "Failed load image")
+      .isShareStorage(true)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
+      .load({
+        //success
+      },{
+        //failed
       })
 ```
 #### Delete function <a name="delete"></a>
 ```kotlin
 
-  /* Example of delete internal storage synchronously */ 
+  /* Example of delete private storage synchronously */ 
   val isDeleted = manage(this)
-      .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .delete()
+      .isShareStorage(false)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
+      .delete(null)
       
-  /* Example of delete internal storage asynchronously */ 
+  /* Example of delete private storage asynchronously */ 
   manage(this)
-      .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .delete({
-          Log.d(TAG, "Success delete image test")
-      },{
-          Log.d(TAG, "Failed delete image")
+      .isShareStorage(false)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
+      .delete(null, {
+        //success
+      },{       
+        //failed
       })
     
-  /* Example of delete public storage synchronously */ 
+  /* Example of delete shared storage synchronously */ 
   val isDeleted = manage(this)
-      .imageAttribute(imageFile, imageDir, Extension.JPG)
-      .deletePublic(intentSenderRequest)
+      .isShareStorage(true)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
+      .delete(intentSenderRequest)
       
-  /* Example of delete public storage asynchronously */ 
+  /* Example of delete shared storage asynchronously */ 
   manage(this)
-      .imageAttribute("test","folder/subfolder/", Extension.PNG)
-      .deletePublic({
-          Log.d(TAG, "Success delete image test")
+      .isShareStorage(true)
+      .attribute(
+          fileName = "test_shared",
+          directory = "folder/subfolder/",
+          env = Environment.DIRECTORY_DCIM,
+          extension = Extension.get(Extension.PNG)
+      )
+      .delete(intentSenderRequest, {
+          //success
       },{
-          Log.d(TAG, "Failed delete image")
+          //failed
       })
       
   /**
-    * for delete public image you need intentSenderRequest
+    * for delete shared image you need intentSenderRequest
     */
     intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
           if (it.resultCode == RESULT_OK) {
-              if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                  /** this line of code will arrive here if the user allow to delete file that's not this app create */
-                  deletePublicImage(imageFile, imageDir)
-              }
+               //user confirm other app file deletion
           } else {
-              Log.d(TAG, "Failed delete public image")
+               //user reject other app file deletion
           }
       }
 ```
 
-#### Load Image URI (for public image) <a name="loaduri"></a>
+#### Load File URI (for shared storage) <a name="loaduri"></a>
 ```kotlin
     /***
-     * Example getting the image URI of public image
+     * Example getting the file URI of shared file
      */
-    manage(this)
-        .imageAttribute("test_public","folder/subfolder/", Extension.PNG)
-        .loadPublicUri()
-        .also {
-            Log.d(TAG, "uri: $it")
-        }
+      manage(this)
+         .isShareStorage(true)
+         .attribute(
+             fileName = "test_shared",
+             directory = "folder/subfolder/",
+             env = Environment.DIRECTORY_DCIM,
+             extension = Extension.get(Extension.PNG)
+         )
+         .loadSharedFileUri(this, BuildConfig.APPLICATION_ID)
+         .also {
+             showToast("uri: $it")
+         }
+```
+
+#### Create File from outputStream <a name="loaduri"></a>
+```kotlin
+    /***
+     * Example of creating .txt file from the outputStream
+     */
+      
+      manage(this)
+            .isShareStorage(true)
+            .attribute(
+                fileName = filename,
+                directory = fileDir,
+                env = Environment.DIRECTORY_DOWNLOADS,
+                extension = Extension.ExtensionModel(".txt", "text/plain"),
+            )
+            .getOutputStream({
+                val outWriter = OutputStreamWriter(it)
+                outWriter.append("this is shared storage text")
+                outWriter.close()
+                it.close()
+
+                //Success write txt file on DCIM/fileDir/filename in shared storage
+            }, {
+                //Failed write txt file in share storage
+            })
 ```
