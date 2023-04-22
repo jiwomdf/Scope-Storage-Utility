@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ScopeStorageUtility</string>
     <string name="app_title">Scope Storage Utility By Katili Jiwo AW</string>
-    <string name="app_welcome">Welcome to Scope Storage Utility Library, this library will help you managing your image and file from the Android Scope Storage Policy Easier</string>
+    <string name="app_welcome">Welcome to Scope Storage Utility Library, this library will help manage your image and file from the Android Scope Storage Policy</string>
 
     <string name="example_1"><b>1. Save, Load, and Delete Private and Public Image</b></string>
     <string name="example_1_dsc">
@@ -13,7 +13,10 @@
     <string name="example_2_dsc">
         \nAs the new scope storage security policy, when we deleting media files in android 10 and above
         \n\n
-        <ol><li>If the file is created by other app, it will prompt a delete permission dialog</li>\n
+        <ol><li>If the file is created by other app, it will prompt a delete permission dialog</li></ol>
+    </string>
+    <string name="example_2_dsc_2">
+        <ol>\n
         <li>if the file created by this app, it will delete it without prompt</li>
         </ol>
     </string>

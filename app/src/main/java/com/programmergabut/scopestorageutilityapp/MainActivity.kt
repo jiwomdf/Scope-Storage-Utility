@@ -54,22 +54,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         askForPermission()
         setListener()
 
-        with(binding){
-            intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-                if (it.resultCode == RESULT_OK) {
-                    if (isUsingScopeStorage) {
-                        /** this line of code will arrive here if the user allow to delete file that's not this app create */
-                        deletePublicImage(
-                            imageFile = etImageFile.text.toString(),
-                            imageDir = etImageDir.text.toString(),
-                            env = Environment.DIRECTORY_DCIM,
-                            fileExtension = Extension.get(Extension.PNG),
-                            isSharedStorage = true
-                        )
-                    }
-                } else {
-                    showToast("Photo not deleted")
-                }
+        intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                showToast("Photo deleted")
+            } else {
+                showToast("Photo not deleted")
             }
         }
     }
