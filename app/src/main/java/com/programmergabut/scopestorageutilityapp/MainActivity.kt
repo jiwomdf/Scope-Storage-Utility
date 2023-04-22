@@ -25,7 +25,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            tryAndroidImageUtil(result.data)
+            startScopeStorageUtility(result.data)
         }
     }
 
@@ -88,7 +88,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         }
     }
 
-    private fun tryAndroidImageUtil(data: Intent?)  {
+    private fun startScopeStorageUtility(data: Intent?)  {
         val captureImage = data?.extras!!["data"] as Bitmap
         privateStorageSection(captureImage)
         sharedStorageSection(captureImage)
