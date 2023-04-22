@@ -6,7 +6,7 @@
    b. [Load Private And Shared Image](#load) <br>
    c. [Delete Private And Shared Image](#delete) <br>
    d. [Load Image Uri of Shared Storage](#loaduri)   
-   e. [Load Outstream For File Creation in Private And Shared](#load) <br>
+   e. [Load Outstream For File Creation in Private And Shared](#outstream) <br>
 
 Before starting with the lib, here are some useful information
 ```
@@ -48,7 +48,7 @@ Before starting with the lib, here are some useful information
    * Example of saving bitmap to private storage 
    * in your_phone_name\Android\data\application_package_name\DCIM\folder\subfolder\test_shared.png
    */
-  /* Example of save private storage asynchronously */
+  /* Example of save asynchronously */
   val isSuccess = manage(this)
       .isShareStorage(false)
       .attribute(
@@ -59,39 +59,9 @@ Before starting with the lib, here are some useful information
       )
       .save(base64, 100)
       
-  /* Example of save private storage asynchronously */
+  /* Example of save asynchronously */
   manage(this)
       .isShareStorage(false)
-      .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG),
-      )
-      .save(base64, 100, {
-        //success
-      },{
-        //failed
-      })
-      
-      
-  /***
-   * Example of save shared storage in DCIM folder
-   */
-  
-  /* Example of save shared storage synchronously */
-  manage(this)
-      isShareStorage(true)
-      .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG),
-      )
-      .save(base64, 100)
-  
-  /* Example of save shared storage asynchronously */
-  manage(this)
       .attribute(
           fileName = "test_shared",
           directory = "folder/subfolder/",
@@ -107,7 +77,7 @@ Before starting with the lib, here are some useful information
 
 #### Load function <a name="load"></a>
 ```kotlin
-  /* Example of load private storage synchronously */
+  /* Example of load synchronously */
   val bitmap = manage(this)
       .isShareStorage(false)
       .attribute(
@@ -118,35 +88,9 @@ Before starting with the lib, here are some useful information
       )
       .load()
             
-  /* Example of load private storage asynchronously */
+  /* Example of load asynchronously */
   manage(this)
       .isShareStorage(false)
-      .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
-      )
-      .load({
-        //success
-      },{
-        //failed
-      })
-  
-  /* Example of load shared storage synchronously */
-  val bitmap = manage(this)
-      .isShareStorage(true)
-      .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
-      )
-      .load()
-  
-  /* Example of load shared storage asynchronously */
-  manage(this)
-      .isShareStorage(true)
       .attribute(
           fileName = "test_shared",
           directory = "folder/subfolder/",
@@ -245,7 +189,7 @@ Before starting with the lib, here are some useful information
          }
 ```
 
-#### Create File from outputStream <a name="loaduri"></a>
+#### Create File from outputStream <a name="outstream"></a>
 ```kotlin
     /***
      * Example of creating .txt file from the outputStream
