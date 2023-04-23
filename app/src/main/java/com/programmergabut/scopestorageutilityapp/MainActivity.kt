@@ -71,7 +71,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 }
             }
             btnDeleteImage.setOnClickListener {
-                deleteImageOnSharedStorage(
+                deleteFile(
                     imageFile = etImageFile.text.toString(),
                     imageDir = etImageDir.text.toString(),
                     env = Environment.DIRECTORY_DCIM,
@@ -161,7 +161,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     .load(it)
                     .into(binding.ivImage2)
 
-                deleteImageOnSharedStorage(
+                deleteFile(
                     imageFile = "test_shared",
                     imageDir = "folder/subfolder/",
                     env = Environment.DIRECTORY_DCIM,
@@ -208,7 +208,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
             })
     }
 
-    private fun deleteImageOnSharedStorage(
+    private fun deleteFile(
         imageFile: String,
         imageDir: String,
         env: String,
@@ -227,7 +227,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 extension = fileExtension
             )
             .delete(intentSenderRequest, {
-                showToast("Success delete image $imageDir$imageFile")
+                showToast("Success delete $imageDir$imageFile")
             },{
                 showToast(it.message.toString())
             })
@@ -251,43 +251,66 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     }
 
     private fun createFileSection(filename: String, fileDir: String) {
-        manage(this@MainActivity)
-            .isShareStorage(true)
-            .attribute(
-                fileName = filename,
-                directory = fileDir,
-                env = Environment.DIRECTORY_DOWNLOADS,
-                extension = Extension.ExtensionModel(".txt", "text/plain"),
-            )
-            .getOutputStream({
-                val outWriter = OutputStreamWriter(it)
-                outWriter.append("this is shared storage text")
-                outWriter.close()
-                it.close()
+        with(binding){
+            val txtExt = Extension.ExtensionModel(".txt", "text/plain")
+            manage(this@MainActivity)
+                .isShareStorage(true)
+                .attribute(
+                    fileName = filename,
+                    directory = fileDir,
+                    env = Environment.DIRECTORY_DOWNLOADS,
+                    extension = txtExt,
+                )
+                .getOutputStream({
+                    val outWriter = OutputStreamWriter(it)
+                    outWriter.append("this is shared storage text")
+                    outWriter.close()
+                    it.close()
 
-                showToast("Success write txt file on /${fileDir}${filename} in shared storage")
-            }, {
-                showToast("Failed write txt file in share storage")
-            })
+                    showToast("Success write txt file on /${fileDir}${filename} in shared storage")
 
-        manage(this@MainActivity)
-            .isShareStorage(false)
-            .attribute(
-                fileName = filename,
-                directory = fileDir,
-                env = Environment.DIRECTORY_DOWNLOADS,
-                extension = Extension.ExtensionModel(".txt", "text/plain"),
-            )
-            .getOutputStream({
-                val outWriter = OutputStreamWriter(it)
-                outWriter.append("this is private storage text")
-                outWriter.close()
-                it.close()
+                    if(cbAlsoDeleteFile.isChecked){
+                        deleteFile(
+                            imageFile = filename,
+                            imageDir = fileDir,
+                            env = Environment.DIRECTORY_DOWNLOADS,
+                            fileExtension = txtExt,
+                            isSharedStorage = true
+                        )
+                    }
+                }, {
+                    showToast("Failed write txt file in share storage")
+                })
 
-                showToast("Success write txt file on /${fileDir}${filename} in private storage")
-            }, {
-                showToast("Failed write some txt file in private storage")
-            })
+            manage(this@MainActivity)
+                .isShareStorage(false)
+                .attribute(
+                    fileName = filename,
+                    directory = fileDir,
+                    env = Environment.DIRECTORY_DOWNLOADS,
+                    extension = txtExt,
+                )
+                .getOutputStream({
+                    val outWriter = OutputStreamWriter(it)
+                    outWriter.append("this is private storage text")
+                    outWriter.close()
+                    it.close()
+
+                    showToast("Success write txt file on /${fileDir}${filename} in private storage")
+
+                    if(cbAlsoDeleteFile.isChecked){
+                        deleteFile(
+                            imageFile = filename,
+                            imageDir = fileDir,
+                            env = Environment.DIRECTORY_DOWNLOADS,
+                            fileExtension = txtExt,
+                            isSharedStorage = false
+                        )
+                    }
+                }, {
+                    showToast("Failed write some txt file in private storage")
+                })
+        }
     }
 
 }

@@ -11,5 +11,5 @@ object ErrorMessage {
     const val INTENT_SENDER_REQUEST_IS_REQUIRE_IN_SHARED_DIRECTORY_DELETE = "intentSenderRequest is require in shared directory when do deletion"
 
     const val CANT_GET_PHOTO_URI = "can't get photo uri"
-    const val FAILED_DELETE_PHOTO = "failed delete photo"
+    const val FAILED_DELETE_FILE = "failed delete file"
 }
