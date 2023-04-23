@@ -22,12 +22,12 @@ Before starting with the lib, here are some useful information
 #### Manage, isShareStorage, attribute function
 ```kotlin
 
-  manage() -> 
+  manage(context: Context)
   /**
    * @param context, the activity or app context
    */
 
-  isShareStorage() -> 
+  isShareStorage(value: Boolean)
   /**
    *  @param value, the value of isShareStorage, 
    *  if it's false then it mean it will be save private storage, you can find in your_phone_name\Android\data\application_package_name
@@ -35,7 +35,7 @@ Before starting with the lib, here are some useful information
    */
    //if the isShareStorage is not inputed, it will be false as it default value
    
-  attribute() -> 
+  attribute(fileName: String, directory: String?, env: String, extension: Extension.ExtensionModel)
   /**
    *  @param fileName is the name of your file.
    *  @param directory is the directory of the file you want to save or load,
