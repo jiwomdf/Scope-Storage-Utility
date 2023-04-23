@@ -7,20 +7,16 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        api-level: [28]
-        target: [default, google_apis]
+    runs-on: macOS-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
+    - name: checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
 
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: x86_64
-          profile: Pixel 5
-          script: ./gradlew connectedCheck
+    - name: run tests
+      uses: reactivecircus/android-emulator-runner@v1
+      with:
+        api-level: 28
+        script: ./gradlew connectedCheck
+
