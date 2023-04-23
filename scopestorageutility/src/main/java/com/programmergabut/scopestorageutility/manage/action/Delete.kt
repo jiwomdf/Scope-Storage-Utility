@@ -87,18 +87,23 @@ class Delete(
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
-                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_PHOTO))) }
+                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                         }
                     } else {
                         val isDeleted = deleteSharedFileNonSharedStorage()
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
-                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_PHOTO))) }
+                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                         }
                     }
                 } else {
-                    deletePrivateStorage()
+                    val isDeleted = deletePrivateStorage()
+                    if(isDeleted){
+                        withContext(Dispatchers.Main) { callBack.onSuccess() }
+                    } else{
+                        withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                    }
                 }
             } catch (ex: Exception){
                 Log.e(ScopeStorageUtility.TAG, "deleteShared: ${ex.message}")
