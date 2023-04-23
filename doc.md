@@ -1,12 +1,15 @@
 # Scope Storage Utility Docs
 
 ## Table of Contents
-1. [Manage Image Storage](#manage) <br>
-   a. [Save Private And Shared Image](#save) <br>
-   b. [Load Private And Shared Image](#load) <br>
-   c. [Delete Private And Shared Image](#delete) <br>
-   d. [Load Image Uri of Shared Storage](#loaduri)   
-   e. [Load Outstream For File Creation in Private And Shared](#outstream) <br>
+1. [Manage, isShareStorage, attribute functions](#manage) <br>
+   a. [Save Image in Private And Shared Storage](#save) <br>
+   b. [Load Image in Private And Shared Storage](#load) <br>
+   c. [Delete Image in Private And Shared Storage](#delete) <br>
+   d. [Load Image/File Uri From Shared Storage](#loaduri) <br>
+   e. [Load Outstream For File Creation in Private And Shared Storage](#outstream) <br>
+   f. [Delete File in Private And Shared Storage](#filedelete) 
+   
+<br>
 
 Before starting with the lib, here are some useful information
 ```
@@ -212,5 +215,26 @@ Before starting with the lib, here are some useful information
                 //Success write txt file on DCIM/fileDir/filename in shared storage
             }, {
                 //Failed write txt file in share storage
+            })
+```
+
+#### Delete File <a name="filedelete"></a>
+```kotlin
+    /***
+     * Example of delete file
+     */
+      
+      manage(this)
+            .isShareStorage(true)
+            .attribute(
+                fileName = "test",
+                directory = "folder/subfolder/",
+                env = Environment.DIRECTORY_DOWNLOADS,
+                extension = Extension.ExtensionModel(".txt", "text/plain")
+            )
+            .delete(intentSenderRequest, {
+                //Success delete folder/subfolder/test.txt
+            },{
+                //Failed delete folder/subfolder/test.txt
             })
 ```
