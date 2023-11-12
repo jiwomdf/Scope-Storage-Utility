@@ -19,6 +19,7 @@ import com.programmergabut.scopestorageutility.util.imageutil.validateWritePermi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -93,10 +94,10 @@ class Save(
                 } else {
                     savePrivate(quality, bitmap)
                 }
-                imageCallBack.onSuccess()
+                withContext(Dispatchers.Main) { imageCallBack.onSuccess() }
             } catch (ex: Exception){
                 Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
-                imageCallBack.onFailed(ex)
+                withContext(Dispatchers.Main) {imageCallBack.onFailed(ex) }
             }
         }
     }
