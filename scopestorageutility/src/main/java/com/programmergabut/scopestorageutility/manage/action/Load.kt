@@ -45,7 +45,6 @@ class Load(
         validateFileName(fileName)
         validateReadPermission(context)
         validateDirectory(directory)
-
         val file = File(directory, "$fileName${fileExtension.extension}")
         return BitmapFactory.decodeFile(file.path)
     }

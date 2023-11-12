@@ -38,38 +38,23 @@ class OutStream(
 ) {
 
     private fun getOutputStreamPrivate(): OutputStream {
-        validateWritePermission(context)
         val directory = getOrCreateDirectoryIfEmpty(directory)
         val file = File(directory, "$fileName${fileExtension.extension}")
         deleteFileIfExist(file)
         return FileOutputStream(file)
     }
 
-    private fun getOutputStreamShared(): OutputStream {
-        validateWritePermission(context)
-        return if (isUsingScopeStorage) {
-            deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
-            getOutStreamOnShareStorage(
-                context,
-                externalStorageDirectory,
-                fileName,
-                fileExtension,
-                env
-            )
-        } else {
-            deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
-            getOutStreamOnPrivateStorage(
-                externalStorageDirectory,
-                fileName,
-                fileExtension
-            )
-        }
-    }
-
     fun getOutStream(): OutputStream? {
         return try {
+            validateWritePermission(context)
             if(toSharedStorage){
-                getOutputStreamShared()
+                if (isUsingScopeStorage) {
+                    deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
+                    getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
+                } else {
+                    deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
+                    getOutStreamOnPrivateStorage(externalStorageDirectory, fileName, fileExtension)
+                }
             } else {
                 getOutputStreamPrivate()
             }
@@ -83,7 +68,13 @@ class OutStream(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val outStream = if(toSharedStorage){
-                    getOutputStreamShared()
+                    if (isUsingScopeStorage) {
+                        deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
+                        getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
+                    } else {
+                        deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
+                        getOutStreamOnPrivateStorage(externalStorageDirectory, fileName, fileExtension)
+                    }
                 } else {
                     getOutputStreamPrivate()
                 }
