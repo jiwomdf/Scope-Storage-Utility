@@ -123,11 +123,9 @@ fun loadUriPrivateStorage(
 }
 
 fun getOutStreamOnPrivateStorage(
-    context: Context,
     directory: String,
     fileName: String,
-    fileExtension: Extension.ExtensionModel,
-    env: String
+    fileExtension: Extension.ExtensionModel
 ): FileOutputStream {
     val filePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
     val fileDir = File(filePath)

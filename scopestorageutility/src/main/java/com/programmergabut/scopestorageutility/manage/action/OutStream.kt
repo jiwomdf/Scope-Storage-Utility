@@ -59,11 +59,9 @@ class OutStream(
         } else {
             deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
             getOutStreamOnPrivateStorage(
-                context,
                 externalStorageDirectory,
                 fileName,
-                fileExtension,
-                env
+                fileExtension
             )
         }
     }

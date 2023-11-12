@@ -63,11 +63,9 @@ class Save(
             )
         } else {
             getOutStreamOnPrivateStorage(
-                context,
                 externalStorageDirectory,
                 fileName,
-                fileExtension,
-                env
+                fileExtension
             )
         }
         compressBitmap(outputStream, bitmap, quality, fileExtension)
