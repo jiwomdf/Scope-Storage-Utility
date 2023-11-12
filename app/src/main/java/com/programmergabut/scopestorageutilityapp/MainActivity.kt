@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.programmergabut.scopestorageutility.ScopeStorageUtility.Companion.manage
 import com.programmergabut.scopestorageutility.model.UtilityModel
 import com.programmergabut.scopestorageutility.util.Extension
-import com.programmergabut.scopestorageutility.util.isUsingScopeStorage
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
 import com.programmergabut.scopestorageutilityapp.databinding.ActivityMainBinding
 import java.io.OutputStreamWriter
 

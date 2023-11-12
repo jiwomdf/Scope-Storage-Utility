@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
 
 class MediaQueryHelper(
     private val env: String,
