@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -16,6 +17,7 @@ import com.programmergabut.scopestorageutility.util.Extension
 import com.programmergabut.scopestorageutility.util.isReadStorageGranted
 import com.programmergabut.scopestorageutility.util.isWriteStorageGranted
 import java.io.File
+import java.io.FileOutputStream
 import java.io.OutputStream
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
@@ -118,4 +120,19 @@ fun loadUriPrivateStorage(
         Log.e(ScopeStorageUtility.TAG, "loadSharedUri: File not found")
         null
     }
+}
+
+fun getOutStreamOnPrivateStorage(
+    context: Context,
+    directory: String,
+    fileName: String,
+    fileExtension: Extension.ExtensionModel,
+    env: String
+): FileOutputStream {
+    val filePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
+    val fileDir = File(filePath)
+    fileDir.mkdirs()
+    val file = File(filePath, "$fileName${fileExtension.extension}")
+    file.createNewFile()
+    return FileOutputStream(file)
 }

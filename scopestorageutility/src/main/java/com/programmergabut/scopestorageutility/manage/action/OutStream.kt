@@ -10,6 +10,7 @@ import com.programmergabut.scopestorageutility.util.imageutil.deleteExistingShar
 import com.programmergabut.scopestorageutility.util.imageutil.deleteFileIfExist
 import com.programmergabut.scopestorageutility.util.imageutil.deletePrivateFile
 import com.programmergabut.scopestorageutility.util.imageutil.getOrCreateDirectoryIfEmpty
+import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnPrivateStorage
 import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnShareStorage
 import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
 import com.programmergabut.scopestorageutility.util.imageutil.validateWritePermission
@@ -46,18 +47,25 @@ class OutStream(
 
     private fun getOutputStreamShared(): OutputStream {
         validateWritePermission(context)
-        if (isUsingScopeStorage) {
+        return if (isUsingScopeStorage) {
             deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
+            getOutStreamOnShareStorage(
+                context,
+                externalStorageDirectory,
+                fileName,
+                fileExtension,
+                env
+            )
         } else {
             deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
+            getOutStreamOnPrivateStorage(
+                context,
+                externalStorageDirectory,
+                fileName,
+                fileExtension,
+                env
+            )
         }
-        return getOutStreamOnShareStorage(
-            context,
-            externalStorageDirectory,
-            fileName,
-            fileExtension,
-            env
-        )
     }
 
     fun getOutStream(): OutputStream? {

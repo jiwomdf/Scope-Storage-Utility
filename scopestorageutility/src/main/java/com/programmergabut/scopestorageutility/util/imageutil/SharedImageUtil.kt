@@ -9,15 +9,12 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.annotation.RequiresApi
 import com.programmergabut.scopestorageutility.util.Extension
 import com.programmergabut.scopestorageutility.util.MediaQueryHelper
-import java.io.File
-import java.io.FileOutputStream
 import java.io.OutputStream
 
 fun loadSharedUri(
@@ -108,26 +105,17 @@ fun getOutStreamOnShareStorage(
     fileExtension: Extension.ExtensionModel,
     env: String
 ): OutputStream {
-    return if (isUsingScopeStorage) {
-        val mediaContentUri: Uri = MediaQueryHelper(env).setMediaStore() ?: throw Exception("there is an error on get query media type")
-        val values = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, fileExtension.mimeType)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, directory)
-        }
-        val uri = context.contentResolver.insert(mediaContentUri, values) ?: throw Exception("there is an error on contentResolver.insert")
-        val outputStream = context.contentResolver.openOutputStream(uri) ?: throw Exception("there is an error on contentResolver.openOutputStream")
-        outputStream
-    } else {
-        val filePath = Environment.getExternalStoragePublicDirectory(directory).absolutePath
-        val fileDir = File(filePath)
-        fileDir.mkdirs()
-        val file = File(filePath, "$fileName${fileExtension.extension}")
-        file.createNewFile()
-
-        val outputStream = FileOutputStream(file)
-        outputStream
+    val mediaContentUri: Uri = MediaQueryHelper(env).setMediaStore()
+        ?: throw Exception("there is an error on get query media type")
+    val values = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+        put(MediaStore.MediaColumns.MIME_TYPE, fileExtension.mimeType)
+        put(MediaStore.MediaColumns.RELATIVE_PATH, directory)
     }
+    val uri = context.contentResolver.insert(mediaContentUri, values)
+        ?: throw Exception("there is an error on contentResolver.insert")
+    return context.contentResolver.openOutputStream(uri)
+        ?: throw Exception("there is an error on contentResolver.openOutputStream")
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)

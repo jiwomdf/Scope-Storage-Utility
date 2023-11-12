@@ -11,7 +11,9 @@ import com.programmergabut.scopestorageutility.util.imageutil.compressBitmap
 import com.programmergabut.scopestorageutility.util.imageutil.deleteExistingSharedFile
 import com.programmergabut.scopestorageutility.util.imageutil.deleteFileIfExist
 import com.programmergabut.scopestorageutility.util.imageutil.getOrCreateDirectoryIfEmpty
+import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnPrivateStorage
 import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnShareStorage
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
 import com.programmergabut.scopestorageutility.util.imageutil.validateImageQuality
 import com.programmergabut.scopestorageutility.util.imageutil.validateWritePermission
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +53,23 @@ class Save(
         validateImageQuality(quality)
         validateWritePermission(context)
         deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
-        val outputStream = getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
+        val outputStream = if (isUsingScopeStorage) {
+            getOutStreamOnShareStorage(
+                context,
+                externalStorageDirectory,
+                fileName,
+                fileExtension,
+                env
+            )
+        } else {
+            getOutStreamOnPrivateStorage(
+                context,
+                externalStorageDirectory,
+                fileName,
+                fileExtension,
+                env
+            )
+        }
         compressBitmap(outputStream, bitmap, quality, fileExtension)
     }
 
