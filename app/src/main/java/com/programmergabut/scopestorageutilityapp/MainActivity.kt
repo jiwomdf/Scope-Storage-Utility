@@ -11,8 +11,9 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.programmergabut.scopestorageutility.ScopeStorageUtility.Companion.manage
+import com.programmergabut.scopestorageutility.model.UtilityModel
 import com.programmergabut.scopestorageutility.util.Extension
-import com.programmergabut.scopestorageutility.util.isUsingScopeStorage
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
 import com.programmergabut.scopestorageutilityapp.databinding.ActivityMainBinding
 import java.io.OutputStreamWriter
 
@@ -71,13 +72,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                 }
             }
             btnDeleteImage.setOnClickListener {
-                deleteFile(
-                    imageFile = etImageFile.text.toString(),
-                    imageDir = etImageDir.text.toString(),
+                val utilityModel = UtilityModel(
+                    fileName = etImageFile.text.toString(),
+                    directory = etImageDir.text.toString(),
                     env = Environment.DIRECTORY_DCIM,
-                    fileExtension = Extension.get(etImageExtension.text.toString()),
-                    isSharedStorage = true
+                    extension = Extension.get(etImageExtension.text.toString()),
                 )
+
+                deleteFile(true, utilityModel)
             }
             btnCreateFile.setOnClickListener {
                 createFileSection(
@@ -96,17 +98,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     private fun privateStorageSection(bitmap: Bitmap) {
 
+        val utilityModel = UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+        )
+
         /***
          * Example of saving bitmap to private storage
          */
         manage(this)
             .isShareStorage(false)
-            .attribute(
-                fileName = "test",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DCIM,
-                extension = Extension.get(Extension.PNG)
-            )
+            .attribute(utilityModel)
             .save(bitmap, 100)
 
         /***
@@ -114,12 +118,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          */
         manage(this)
             .isShareStorage(false)
-            .attribute(
-                fileName = "test",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DCIM,
-                extension = Extension.get(Extension.PNG)
-            )
+            .attribute(utilityModel)
             .load({
                 Glide.with(applicationContext)
                     .load(it)
@@ -130,17 +129,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     private fun sharedStorageSection(bitmap: Bitmap) {
 
+        val utilityModel = UtilityModel(
+            fileName = "test_shared",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+        )
+
         /***
          * Example of save bitmap to shared storage
          */
         manage(this)
             .isShareStorage(true)
-            .attribute(
-                fileName = "test_shared",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DCIM,
-                extension = Extension.get(Extension.PNG),
-            )
+            .attribute(utilityModel)
             .save(bitmap, 100)
 
         /***
@@ -148,12 +149,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          */
         manage(this)
             .isShareStorage(true)
-            .attribute(
-                fileName = "test_shared",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DCIM,
-                extension = Extension.get(Extension.PNG)
-            )
+            .attribute(utilityModel)
             .load({
                 showToast("Success load image test_shared")
 
@@ -161,13 +157,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     .load(it)
                     .into(binding.ivImage2)
 
-                deleteFile(
-                    imageFile = "test_shared",
-                    imageDir = "folder/subfolder/",
-                    env = Environment.DIRECTORY_DCIM,
-                    fileExtension = Extension.get(Extension.PNG),
-                    isSharedStorage = true
-                )
+                deleteFile(true, utilityModel)
             },{
                 showToast("Failed load image")
             })
@@ -177,12 +167,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
          */
         manage(this)
             .isShareStorage(true)
-            .attribute(
-                fileName = "test_shared",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DCIM,
-                extension = Extension.get(Extension.PNG)
-            )
+            .attribute(utilityModel)
             .loadSharedFileUri(this, BuildConfig.APPLICATION_ID)
             .also {
                 showToast("uri: $it")
@@ -190,17 +175,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     }
 
     private fun deleteImage() {
+
+        val utilityModel = UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+        )
+
         /***
          * Example of delete private storage with callback
          */
         manage(this)
             .isShareStorage(false)
-            .attribute(
-                fileName = "test",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DCIM,
-                extension = Extension.get(Extension.PNG)
-            )
+            .attribute(utilityModel)
             .delete(null, {
                 showToast("Success delete image test")
             },{
@@ -209,11 +197,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     }
 
     private fun deleteFile(
-        imageFile: String,
-        imageDir: String,
-        env: String,
-        fileExtension: Extension.ExtensionModel,
-        isSharedStorage: Boolean
+        isSharedStorage: Boolean,
+        utilityModel: UtilityModel
     ) {
         /***
          * Example of deleting image on shared storage
@@ -221,13 +206,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
         manage(this)
             .isShareStorage(isSharedStorage)
             .attribute(
-                fileName = imageFile,
-                directory = imageDir,
-                env = env,
-                extension = fileExtension
+                utilityModel
             )
             .delete(intentSenderRequest, {
-                showToast("Success delete $imageDir$imageFile")
+                showToast("Success delete ${utilityModel.directory}${utilityModel.fileName}")
             },{
                 showToast(it.message.toString())
             })
@@ -253,14 +235,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     private fun createFileSection(filename: String, fileDir: String) {
         with(binding){
             val txtExt = Extension.ExtensionModel(".txt", "text/plain")
+
+            val utilityModel = UtilityModel(
+                fileName = filename,
+                directory = fileDir,
+                env = Environment.DIRECTORY_DOWNLOADS,
+                extension = txtExt
+            )
+
             manage(this@MainActivity)
                 .isShareStorage(true)
-                .attribute(
-                    fileName = filename,
-                    directory = fileDir,
-                    env = Environment.DIRECTORY_DOWNLOADS,
-                    extension = txtExt,
-                )
+                .attribute(utilityModel)
                 .getOutputStream({
                     val outWriter = OutputStreamWriter(it)
                     outWriter.append("this is shared storage text")
@@ -270,13 +255,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     showToast("Success write txt file on /${fileDir}${filename} in shared storage")
 
                     if(cbAlsoDeleteFile.isChecked){
-                        deleteFile(
-                            imageFile = filename,
-                            imageDir = fileDir,
-                            env = Environment.DIRECTORY_DOWNLOADS,
-                            fileExtension = txtExt,
-                            isSharedStorage = true
-                        )
+                        deleteFile(true, utilityModel)
                     }
                 }, {
                     showToast("Failed write txt file in share storage")
@@ -284,12 +263,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
             manage(this@MainActivity)
                 .isShareStorage(false)
-                .attribute(
-                    fileName = filename,
-                    directory = fileDir,
-                    env = Environment.DIRECTORY_DOWNLOADS,
-                    extension = txtExt,
-                )
+                .attribute(utilityModel)
                 .getOutputStream({
                     val outWriter = OutputStreamWriter(it)
                     outWriter.append("this is private storage text")
@@ -299,13 +273,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
                     showToast("Success write txt file on /${fileDir}${filename} in private storage")
 
                     if(cbAlsoDeleteFile.isChecked){
-                        deleteFile(
-                            imageFile = filename,
-                            imageDir = fileDir,
-                            env = Environment.DIRECTORY_DOWNLOADS,
-                            fileExtension = txtExt,
-                            isSharedStorage = false
-                        )
+                        deleteFile(true, utilityModel)
                     }
                 }, {
                     showToast("Failed write some txt file in private storage")

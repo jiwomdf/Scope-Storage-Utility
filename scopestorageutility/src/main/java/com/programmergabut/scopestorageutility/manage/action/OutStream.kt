@@ -6,13 +6,14 @@ import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
 import com.programmergabut.scopestorageutility.manage.callback.OutputStreamCallback
 import com.programmergabut.scopestorageutility.util.Extension
-import com.programmergabut.scopestorageutility.util.deleteExistingSharedFile
-import com.programmergabut.scopestorageutility.util.deleteFileIfExist
-import com.programmergabut.scopestorageutility.util.deletePrivateFile
-import com.programmergabut.scopestorageutility.util.getOrCreateDirectoryIfEmpty
-import com.programmergabut.scopestorageutility.util.getOutStreamOnShareStorage
-import com.programmergabut.scopestorageutility.util.isUsingScopeStorage
-import com.programmergabut.scopestorageutility.util.validateWritePermission
+import com.programmergabut.scopestorageutility.util.imageutil.deleteExistingSharedFile
+import com.programmergabut.scopestorageutility.util.imageutil.deleteFileIfExist
+import com.programmergabut.scopestorageutility.util.imageutil.deletePrivateFile
+import com.programmergabut.scopestorageutility.util.imageutil.getOrCreateDirectoryIfEmpty
+import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnPrivateStorage
+import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnShareStorage
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
+import com.programmergabut.scopestorageutility.util.imageutil.validateWritePermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,33 +38,23 @@ class OutStream(
 ) {
 
     private fun getOutputStreamPrivate(): OutputStream {
-        validateWritePermission(context)
         val directory = getOrCreateDirectoryIfEmpty(directory)
         val file = File(directory, "$fileName${fileExtension.extension}")
         deleteFileIfExist(file)
         return FileOutputStream(file)
     }
 
-    private fun getOutputStreamShared(): OutputStream {
-        validateWritePermission(context)
-        if (isUsingScopeStorage) {
-            deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
-        } else {
-            deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
-        }
-        return getOutStreamOnShareStorage(
-            context,
-            externalStorageDirectory,
-            fileName,
-            fileExtension,
-            env
-        )
-    }
-
     fun getOutStream(): OutputStream? {
         return try {
+            validateWritePermission(context)
             if(toSharedStorage){
-                getOutputStreamShared()
+                if (isUsingScopeStorage) {
+                    deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
+                    getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
+                } else {
+                    deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
+                    getOutStreamOnPrivateStorage(externalStorageDirectory, fileName, fileExtension)
+                }
             } else {
                 getOutputStreamPrivate()
             }
@@ -77,7 +68,13 @@ class OutStream(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val outStream = if(toSharedStorage){
-                    getOutputStreamShared()
+                    if (isUsingScopeStorage) {
+                        deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
+                        getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
+                    } else {
+                        deletePrivateFile(fileName, externalStorageSharedDir, fileExtension)
+                        getOutStreamOnPrivateStorage(externalStorageDirectory, fileName, fileExtension)
+                    }
                 } else {
                     getOutputStreamPrivate()
                 }

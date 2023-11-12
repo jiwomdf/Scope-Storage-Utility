@@ -7,9 +7,19 @@ import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.callback.ImageCallback
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
 import com.programmergabut.scopestorageutility.util.*
+import com.programmergabut.scopestorageutility.util.imageutil.compressBitmap
+import com.programmergabut.scopestorageutility.util.imageutil.deleteExistingSharedFile
+import com.programmergabut.scopestorageutility.util.imageutil.deleteFileIfExist
+import com.programmergabut.scopestorageutility.util.imageutil.getOrCreateDirectoryIfEmpty
+import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnPrivateStorage
+import com.programmergabut.scopestorageutility.util.imageutil.getOutStreamOnShareStorage
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
+import com.programmergabut.scopestorageutility.util.imageutil.validateImageQuality
+import com.programmergabut.scopestorageutility.util.imageutil.validateWritePermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -44,7 +54,21 @@ class Save(
         validateImageQuality(quality)
         validateWritePermission(context)
         deleteExistingSharedFile(context, collection, projection, cleanDirectory, where)
-        val outputStream = getOutStreamOnShareStorage(context, externalStorageDirectory, fileName, fileExtension, env)
+        val outputStream = if (isUsingScopeStorage) {
+            getOutStreamOnShareStorage(
+                context,
+                externalStorageDirectory,
+                fileName,
+                fileExtension,
+                env
+            )
+        } else {
+            getOutStreamOnPrivateStorage(
+                externalStorageDirectory,
+                fileName,
+                fileExtension
+            )
+        }
         compressBitmap(outputStream, bitmap, quality, fileExtension)
     }
 
@@ -70,10 +94,10 @@ class Save(
                 } else {
                     savePrivate(quality, bitmap)
                 }
-                imageCallBack.onSuccess()
+                withContext(Dispatchers.Main) { imageCallBack.onSuccess() }
             } catch (ex: Exception){
                 Log.e(ScopeStorageUtility.TAG, "save: ${ex.message}")
-                imageCallBack.onFailed(ex)
+                withContext(Dispatchers.Main) {imageCallBack.onFailed(ex) }
             }
         }
     }

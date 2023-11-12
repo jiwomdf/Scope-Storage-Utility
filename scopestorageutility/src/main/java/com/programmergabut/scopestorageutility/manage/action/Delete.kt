@@ -9,6 +9,14 @@ import com.programmergabut.scopestorageutility.ScopeStorageUtility
 import com.programmergabut.scopestorageutility.manage.callback.ImageCallback
 import com.programmergabut.scopestorageutility.manage.action.base.BaseAction
 import com.programmergabut.scopestorageutility.util.*
+import com.programmergabut.scopestorageutility.util.imageutil.deletePrivateFile
+import com.programmergabut.scopestorageutility.util.imageutil.deleteSharedImageScopeStorageWithSecurity
+import com.programmergabut.scopestorageutility.util.imageutil.isUsingScopeStorage
+import com.programmergabut.scopestorageutility.util.imageutil.loadUriScopeStorage
+import com.programmergabut.scopestorageutility.util.imageutil.validateDirectory
+import com.programmergabut.scopestorageutility.util.imageutil.validateFileName
+import com.programmergabut.scopestorageutility.util.imageutil.validateIntentSenderRequest
+import com.programmergabut.scopestorageutility.util.imageutil.validateReadPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -87,14 +95,14 @@ class Delete(
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
-                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                            withContext(Dispatchers.Main) { callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                         }
                     } else {
                         val isDeleted = deleteSharedFileNonSharedStorage()
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
-                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                            withContext(Dispatchers.Main) { callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                         }
                     }
                 } else {
@@ -102,7 +110,7 @@ class Delete(
                     if(isDeleted){
                         withContext(Dispatchers.Main) { callBack.onSuccess() }
                     } else{
-                        withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                        withContext(Dispatchers.Main) { callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                     }
                 }
             } catch (ex: Exception){

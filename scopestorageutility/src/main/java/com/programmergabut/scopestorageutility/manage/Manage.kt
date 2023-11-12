@@ -2,6 +2,7 @@ package com.programmergabut.scopestorageutility.manage
 
 import android.content.Context
 import android.os.Environment
+import com.programmergabut.scopestorageutility.model.UtilityModel
 import com.programmergabut.scopestorageutility.util.Extension
 
 class Manage(private val context: Context) {
@@ -13,17 +14,12 @@ class Manage(private val context: Context) {
         return this
     }
 
-    fun attribute(
-        fileName: String,
-        directory: String?,
-        env: String = Environment.DIRECTORY_DCIM,
-        extension: Extension.ExtensionModel
-    ) = ManageImage(
+    fun attribute(utilityModel: UtilityModel) = ManageImage(
         context = context,
-        fileName = fileName,
-        directory = directory,
-        env = env,
-        fileExtension = extension,
+        fileName = utilityModel.fileName,
+        directory = utilityModel.directory,
+        env = utilityModel.env,
+        fileExtension = utilityModel.extension,
         isSharedStorage = isSharedStorage,
     )
 }

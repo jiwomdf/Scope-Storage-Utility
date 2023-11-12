@@ -27,6 +27,20 @@ class ManageImage(
 ) {
 
     /**
+     *  Load Region
+     */
+    private val loadObj = Load(context, fileName, directory, fileExtension, env, isSharedStorage)
+    fun load(): Bitmap? = loadObj.load()
+    fun load(block: (bitmap: Bitmap?) -> Unit, catch: ((e: Exception) -> Unit)? = null) {
+        loadObj.load(object: LoadImageCallback {
+            override fun onResult(bitmap: Bitmap?) { block.invoke(bitmap) }
+            override fun onFailed(ex: Exception) { catch?.invoke(ex) }
+        })
+    }
+    fun loadSharedFileUri(activity: AppCompatActivity, appId: String): Uri? =
+        loadObj.loadSharedFileUri(activity, appId)
+
+    /**
      *  Delete Region
      */
     private val deleteObj = Delete(context, fileName, directory, fileExtension, env, isSharedStorage)
@@ -41,20 +55,6 @@ class ManageImage(
             override fun onFailed(ex: Exception) { catch?.invoke(ex) }
         })
     }
-
-    /**
-     *  Load Region
-     */
-    private val loadObj = Load(context, fileName, directory, fileExtension, env, isSharedStorage)
-    fun load(): Bitmap? = loadObj.load()
-    fun load(block: (bitmap: Bitmap?) -> Unit, catch: ((e: Exception) -> Unit)? = null) {
-        loadObj.load(object: LoadImageCallback {
-            override fun onResult(bitmap: Bitmap?) { block.invoke(bitmap) }
-            override fun onFailed(ex: Exception) { catch?.invoke(ex) }
-        })
-    }
-    fun loadSharedFileUri(activity: AppCompatActivity, appId: String): Uri? =
-        loadObj.loadSharedFileUri(activity, appId)
 
     /**
      *  Save Region
