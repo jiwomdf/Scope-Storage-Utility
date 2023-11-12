@@ -19,19 +19,17 @@ the benefit of this library are
 
 <img src="https://github.com/jiwomdf/Scope-Storage-Utility/blob/master/scopestorageutility/gif/ScopeStorageUtilityGif.gif" width="220" height="450"/>
 
-## Features  
-| Bitmap  |
-| :--- |
-| save bitmap (private & shared) |
-| delete bitmap (private & shared) |
-| load bitmap (private & shared) |
-| get public file URI |
+## Flowchart How it Works
+<img src="https://firebasestorage.googleapis.com/v0/b/personalwebsite-cbad4.appspot.com/o/Scope%20Storage%20Utility%2Fflowchart.png?alt=media&token=94572622-91f1-4ecd-a9b5-10f153fc5f27" width="520" height="450"/>
 
-| File  |
-| :--- |
-| load outstream for file creation (private & shared) |
-| delete file (private & shared) |
-| get public file URI |
+| Bitmap  | File  |
+| :--- | :--- |
+| save bitmap (private & shared) | load outstream for file creation (private & shared) |
+| delete bitmap (private & shared) | delete file (private & shared) |
+| load bitmap (private & shared) | get public file URI|
+| get public file URI | |
+
+<br>
 
 ## Full Documentation of The Library Can Be Found Here👋
 ➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️
@@ -71,10 +69,12 @@ using media query for scope storage device and using the Environment class for n
     manage(this)
         .isShareStorage(true)
         .attribute(
-            fileName = "test_shared",
-            directory = "folder/subfolder/",
-            env = Environment.DIRECTORY_DCIM,
-            extension = Extension.get(Extension.PNG)
+            UtilityModel(
+            	fileName = "test",
+            	directory = "folder/subfolder/",
+            	env = Environment.DIRECTORY_DCIM,
+            	extension = Extension.get(Extension.PNG)
+            )
         )
         .load({ bitmap ->
             //success
