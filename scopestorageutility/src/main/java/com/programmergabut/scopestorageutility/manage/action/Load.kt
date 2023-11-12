@@ -50,23 +50,27 @@ class Load(
         return BitmapFactory.decodeFile(file.path)
     }
 
-    private fun loadSharedBitmap(): Bitmap? {
-        return if(isUsingScopeStorage){
-            val photoUri = loadSharedUri(context, collection, projection, cleanDirectory, where)
-                ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
-            loadBitmapFromUri(context, photoUri)
-        } else {
-            val imagePath = externalStorageSharedDir
-            validateDirectory(File(imagePath))
-            val file = File(imagePath, "$fileName${fileExtension.extension}")
-            BitmapFactory.decodeFile(file.path)
-        }
+    private fun loadSharedBitmapNonScopeStorage(): Bitmap? {
+        val imagePath = externalStorageSharedDir
+        validateDirectory(File(imagePath))
+        val file = File(imagePath, "$fileName${fileExtension.extension}")
+        return BitmapFactory.decodeFile(file.path)
+    }
+
+    private fun loadSharedBitmapScopeStorage(): Bitmap? {
+        val photoUri = loadSharedUri(context, collection, projection, cleanDirectory, where)
+            ?: throw Exception(ErrorMessage.CANT_GET_PHOTO_URI)
+        return loadBitmapFromUri(context, photoUri)
     }
 
     fun load(): Bitmap? {
         return try {
             if(toSharedStorage){
-                loadSharedBitmap()
+                if(isUsingScopeStorage) {
+                    loadSharedBitmapScopeStorage()
+                } else {
+                    loadSharedBitmapNonScopeStorage()
+                }
             } else {
                 loadPrivateBitmap()
             }
@@ -80,7 +84,11 @@ class Load(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val bitmap = if(toSharedStorage){
-                    loadSharedBitmap()
+                    if(isUsingScopeStorage) {
+                        loadSharedBitmapScopeStorage()
+                    } else {
+                        loadSharedBitmapNonScopeStorage()
+                    }
                 } else {
                     loadPrivateBitmap()
                 }

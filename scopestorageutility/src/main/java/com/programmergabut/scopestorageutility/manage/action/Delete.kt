@@ -95,14 +95,14 @@ class Delete(
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
-                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                            withContext(Dispatchers.Main) { callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                         }
                     } else {
                         val isDeleted = deleteSharedFileNonSharedStorage()
                         if(isDeleted){
                             withContext(Dispatchers.Main) { callBack.onSuccess() }
                         } else{
-                            withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                            withContext(Dispatchers.Main) { callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                         }
                     }
                 } else {
@@ -110,7 +110,7 @@ class Delete(
                     if(isDeleted){
                         withContext(Dispatchers.Main) { callBack.onSuccess() }
                     } else{
-                        withContext(Dispatchers.Main){ callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
+                        withContext(Dispatchers.Main) { callBack.onFailed(Exception((ErrorMessage.FAILED_DELETE_FILE))) }
                     }
                 }
             } catch (ex: Exception){
