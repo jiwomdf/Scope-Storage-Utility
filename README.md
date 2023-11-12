@@ -53,7 +53,7 @@ Add the dependency
 ```kotlin
 	dependencies {
 		...
-		implementation 'com.github.jiwomdf:Scope-Storage-Utility:1.0.4'
+		implementation 'com.github.jiwomdf:Scope-Storage-Utility:VERSION'
 	}
 ```
 ## Prerequirement
