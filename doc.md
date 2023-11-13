@@ -13,9 +13,8 @@
 
 Before starting with the lib, here are some useful information
 ```
-1. For syncronize funtion, it will always returned true if the process is success and false if it failed
-2. For tracing the error you can try by searching the logcat of "ScopeStorageUtility"
-3. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
+1. For tracing the error you can try by searching the logcat of "ScopeStorageUtility"
+2. For better understanding about this lib, you can check / clone this repository and see the MainActivity file
 ```
 
 ## Manage Image Storage <a name="manage"></a>
@@ -55,10 +54,12 @@ Before starting with the lib, here are some useful information
   val isSuccess = manage(this)
       .isShareStorage(false)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG),
+         UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .save(base64, 100)
       
@@ -66,10 +67,12 @@ Before starting with the lib, here are some useful information
   manage(this)
       .isShareStorage(false)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG),
+         UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .save(base64, 100, {
         //success
@@ -84,10 +87,12 @@ Before starting with the lib, here are some useful information
   val bitmap = manage(this)
       .isShareStorage(false)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
+          UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .load()
             
@@ -95,10 +100,12 @@ Before starting with the lib, here are some useful information
   manage(this)
       .isShareStorage(false)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
+         UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .load({
         //success
@@ -113,10 +120,12 @@ Before starting with the lib, here are some useful information
   val isDeleted = manage(this)
       .isShareStorage(false)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
+         UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .delete(null)
       
@@ -124,10 +133,12 @@ Before starting with the lib, here are some useful information
   manage(this)
       .isShareStorage(false)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
+         UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .delete(null, {
         //success
@@ -139,10 +150,12 @@ Before starting with the lib, here are some useful information
   val isDeleted = manage(this)
       .isShareStorage(true)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
+          UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .delete(intentSenderRequest)
       
@@ -150,10 +163,12 @@ Before starting with the lib, here are some useful information
   manage(this)
       .isShareStorage(true)
       .attribute(
-          fileName = "test_shared",
-          directory = "folder/subfolder/",
-          env = Environment.DIRECTORY_DCIM,
-          extension = Extension.get(Extension.PNG)
+          UtilityModel(
+            fileName = "test",
+            directory = "folder/subfolder/",
+            env = Environment.DIRECTORY_DCIM,
+            extension = Extension.get(Extension.PNG)
+         )
       )
       .delete(intentSenderRequest, {
           //success
@@ -181,10 +196,12 @@ Before starting with the lib, here are some useful information
       manage(this)
          .isShareStorage(true)
          .attribute(
-             fileName = "test_shared",
-             directory = "folder/subfolder/",
-             env = Environment.DIRECTORY_DCIM,
-             extension = Extension.get(Extension.PNG)
+            UtilityModel(
+            	fileName = "test",
+            	directory = "folder/subfolder/",
+            	env = Environment.DIRECTORY_DCIM,
+            	extension = Extension.get(Extension.PNG)
+            )
          )
          .loadSharedFileUri(this, BuildConfig.APPLICATION_ID)
          .also {
@@ -201,10 +218,12 @@ Before starting with the lib, here are some useful information
       manage(this)
             .isShareStorage(true)
             .attribute(
-                fileName = filename,
-                directory = fileDir,
-                env = Environment.DIRECTORY_DOWNLOADS,
-                extension = Extension.ExtensionModel(".txt", "text/plain"),
+               UtilityModel(
+               	fileName = "test",
+               	directory = "folder/subfolder/",
+               	env = Environment.DIRECTORY_DCIM,
+               	extension = Extension.get(Extension.PNG)
+               )
             )
             .getOutputStream({
                 val outWriter = OutputStreamWriter(it)
@@ -227,10 +246,12 @@ Before starting with the lib, here are some useful information
       manage(this)
             .isShareStorage(true)
             .attribute(
-                fileName = "test",
-                directory = "folder/subfolder/",
-                env = Environment.DIRECTORY_DOWNLOADS,
-                extension = Extension.ExtensionModel(".txt", "text/plain")
+               UtilityModel(
+               	fileName = "test",
+               	directory = "folder/subfolder/",
+               	env = Environment.DIRECTORY_DCIM,
+               	extension = Extension.get(Extension.PNG)
+               )
             )
             .delete(intentSenderRequest, {
                 //Success delete folder/subfolder/test.txt
