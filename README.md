@@ -20,19 +20,14 @@ the benefit of this library are
 <img src="https://github.com/jiwomdf/Scope-Storage-Utility/blob/master/scopestorageutility/gif/ScopeStorageUtilityGif.gif" width="220" height="450"/>
 
 ## Flowchart How it Works
-<img src="https://firebasestorage.googleapis.com/v0/b/personalwebsite-cbad4.appspot.com/o/Scope%20Storage%20Utility%2Fflowchart.png?alt=media&token=94572622-91f1-4ecd-a9b5-10f153fc5f27" width="520" height="450"/>
+<img src="https://firebasestorage.googleapis.com/v0/b/personalwebsite-cbad4.appspot.com/o/Scope%20Storage%20Utility%2Ftestinggg.png?alt=media&token=c3863061-0d82-40c1-bb92-b38d5dac4317" width="520" height="450"/>
 
 | Bitmap  | File  |
 | :--- | :--- |
 | save bitmap (private & shared) | load outstream for file creation (private & shared) |
 | delete bitmap (private & shared) | delete file (private & shared) |
-| load bitmap (private & shared) | get public file URI|
-| get public file URI | |
-
-<br>
-
-## Full Documentation of The Library Can Be Found Here👋
-➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️
+| load bitmap (private & shared) | get public file URI (shared) |
+| get public file URI (shared) | |
 
 <br>
 
@@ -64,7 +59,7 @@ Please include this permission in your application <br>
 
 ## Quick view how to use the lib
 This is the example of load png file in shared storage, it already handle loading png 
-using media query for scope storage device and using the Environment class for non scope storage device <br>
+using <b>Media Query API</b> for scope storage device and using the <b>Environment</b> for non scope storage device <br>
 ```kotlin
     manage(this)
         .isShareStorage(true)
@@ -82,6 +77,10 @@ using media query for scope storage device and using the Environment class for n
             //failed
         })
 ```
+
+## Full Documentation of The Library Can Be Found Here👋
+➡️ [Full Documentation Link](https://github.com/jiwomdf/Android-Image-Util/blob/master/doc.md) ⬅️
+
 
 <br>
 Feel free to see and contribute
