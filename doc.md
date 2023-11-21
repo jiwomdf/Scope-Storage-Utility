@@ -1,13 +1,13 @@
 # Scope Storage Utility Docs
 
 ## Table of Contents
-1. [Manage, isShareStorage, attribute functions](#manage) <br>
-   a. [Save Image in Private And Shared Storage](#save) <br>
-   b. [Load Image in Private And Shared Storage](#load) <br>
-   c. [Delete Image in Private And Shared Storage](#delete) <br>
-   d. [Load Image/File Uri From Shared Storage](#loaduri) <br>
-   e. [Load Outstream For File Creation in Private And Shared Storage](#outstream) <br>
-   f. [Delete File in Private And Shared Storage](#filedelete) 
+   1. [Manage, isShareStorage, attribute functions](#manage) <br>
+   2. [Save Image in Private And Shared Storage](#save) <br>
+   3. [Load Image in Private And Shared Storage](#load) <br>
+   4. [Delete Image in Private And Shared Storage](#delete) <br>
+   5. [Load Image/File Uri From Shared Storage](#loaduri) <br>
+   6. [Load Outstream For File Creation in Private And Shared Storage](#outstream) <br>
+   7. [Delete File in Private And Shared Storage](#filedelete) 
    
 <br>
 
@@ -31,8 +31,8 @@ Before starting with the lib, here are some useful information
    *  @param value, the value of isShareStorage, 
    *  if it's false then it mean it will be save private storage, you can find in your_phone_name\Android\data\application_package_name
    *  if it's true then it mean it will be save to shared storage
+   *  if it's not inputed, it will be false as it's the default value
    */
-   //if the isShareStorage is not inputed, it will be false as it default value
    
   attribute(fileName: String, directory: String?, env: String, extension: Extension.ExtensionModel)
   /**
@@ -46,10 +46,11 @@ Before starting with the lib, here are some useful information
 
 #### Save function <a name="save"></a>
 ```kotlin
-  /***
+  /**
    * Example of saving bitmap to private storage 
    * in your_phone_name\Android\data\application_package_name\DCIM\folder\subfolder\test_shared.png
    */
+
   /* Example of save asynchronously */
   val isSuccess = manage(this)
       .isShareStorage(false)
@@ -176,9 +177,7 @@ Before starting with the lib, here are some useful information
           //failed
       })
       
-  /**
-    * for delete shared image you need intentSenderRequest
-    */
+   /* for delete shared image you need intentSenderRequest */
     intentSenderRequest = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
           if (it.resultCode == RESULT_OK) {
                //user confirm other app file deletion
@@ -190,9 +189,7 @@ Before starting with the lib, here are some useful information
 
 #### Load File URI (for shared storage) <a name="loaduri"></a>
 ```kotlin
-    /***
-     * Example getting the file URI of shared file
-     */
+    /* Example getting the file URI of shared file */
       manage(this)
          .isShareStorage(true)
          .attribute(
@@ -211,10 +208,7 @@ Before starting with the lib, here are some useful information
 
 #### Create File from outputStream <a name="outstream"></a>
 ```kotlin
-    /***
-     * Example of creating .txt file from the outputStream
-     */
-      
+    /* Example of creating .txt file from the outputStream */
       manage(this)
             .isShareStorage(true)
             .attribute(
@@ -239,10 +233,7 @@ Before starting with the lib, here are some useful information
 
 #### Delete File <a name="filedelete"></a>
 ```kotlin
-    /***
-     * Example of delete file
-     */
-      
+    /* Example of delete file */
       manage(this)
             .isShareStorage(true)
             .attribute(
